@@ -71,6 +71,8 @@ Branch Naming Conventions
 - design/...
 
 3. Follow the Project Structure
+
+```
 /client
   /assets
    /images
@@ -80,7 +82,9 @@ Branch Naming Conventions
     index.js
   /pages
     index.html
+```
 
+```
 /server
   /config
     superbase.js
@@ -96,7 +100,8 @@ Branch Naming Conventions
     slug.js
   app.js
   server.js
-  
+```
+
 ### Guidelines
 
 - Keep JavaScript modular
