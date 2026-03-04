@@ -1,7 +1,194 @@
-/* Base styles */
+@layer tokens, base, utilities;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer tokens {
+  :root {
+    /* Brand scale – Bloom After (Teal/Sage) */
+    --color-brand-50: #eef7f3;
+    --color-brand-100: #d8ede4;
+    --color-brand-200: #a8cbb7; /* Soft Sage */
+    --color-brand-300: #7fb8a0;
+    --color-brand-400: #4f8a6f; /* Jungle Teal */
+    --color-brand-500: #3f705a;
+    --color-brand-600: #2f5545;
+    --color-brand-700: #1f3a30;
+    --color-brand-800: #10201a;
+    --color-brand-900: #002626; /* Evergreen */
+    --color-brand-950: #001515;
+
+    /* Neutral scale */
+    --color-gray-50: #fff8f0; /* Floral White */
+    --color-gray-100: #f5f5f5;
+    --color-gray-200: #e5e5e5;
+    --color-gray-300: #d4d4d4;
+    --color-gray-400: #a3a3a3;
+    --color-gray-500: #9a9a9a;
+    --color-gray-600: #737373;
+    --color-gray-700: #525252;
+    --color-gray-800: #404040;
+    --color-gray-900: #4b4b4b; /* Charcoal */
+    --color-gray-950: #171717;
+
+    /* Core */
+    --color-white: #ffffff;
+    --color-black: #000000;
+
+    /* Semantic colors (Light Theme Default) */
+    --color-bg: var(--color-gray-50);
+    --color-bg-muted: var(--color-gray-100);
+    --color-surface: var(--color-white);
+    --color-border: var(--color-brand-200);
+
+    --color-text: var(--color-gray-900);
+    --color-text-muted: var(--color-gray-500);
+    --color-text-inverse: var(--color-white);
+
+    --color-primary: var(--color-brand-400);
+    --color-primary-hover: var(--color-brand-900);
+    --color-primary-soft: var(--color-brand-50);
+
+    --color-success: var(--color-brand-400);
+    --color-warning: #f2c94c;
+    --color-danger: #e85a4f;
+
+    --focus-ring-color: var(--color-brand-400);
+
+    /* Font Families */
+    --font-inter:
+      "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", sans-serif;
+
+    --font-fraunces:
+      "Fraunces", "Georgia", "Times New Roman", serif;
+
+    /* Semantic Font Roles */
+    --font-body: var(--font-inter);
+    --font-heading: var(--font-fraunces);
+
+    /* Typography Scale */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem; /* 16px minimum */
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 2rem;
+
+    /* Spacing Scale */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+
+    /* Radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-pill: 999px;
+  }
+
+  /* Optional Dark Theme */
+  :root[data-theme="dark"] {
+    --color-bg: var(--color-brand-800);
+    --color-bg-muted: var(--color-brand-700);
+    --color-surface: var(--color-brand-700);
+    --color-border: var(--color-brand-600);
+
+    --color-text: var(--color-gray-50);
+    --color-text-muted: var(--color-gray-300);
+
+    --color-primary: var(--color-brand-300);
+    --color-primary-hover: var(--color-brand-200);
+
+    --focus-ring-color: var(--color-brand-300);
+  }
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-body);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--color-text);
+  }
+
+  a {
+    text-decoration: none;
+    color: var(--color-text);
+    transition: color 0.2s ease-out;
+  }
+
+  a:hover {
+    color: var(--color-primary);
+  }
+}
+
+@layer utilities {
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .text-muted {
+    color: var(--color-text-muted);
+  }
+
+  .accent-text {
+    color: var(--color-primary);
+  }
+
+  .flex {
+    display: flex;
+  }
+
+  .flex-col {
+    flex-direction: column;
+  }
+
+  .items-center {
+    align-items: center;
+  }
+
+  .justify-between {
+    justify-content: space-between;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .gap-4 {
+    gap: var(--space-4);
+  }
+
+  .gap-6 {
+    gap: var(--space-6);
+  }
 }
