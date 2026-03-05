@@ -5,8 +5,7 @@ function renderNavbar(activePage = '') {
         <div class="navbar-inner">
 
           <a href="/index.html" class="navbar-logo" aria-label="Bloom After home">
-            <img src="/assets/images/placeholder-logo.svg" alt="" width="32" height="32" />
-            <span class="navbar-logo-text">Bloom After</span>
+            <img src="../assets/logo/Bloom After Primary without bg.png" alt="" width="32" height="32" />
           </a>
 
           <section class="navbar-links" aria-label="Desktop navigation">
