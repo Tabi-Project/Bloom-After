@@ -1,91 +1,87 @@
 function renderNavbar(activePage = '') {
   return `
-    <header role="banner">
-      <nav class="navbar" aria-label="Main navigation">
-        <div class="navbar-inner">
+    <nav class="navbar" aria-label="Main navigation">
 
-          <a href="/index.html" class="navbar-logo" aria-label="Bloom After home">
-            <img src="../assets/logo/Bloom After Primary without bg.png" alt="" width="32" height="32" />
-          </a>
+      <a href="/index.html" class="navbar-logo" aria-label="Bloom After home">
+        <img src="../assets/logo/Bloom After Primary without bg.png" alt="Bloom After logo" />
+      </a>
 
-          <section class="navbar-links" aria-label="Desktop navigation">
+      <nav class="navbar-links" aria-label="Desktop navigation">
 
-            <div class="navbar-dropdown">
-              <button class="navbar-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
-                Learn More <span class="navbar-chevron" aria-hidden="true">▾</span>
-              </button>
-              <nav class="navbar-dropdown-menu" aria-label="Learn More">
-                <a href="/resources.html" class="${activePage === 'resources' ? 'active' : ''}">Educational Hub</a>
-                <a href="/interventions.html" class="${activePage === 'interventions' ? 'active' : ''}">Lifestyle & Interventions</a>
-              </nav>
-            </div>
-
-            <div class="navbar-dropdown">
-              <button class="navbar-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
-                Get Support <span class="navbar-chevron" aria-hidden="true">▾</span>
-              </button>
-              <nav class="navbar-dropdown-menu" aria-label="Get Support">
-                <a href="/clinics.html" class="${activePage === 'clinics' ? 'active' : ''}">Clinics & Hospitals</a>
-                <a href="/specialists.html" class="${activePage === 'specialists' ? 'active' : ''}">Specialists</a>
-                <a href="/ngos.html" class="${activePage === 'ngos' ? 'active' : ''}">NGO Directory</a>
-              </nav>
-            </div>
-
-            <div class="navbar-dropdown">
-              <button class="navbar-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
-                Community <span class="navbar-chevron" aria-hidden="true">▾</span>
-              </button>
-              <nav class="navbar-dropdown-menu" aria-label="Community">
-                <a href="/stories.html" class="${activePage === 'stories' ? 'active' : ''}">Stories</a>
-                <a href="/media.html" class="${activePage === 'media' ? 'active' : ''}">Podcasts & Media</a>
-              </nav>
-            </div>
-
-            <a href="/contributors.html" class="navbar-link ${activePage === 'contributors' ? 'active' : ''}">
-              The Team
-            </a>
-
-          </section>
-
-          <a href="/clinics.html" class="navbar-cta">Start a Conversation</a>
-
-          <button
-            class="navbar-hamburger"
-            aria-label="Open menu"
-            aria-expanded="false"
-            aria-controls="mobile-menu"
-          >
-            <span></span><span></span><span></span>
+        <span class="navbar-dropdown">
+          <button class="navbar-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+            Learn More <span class="navbar-chevron" aria-hidden="true">▾</span>
           </button>
+          <nav class="navbar-dropdown-menu" aria-label="Learn More">
+            <a href="/resources.html" class="${activePage === 'resources' ? 'active' : ''}">Educational Hub</a>
+            <a href="/interventions.html" class="${activePage === 'interventions' ? 'active' : ''}">Lifestyle & Interventions</a>
+          </nav>
+        </span>
 
-        </div>
+        <span class="navbar-dropdown">
+          <button class="navbar-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+            Get Support <span class="navbar-chevron" aria-hidden="true">▾</span>
+          </button>
+          <nav class="navbar-dropdown-menu" aria-label="Get Support">
+            <a href="/clinics.html" class="${activePage === 'clinics' ? 'active' : ''}">Clinics & Hospitals</a>
+            <a href="/specialists.html" class="${activePage === 'specialists' ? 'active' : ''}">Specialists</a>
+            <a href="/ngos.html" class="${activePage === 'ngos' ? 'active' : ''}">NGO Directory</a>
+          </nav>
+        </span>
+
+        <span class="navbar-dropdown">
+          <button class="navbar-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+            Community <span class="navbar-chevron" aria-hidden="true">▾</span>
+          </button>
+          <nav class="navbar-dropdown-menu" aria-label="Community">
+            <a href="/stories.html" class="${activePage === 'stories' ? 'active' : ''}">Stories</a>
+            <a href="/media.html" class="${activePage === 'media' ? 'active' : ''}">Podcasts & Media</a>
+          </nav>
+        </span>
+
+        <a href="/contributors.html" class="navbar-link ${activePage === 'contributors' ? 'active' : ''}">
+          The Team
+        </a>
+
       </nav>
 
-      <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation" aria-hidden="true">
+      <a href="/clinics.html" class="navbar-cta">Start a Conversation</a>
 
-        <span class="mobile-menu-group-label">Learn More</span>
-        <a href="/resources.html" class="mobile-menu-link">Educational Hub</a>
-        <a href="/interventions.html" class="mobile-menu-link">Lifestyle & Interventions</a>
+      <button
+        class="navbar-hamburger"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span></span><span></span><span></span>
+      </button>
 
-        <span class="mobile-menu-group-label">Get Support</span>
-        <a href="/clinics.html" class="mobile-menu-link">Clinics & Hospitals</a>
-        <a href="/specialists.html" class="mobile-menu-link">Specialists</a>
-        <a href="/ngos.html" class="mobile-menu-link">NGO Directory</a>
+    </nav>
 
-        <span class="mobile-menu-group-label">Community</span>
-        <a href="/stories.html" class="mobile-menu-link">Stories</a>
-        <a href="/media.html" class="mobile-menu-link">Podcasts & Media</a>
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation" aria-hidden="true">
 
-        <span class="mobile-menu-group-label">The Team</span>
-        <a href="/contributors.html" class="mobile-menu-link">Contributors</a>
+      <span class="mobile-menu-group-label">Learn More</span>
+      <a href="/resources.html" class="mobile-menu-link">Educational Hub</a>
+      <a href="/interventions.html" class="mobile-menu-link">Lifestyle & Interventions</a>
 
-        <aside class="mobile-menu-crisis" aria-label="Crisis support">
-          <p>If you are in crisis:</p>
-          <a href="tel:08001234567">0800 123 4567</a>
-        </aside>
+      <span class="mobile-menu-group-label">Get Support</span>
+      <a href="/clinics.html" class="mobile-menu-link">Clinics & Hospitals</a>
+      <a href="/specialists.html" class="mobile-menu-link">Specialists</a>
+      <a href="/ngos.html" class="mobile-menu-link">NGO Directory</a>
 
-      </nav>
-    </header>
+      <span class="mobile-menu-group-label">Community</span>
+      <a href="/stories.html" class="mobile-menu-link">Stories</a>
+      <a href="/media.html" class="mobile-menu-link">Podcasts & Media</a>
+
+      <span class="mobile-menu-group-label">The Team</span>
+      <a href="/contributors.html" class="mobile-menu-link">Contributors</a>
+
+      <aside class="mobile-menu-crisis" aria-label="Crisis support">
+        <p>If you are in crisis:</p>
+        <a href="tel:08001234567">0800 123 4567</a>
+      </aside>
+
+    </nav>
   `;
 }
 

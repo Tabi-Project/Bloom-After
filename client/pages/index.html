@@ -12,9 +12,10 @@
   <body>
     <a href="#main-content" class="visually-hidden">Skip to main content</a>
 
-    <div id="navbar-root"></div>
+    <header role="banner" id="site-header">
 
-    <main id="main-content">
+      <div id="navbar-root"></div>
+
       <!-- Hero section -->
       <section class="hero container" aria-labelledby="hero-heading">
 
@@ -34,28 +35,30 @@
         </article>
 
         <figure class="hero-visual" aria-hidden="true">
-          <div class="hero-blob-wrap">
-            <!-- Replace with image if available. -->
-            <svg viewBox="50 50 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Outer soft sage blob -->
-              <ellipse cx="195" cy="215" rx="168" ry="158" fill="#a8cbb7" opacity="0.45" />
-              <!-- Main jungle teal blob -->
-              <ellipse cx="215" cy="195" rx="118" ry="128" fill="#4f8a6f" opacity="0.9" />
-              <!-- Evergreen accent circle top right -->
-              <circle cx="298" cy="148" r="48" fill="#002626" />
-              <!-- Small sage accent bottom left -->
-              <circle cx="148" cy="308" r="30" fill="#7fb8a0" opacity="0.75" />
-            </svg>
-          </div>
+          <!-- Replace with image if available. -->
+          <svg viewBox="50 50 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Outer soft sage blob -->
+            <ellipse cx="195" cy="215" rx="168" ry="158" fill="#a8cbb7" opacity="0.45" />
+            <!-- Main jungle teal blob -->
+            <ellipse cx="215" cy="195" rx="118" ry="128" fill="#4f8a6f" opacity="0.9" />
+            <!-- Evergreen accent circle top right -->
+            <circle cx="298" cy="148" r="48" fill="#002626" />
+            <!-- Small sage accent bottom left -->
+            <circle cx="148" cy="308" r="30" fill="#7fb8a0" opacity="0.75" />
+          </svg>
         </figure>
       </section>
-    </main>
+
+    </header>
+
+      <main id="main-content">
+        <!-- Remaining landing page sections -->
+      </main>
 
 
     <script type="module">
       import { renderNavbar, initNavbar } from '../js/components/navbar.js';
 
-      // Inject navbar
       document.getElementById('navbar-root').innerHTML = renderNavbar('home');
       initNavbar();
     </script>

@@ -5,11 +5,6 @@ body {
   flex-direction: column;
 }
 
-main {
-  flex: 1;
-  padding-top: var(--nav-height);
-}
-
 /* Container */
 .container {
   width: 100%;
@@ -18,13 +13,24 @@ main {
   padding-inline: var(--space-8);
 }
 
+header {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Hero */
 .hero {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: var(--space-12);
-  padding-block: var(--space-16);
+  padding-top: calc(var(--nav-height) + var(--space-10));
+  padding-bottom: var(--space-10);
+}
+
+main {
+  flex: 1;
+  padding-top: var(--nav-height);
 }
 
 /* Section */

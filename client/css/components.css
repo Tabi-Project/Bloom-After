@@ -7,16 +7,8 @@
   background: var(--color-nav-bg);
   display: flex;
   align-items: center;
-}
-
-.navbar-inner {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  width: 100%;
-  max-width: 1300px;
-  margin-inline: auto;
-  padding-inline: var(--space-8);
+  padding-inline: max(var(--space-8), calc((100vw - 1300px) / 2));
   gap: var(--space-6);
 }
 
@@ -34,11 +26,11 @@
   object-fit: contain;
 }
 
-.navbar-logo-text {
+/* .navbar-logo-text {
   font-family: var(--font-heading);
   font-size: var(--font-size-lg);
   color: var(--color-nav-text);
-}
+} */
 
 /* Desktop links */
 .navbar-links {
@@ -63,6 +55,7 @@
 /* Dropdown */
 .navbar-dropdown {
   position: relative;
+  display: inline-block;
 }
 
 .navbar-dropdown-toggle {
@@ -148,6 +141,7 @@
   border-radius: var(--radius-sm);
   font-size: var(--font-size-sm);
   font-weight: 500;
+  text-decoration: none;
   transition: background 0.2s, color 0.2s;
   white-space: nowrap;
   flex-shrink: 0;
@@ -296,24 +290,6 @@
   gap: var(--space-6);
 }
 
-.hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--font-size-xs);
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-primary);
-}
-
-.hero-eyebrow::before {
-  content: '';
-  display: block;
-  width: 24px; height: 1.5px;
-  background: var(--color-primary);
-}
-
 .hero-heading {
   font-family: var(--font-heading);
   font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl));
@@ -348,16 +324,9 @@
   overflow: visible;
 }
 
-.hero-blob-wrap {
-  position: relative;
+.hero-visual svg {
   width: 400px;
   height: 400px;
-  overflow: visible;
-}
-
-.hero-blob-wrap svg {
-  width: 100%;
-  height: 100%;
   overflow: visible;
 }
 
@@ -365,7 +334,7 @@
   .navbar-links { display: none; }
   .navbar-cta   { display: none; }
   .navbar-hamburger { display: flex; }
-  .navbar-inner { padding-inline: var(--space-5); }
+  .navbar { padding-inline: var(--space-5); }
 
   .btn {
     width: 100%;
@@ -374,7 +343,7 @@
     font-size: var(--font-size-base);
   }
 
-  .hero-blob-wrap {
+  .hero-visual svg {
     width: 240px;
     height: 240px;
   }
