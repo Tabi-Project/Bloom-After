@@ -53,7 +53,7 @@ Every contribution must reflect empathy, safety, and responsibility.
 Fork the repository, then clone your version:
 
 ```bash
-git clone https://github.com/Tabi-Project/Bloom-After.git
+git clone https://github.com/YOUR-USERNAME/Bloom-After.git
 ```
 
 2. Create a Branch
@@ -82,9 +82,8 @@ Branch Naming Conventions
     index.js
   /pages
     index.html
-```
+    ```
 
-```
 /server
   /config
     superbase.js
@@ -100,8 +99,7 @@ Branch Naming Conventions
     slug.js
   app.js
   server.js
-```
-
+  
 ### Guidelines
 
 - Keep JavaScript modular
