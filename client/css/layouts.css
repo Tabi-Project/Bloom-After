@@ -116,7 +116,9 @@ section:not(.hero) {
     gap: var(--space-8);
   }
 
-  .hero figure { order: -1; }
+  .hero figure {
+    order: -1;
+  }
 
   .grid-2 {
     grid-template-columns: 1fr;

@@ -1,7 +1,9 @@
 /* Navbar */
 .navbar {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
   height: var(--nav-height);
   background: var(--color-nav-bg);
@@ -49,8 +51,12 @@
   white-space: nowrap;
 }
 
-.navbar-link:hover  { color: var(--color-nav-hover); }
-.navbar-link.active { color: var(--color-nav-active); }
+.navbar-link:hover {
+  color: var(--color-nav-hover);
+}
+.navbar-link.active {
+  color: var(--color-nav-active);
+}
 
 /* Dropdown */
 .navbar-dropdown {
@@ -74,7 +80,7 @@
 }
 
 .navbar-dropdown-toggle::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 100%;
   left: 0;
@@ -82,7 +88,9 @@
   height: 0.75rem;
 }
 
-.navbar-dropdown-toggle:hover { color: var(--color-nav-hover); }
+.navbar-dropdown-toggle:hover {
+  color: var(--color-nav-hover);
+}
 
 .navbar-chevron {
   font-size: 0.65rem;
@@ -98,7 +106,7 @@
 .navbar-dropdown-menu {
   display: none;
   position: absolute;
-  top: 100%; 
+  top: 100%;
   left: 0;
   padding-top: 0.75rem;
   background: var(--color-nav-bg);
@@ -106,7 +114,7 @@
   border-radius: var(--radius-md);
   padding-block: var(--space-2);
   min-width: 210px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   flex-direction: column;
   z-index: 10;
 }
@@ -121,7 +129,9 @@
   padding: var(--space-3) var(--space-5);
   color: var(--color-nav-text);
   font-size: var(--font-size-sm);
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
 .navbar-dropdown-menu a:hover {
@@ -142,7 +152,9 @@
   font-size: var(--font-size-sm);
   font-weight: 500;
   text-decoration: none;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -166,10 +178,13 @@
 
 .navbar-hamburger span {
   display: block;
-  width: 22px; height: 2px;
+  width: 22px;
+  height: 2px;
   background: var(--color-nav-text);
   border-radius: 2px;
-  transition: transform 0.2s, opacity 0.2s;
+  transition:
+    transform 0.2s,
+    opacity 0.2s;
 }
 
 .navbar-hamburger[aria-expanded="true"] span:nth-child(1) {
@@ -187,7 +202,8 @@
   display: none;
   position: fixed;
   top: var(--nav-height);
-  left: 0; right: 0;
+  left: 0;
+  right: 0;
   background: var(--color-nav-bg);
   border-top: 1px solid var(--color-brand-700);
   padding: var(--space-4) 0 var(--space-8);
@@ -196,7 +212,9 @@
   max-height: calc(100vh - var(--nav-height));
 }
 
-.mobile-menu.open { display: block; }
+.mobile-menu.open {
+  display: block;
+}
 
 .mobile-menu-group-label {
   display: block;
@@ -215,12 +233,14 @@
   color: var(--color-nav-text);
   font-size: var(--font-size-base);
   min-height: 48px;
-  transition: color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    background 0.2s;
 }
 
 .mobile-menu-link:hover {
   color: var(--color-brand-200);
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .mobile-menu-crisis {
@@ -253,7 +273,10 @@
   font-size: var(--font-size-sm);
   font-weight: 500;
   font-family: var(--font-body);
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
   white-space: nowrap;
   cursor: pointer;
   border: 2px solid transparent;
@@ -273,7 +296,7 @@
 }
 
 .btn-secondary {
-  background: var(--color-brand-200); 
+  background: var(--color-brand-200);
   color: var(--color-brand-900);
   border-color: var(--color-brand-200);
 }
@@ -331,10 +354,18 @@
 }
 
 @media (max-width: 768px) {
-  .navbar-links { display: none; }
-  .navbar-cta   { display: none; }
-  .navbar-hamburger { display: flex; }
-  .navbar { padding-inline: var(--space-5); }
+  .navbar-links {
+    display: none;
+  }
+  .navbar-cta {
+    display: none;
+  }
+  .navbar-hamburger {
+    display: flex;
+  }
+  .navbar {
+    padding-inline: var(--space-5);
+  }
 
   .btn {
     width: 100%;
@@ -351,4 +382,88 @@
   .hero-subheading {
     max-width: 100%;
   }
+}
+
+/* Contributions Section*/
+.member-list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-6);
+}
+.member-list p {
+  font-size: var(--font-size-sm);
+}
+
+.team-member {
+  position: relative;
+}
+
+.member-info {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+
+  background-color: var(--color-brand-400);
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  color: var(--color-white);
+  opacity: 0.7;
+  transition: opacity 0.5s ease;
+}
+.member-info p {
+  color: var(--color-white);
+}
+
+.member-info::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: var(--space-2) solid transparent;
+  border-top-color: var(--color-brand-400);
+}
+.team-member:hover .member-info {
+  display: block;
+  opacity: 0.9;
+}
+
+.team-member-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: var(--space-3);
+  padding: var(--space-3);
+  cursor: pointer;
+}
+@media (max-width: 768px) {
+  .member-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+/*NGOs Section*/
+.partner {
+  border-radius: var(--radius-lg);
+}
+
+.partner-list {
+  margin-bottom: var(--space-8);
+
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  justify-content: center;
+}
+
+.ngo-section p {
+  font-size: var(--font-size-xs);
+  margin-bottom: var(--space-3);
 }

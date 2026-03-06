@@ -1,9 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Bloom After - a safe, clinically grounded space for navigating postpartum depression." />
+    <meta
+      name="description"
+      content="Bloom After - a safe, clinically grounded space for navigating postpartum depression."
+    />
     <title>Bloom After</title>
     <link rel="stylesheet" href="../css/base.css" />
     <link rel="stylesheet" href="../css/layouts.css" />
@@ -13,34 +16,55 @@
     <a href="#main-content" class="visually-hidden">Skip to main content</a>
 
     <header role="banner" id="site-header">
-
       <div id="navbar-root"></div>
 
       <!-- Hero section -->
       <section class="hero container" aria-labelledby="hero-heading">
-
         <article class="hero-content">
           <h1 class="hero-heading" id="hero-heading">
             Ease your way back in with a community that <em>cares.</em>
           </h1>
 
           <p class="hero-subheading">
-            A safe, clinically grounded space for navigating postpartum depression.
+            A safe, clinically grounded space for navigating postpartum
+            depression.
           </p>
 
           <div class="hero-actions">
-            <a href="/resources.html" class="btn btn-primary">Explore Resources</a>
-            <a href="/clinics.html" class="btn btn-secondary">Find Local Clinics</a>
+            <a href="/resources.html" class="btn btn-primary"
+              >Explore Resources</a
+            >
+            <a href="/clinics.html" class="btn btn-secondary"
+              >Find Local Clinics</a
+            >
           </div>
         </article>
 
         <figure class="hero-visual" aria-hidden="true">
           <!-- Replace with image if available. -->
-          <svg viewBox="50 50 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            viewBox="50 50 300 300"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <!-- Outer soft sage blob -->
-            <ellipse cx="195" cy="215" rx="168" ry="158" fill="#a8cbb7" opacity="0.45" />
+            <ellipse
+              cx="195"
+              cy="215"
+              rx="168"
+              ry="158"
+              fill="#a8cbb7"
+              opacity="0.45"
+            />
             <!-- Main jungle teal blob -->
-            <ellipse cx="215" cy="195" rx="118" ry="128" fill="#4f8a6f" opacity="0.9" />
+            <ellipse
+              cx="215"
+              cy="195"
+              rx="118"
+              ry="128"
+              fill="#4f8a6f"
+              opacity="0.9"
+            />
             <!-- Evergreen accent circle top right -->
             <circle cx="298" cy="148" r="48" fill="#002626" />
             <!-- Small sage accent bottom left -->
@@ -48,19 +72,42 @@
           </svg>
         </figure>
       </section>
-
     </header>
 
-      <main id="main-content">
-        <!-- Remaining landing page sections -->
-      </main>
+    <main id="main-content">
+      <!-- Remaining landing page sections -->
 
+      <!--Contributions Section-->
+      <section class="container section-header">
+        <h2>The Team</h2>
+        <p class="content-centered section-header">
+          Meet the people behind Bloom After. Tap a profile to learn more about
+          their work on the project.
+          <div class="container member-list items-center" id="contributions-container"></div>
+        </p>
+      </section>
+
+      <section class="container section-header ngo-section">
+        <h2>Local Support & NGOs</h2>
+        <p>Discover Organizations across Nigeria dedicated to mental health and family wellbeing</p>
+
+        <div class="partner-list flex">
+        <btn class=" btn btn-secondary partner">PostPartum Support Network</btn>
+        <btn class=" btn btn-secondary partner">Mentally Aware Nigeria</btn>
+        <btn class=" btn btn-secondary partner">Neem Foundation</btn>
+        </div>
+        <btn class="btn btn-secondary btn-ngo"> Explore the NGO directory <i class="fa-solid fa-arrow-right"></i></btn>
+      </section>
+    </main>
 
     <script type="module">
-      import { renderNavbar, initNavbar } from '../js/components/navbar.js';
+      import { renderNavbar, initNavbar } from "../js/components/navbar.js";
+      import { renderTeamMembers } from "../js/components/contributions.js";
 
-      document.getElementById('navbar-root').innerHTML = renderNavbar('home');
+      document.getElementById("navbar-root").innerHTML = renderNavbar("home");
       initNavbar();
+      renderTeamMembers();
     </script>
+    <script src="https://kit.fontawesome.com/68a29caca4.js" crossorigin="anonymous"></script>
   </body>
 </html>
