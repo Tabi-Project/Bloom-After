@@ -1,0 +1,25 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "bloom after project",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tabi-Project/Bloom-After.git"
+  },
+  "author": "sophia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tabi-Project/Bloom-After/issues"
+  },
+  "homepage": "https://github.com/Tabi-Project/Bloom-After#readme",
+  "dependencies": {
+    "cloudinary": "^2.9.0",
+    "express": "^5.2.1"
+  }
+}
