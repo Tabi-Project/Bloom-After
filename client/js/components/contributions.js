@@ -53,46 +53,26 @@ const teamMembers = [
   },
   {
     id: 6,
-    name: "Tunde Adebayo",
-    role: "Backend Developer",
-    img: "../assets/teamImages/Grace Portrait.png",
-    contribution:
-      "Developed the server-side logic and integrated the database for efficient data management.",
-    github: "https://github.com/tundeadebayo",
-    linkedin: "https://www.linkedin.com/in/tundeadebayo",
-  },
-  {
-    id: 5,
-    name: "Zainab Bello",
-    role: "UI/UX Designer",
+    name: "Esther Adejola ",
+    role: "People Manager",
     img: "../assets/teamImages/Esther-Portrait.png",
     contribution:
-      "Designed the user interface and created a seamless user experience for the application.",
+      "Managed team dynamics, facilitated communication, and ensured a positive work environment.",
     github: "https://github.com/zainabbello",
     linkedin: "https://www.linkedin.com/in/zainabbello",
   },
   {
-    id: 6,
-    name: "Emeka Nwosu",
-    role: "Project Manager",
-    img: "../assets/teamImages/Prisca-Portrait.png",
-    contribution:
-      "Coordinated the project, managed timelines, and ensured effective communication among team members.",
-    github: "https://github.com/emekanwosu",
-    linkedin: "https://www.linkedin.com/in/emekanwosu",
-  },
-  {
-    id: 9,
-    name: "Esther Adejola",
+    id: 7,
+    name: "Christine Mwangi ",
     role: "Frontend Engineer",
-    img: "../assets/teamImages/Esther-Portrait.png",
+    img: "../assets/teamImages/Christine-Potrait.jpeg",
     contribution:
-      "Implemented the frontend components and ensured a smooth user experience across different browsers and devices.",
-    github: "https://github.com/kunleiro",
-    linkedin: "https://www.linkedin.com/in/kunleiro",
+      "Worked on Footer and contributed to the development of the frontend components and user interface.",
+    github: "https://github.com/zainabbello",
+    linkedin: "https://www.linkedin.com/in/zainabbello",
   },
   {
-    id: 10,
+    id: 8,
     name: "Amarachi Uvere",
     role: "Backend Engineer",
     img: "../assets/teamImages/amarachiprofilepicture.png",
@@ -101,36 +81,7 @@ const teamMembers = [
     github: "https://github.com/bisialade",
     linkedin: "https://www.linkedin.com/in/bisialade",
   },
-  {
-    id: 11,
-    name: "Ifeanyi Okon",
-    role: "Security Specialist",
-    img: "../assets/teamImages/Genevieve-Potrait.png",
-    contribution:
-      "Implemented security measures to protect user data and ensure the application's integrity.",
-    github: "https://github.com/ifeanyiokon",
-    linkedin: "https://www.linkedin.com/in/ifeanyiokon",
-  },
-  {
-    id: 12,
-    name: "Grace Olabode",
-    img: "../assets/teamImages/Grace Portrait.png",
-    role: "Engineering Lead",
-    contribution:
-      "Led the development of the application's architecture and implemented key features to ensure a robust and scalable solution.",
-    github: "https://github.com/adaezeokafor",
-    linkedin: "https://www.linkedin.com/in/adaezeokafor",
-  },
-  {
-    id: 13,
-    name: "Grace Olabode",
-    img: "../assets/teamImages/Grace Portrait.png",
-    role: "Engineering Lead",
-    contribution:
-      "Led the development of the application's architecture and implemented key features to ensure a robust and scalable solution.",
-    github: "https://github.com/adaezeokafor",
-    linkedin: "https://www.linkedin.com/in/adaezeokafor",
-  }
+  
 ];
 
 function renderTeamMembers() {
