@@ -1,6 +1,18 @@
 const teamMembers = [
+  
   {
     id: 1,
+    name: "Nanji Lakan",
+    img: "../assets/teamImages/Nanji-Portrait.jpg",
+    role: "Project/Product Lead",
+    contribution:
+      "Manage Project Priorities, Documentation and Direction",
+    github: "https://github.com/Shaelle11",
+    linkedin: "https://www.linkedin.com/in/nanji-lakan-theshaelle",
+  }, 
+
+  {
+    id: 2,
     name: "Grace Olabode",
     img: "../assets/teamImages/Grace Portrait.png",
     role: "Engineering Lead",
@@ -9,38 +21,8 @@ const teamMembers = [
     github: "https://github.com/adaezeokafor",
     linkedin: "https://www.linkedin.com/in/adaezeokafor",
   },
-  {
-    id: 2,
-    name: "Tunde Adebayo",
-    role: "Backend Developer",
-    img: "../assets/teamImages/Grace Portrait.png",
-    contribution:
-      "Developed the server-side logic and integrated the database for efficient data management.",
-    github: "https://github.com/tundeadebayo",
-    linkedin: "https://www.linkedin.com/in/tundeadebayo",
-  },
-  {
+   {
     id: 3,
-    name: "Zainab Bello",
-    role: "UI/UX Designer",
-    img: "../assets/teamImages/Esther-Portrait.png",
-    contribution:
-      "Designed the user interface and created a seamless user experience for the application.",
-    github: "https://github.com/zainabbello",
-    linkedin: "https://www.linkedin.com/in/zainabbello",
-  },
-  {
-    id: 4,
-    name: "Emeka Nwosu",
-    role: "Project Manager",
-    img: "../assets/teamImages/Prisca-Portrait.png",
-    contribution:
-      "Coordinated the project, managed timelines, and ensured effective communication among team members.",
-    github: "https://github.com/emekanwosu",
-    linkedin: "https://www.linkedin.com/in/emekanwosu",
-  },
-  {
-    id: 5,
     name: "Prisca Onyemaechi",
     role: "Lead Maintainer",
     img: "../assets/teamImages/Prisca-Portrait.png",
@@ -49,8 +31,8 @@ const teamMembers = [
     github: "https://github.com/chiomaeze",
     linkedin: "https://www.linkedin.com/in/chiomaeze",
   },
-  {
-    id: 6,
+    {
+    id: 4,
     name: "Genevieve Agugua",
     role: "Design Lead",
     img: "../assets/teamImages/Genevieve-Potrait.png",
@@ -60,17 +42,48 @@ const teamMembers = [
     linkedin: "https://www.linkedin.com/in/seyiadetola",
   },
   {
-    id: 7,
+    id: 5,
     name: "Chijioke Uzodinma",
-    role: "Content Creator",
+    role: "Vackend Lead",
     img: "../assets/teamImages/Chijioke-Potrait.png",
     contribution:
-      "Created engaging content for the application and managed social media presence.",
+      "Developed the server-side logic and integrated the database for efficient data management.",
     github: "https://github.com/halimayusuf",
     linkedin: "https://www.linkedin.com/in/halimayusuf",
   },
   {
-    id: 8,
+    id: 6,
+    name: "Tunde Adebayo",
+    role: "Backend Developer",
+    img: "../assets/teamImages/Grace Portrait.png",
+    contribution:
+      "Developed the server-side logic and integrated the database for efficient data management.",
+    github: "https://github.com/tundeadebayo",
+    linkedin: "https://www.linkedin.com/in/tundeadebayo",
+  },
+  {
+    id: 5,
+    name: "Zainab Bello",
+    role: "UI/UX Designer",
+    img: "../assets/teamImages/Esther-Portrait.png",
+    contribution:
+      "Designed the user interface and created a seamless user experience for the application.",
+    github: "https://github.com/zainabbello",
+    linkedin: "https://www.linkedin.com/in/zainabbello",
+  },
+  {
+    id: 6,
+    name: "Emeka Nwosu",
+    role: "Project Manager",
+    img: "../assets/teamImages/Prisca-Portrait.png",
+    contribution:
+      "Coordinated the project, managed timelines, and ensured effective communication among team members.",
+    github: "https://github.com/emekanwosu",
+    linkedin: "https://www.linkedin.com/in/emekanwosu",
+  },
+ 
+  {
+    id: 9,
     name: "Esther Adejola",
     role: "Frontend Engineer",
     img: "../assets/teamImages/Esther-Portrait.png",
@@ -80,7 +93,7 @@ const teamMembers = [
     linkedin: "https://www.linkedin.com/in/kunleiro",
   },
   {
-    id: 9,
+    id: 10,
     name: "Amarachi Uvere",
     role: "Backend Engineer",
     img: "../assets/teamImages/amarachiprofilepicture.png",
@@ -90,7 +103,7 @@ const teamMembers = [
     linkedin: "https://www.linkedin.com/in/bisialade",
   },
   {
-    id: 10,
+    id: 11,
     name: "Ifeanyi Okon",
     role: "Security Specialist",
     img: "../assets/teamImages/Genevieve-Potrait.png",
@@ -99,6 +112,26 @@ const teamMembers = [
     github: "https://github.com/ifeanyiokon",
     linkedin: "https://www.linkedin.com/in/ifeanyiokon",
   },
+  {
+    id: 12,
+    name: "Grace Olabode",
+    img: "../assets/teamImages/Grace Portrait.png",
+    role: "Engineering Lead",
+    contribution:
+      "Led the development of the application's architecture and implemented key features to ensure a robust and scalable solution.",
+    github: "https://github.com/adaezeokafor",
+    linkedin: "https://www.linkedin.com/in/adaezeokafor",
+  },
+  {
+    id: 13,
+    name: "Grace Olabode",
+    img: "../assets/teamImages/Grace Portrait.png",
+    role: "Engineering Lead",
+    contribution:
+      "Led the development of the application's architecture and implemented key features to ensure a robust and scalable solution.",
+    github: "https://github.com/adaezeokafor",
+    linkedin: "https://www.linkedin.com/in/adaezeokafor",
+  }
 ];
 
 function renderTeamMembers() {
