@@ -374,7 +374,7 @@
 }
 
 .features-card {
-  background: var(--color-white);
+  background: var(--color-gray-50);
   padding: var(--space-8);
   border-radius: var(--radius-md);
   display: flex;
@@ -384,7 +384,7 @@
 }
 
 .features-card-icon {
-  background: var(--color-brand-50);
+  background: var(--color-brand-100);
   color: var(--color-brand-400);
   width: 44px;
   height: 44px;
@@ -392,7 +392,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
 }
 
 .features-card-heading {
@@ -410,9 +410,8 @@
 }
 
 .features-link {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display:flex;
+  align-items: center;
   gap: var(--space-1);
   color: var(--color-brand-400);
   font-size: var(--font-size-sm);
@@ -423,10 +422,11 @@
 
 .features-link-icon {
   transition: transform 0.2s ease;
+  align-self: center;
 }
 
 .features-link:hover .features-link-icon {
-  transform: translateY(4px);
+  transform: translateX(4px);
 }
 
 .features-trust {
@@ -461,7 +461,7 @@
 
 .trust-desc {
   font-size: var(--font-size-base);
-  font-weight: 600;
+  font-weight: 500;
   max-width: 25ch;
   line-height: 1.4;
 }
@@ -767,6 +767,8 @@
 .ngo-section p {
   font-size: var(--font-size-xs);
   margin-bottom: var(--space-3);
+}
+
 /* Footer */
 .main-footer {
   background-color: var(--color-brand-950);
