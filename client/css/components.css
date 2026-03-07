@@ -374,7 +374,7 @@
 }
 
 .features-card {
-  background: var(--color-white);
+  background: var(--color-gray-50);
   padding: var(--space-8);
   border-radius: var(--radius-md);
   display: flex;
@@ -384,7 +384,7 @@
 }
 
 .features-card-icon {
-  background: var(--color-brand-50);
+  background: var(--color-brand-100);
   color: var(--color-brand-400);
   width: 44px;
   height: 44px;
@@ -392,7 +392,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
 }
 
 .features-card-heading {
@@ -410,9 +410,8 @@
 }
 
 .features-link {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display:flex;
+  align-items: center;
   gap: var(--space-1);
   color: var(--color-brand-400);
   font-size: var(--font-size-sm);
@@ -423,10 +422,11 @@
 
 .features-link-icon {
   transition: transform 0.2s ease;
+  align-self: center;
 }
 
 .features-link:hover .features-link-icon {
-  transform: translateY(4px);
+  transform: translateX(4px);
 }
 
 .features-trust {
@@ -461,7 +461,7 @@
 
 .trust-desc {
   font-size: var(--font-size-base);
-  font-weight: 600;
+  font-weight: 500;
   max-width: 25ch;
   line-height: 1.4;
 }
@@ -691,6 +691,7 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: var(--space-6);
+  overflow: visible;
 }
 .member-list p {
   font-size: var(--font-size-sm);
@@ -703,20 +704,19 @@
 .member-info {
   display: none;
   position: absolute;
-  bottom: calc(100% + 10px);
+  top: calc(100% + var(--space-2));
   left: 50%;
   transform: translateX(-50%);
-  width: 200px;
-
+  width: 280px;
   background-color: var(--color-brand-400);
   border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  z-index: 10;
+  padding: var(--space-3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  z-index: 1200;
   color: var(--color-white);
-  opacity: 0.7;
-  transition: opacity 0.5s ease;
+  text-align: left;
 }
+.member-info.open { display: block; }
 .member-info p {
   color: var(--color-white);
 }
@@ -724,15 +724,14 @@
 .member-info::after {
   content: "";
   position: absolute;
-  top: 100%;
+  top: -6px;
   left: 50%;
   transform: translateX(-50%);
-  border: var(--space-2) solid transparent;
-  border-top-color: var(--color-brand-400);
-}
-.team-member:hover .member-info {
-  display: block;
-  opacity: 0.9;
+  width: 12px;
+  height: 12px;
+  background: var(--color-brand-400);
+  transform: translateX(-50%) rotate(45deg);
+  z-index: -1;
 }
 
 .team-member-photo {
@@ -744,12 +743,27 @@
   padding: var(--space-3);
   cursor: pointer;
 }
+
+.team-member-image-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+@media (max-width: 992px) {
+  .member-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .member-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
+  .member-info { position: static; width: 100%; transform: none; }
 }
 
 /*NGOs Section*/
@@ -768,17 +782,18 @@
 .ngo-section p {
   font-size: var(--font-size-xs);
   margin-bottom: var(--space-3);
+}
+
 /* Footer */
 .main-footer {
-    background-color: var(--footer-bg);
-    color: var(--text-off-white);
-    padding: 60px 80px 30px 80px;
-    font-size: 0.9rem;
+  background-color: var(--color-brand-950);
+  padding: var(--footer-padding);
+  font-size: 0.9rem;
 }
 
 /* Emergency Banner */
 .emergency-banner {
-    background-color: var(--banner-bg);
+  background-color: var(  --color-brand-900);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 30px;
@@ -788,6 +803,7 @@
 .emergency-banner h3 {
     margin-bottom: 20px;
     font-size: 1.4rem;
+    color: var( --color-gray-50);
 }
 
 .contact-links {
@@ -804,22 +820,25 @@
 }
 
 .contact-item .icon {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--color-brand-400);
     padding: 10px;
     border-radius: 50%;
+    color: var(--color-gray-50);
 }
 
 .contact-item .label {
     font-size: 0.75rem;
-    color: var(--text-muted);
+    color: var(--color-gray-500);
 }
 
 .contact-item .phone {
-    font-weight: bold;
+  font-weight: 500;
     font-size: 1.1rem;
+    color: var(--color-gray-50);
 }
 
 /* Main Content Grid */
+
 .footer-content {
     display: grid;
     grid-template-columns: 1.5fr 3fr;
@@ -830,17 +849,19 @@
 .footer-brand h2 {
     font-size: 1.8rem;
     margin-bottom: 20px;
+    color: var(--color-gray-50);
 }
 
 .footer-brand p {
     line-height: 1.6;
     margin-bottom: 15px;
     max-width: 300px;
+        color: var(--color-gray-500);
 }
 
 .footer-brand .partnership {
     font-size: 0.8rem;
-    color: var(--text-muted);
+      color: var(--color-gray-500);
 }
 
 .footer-links-grid {
@@ -850,10 +871,11 @@
 }
 
 .footer-column h4 {
-    color: var(--text-muted);
+      color: var(--color-brand-400);
     font-size: 0.75rem;
     letter-spacing: 1px;
     margin-bottom: 20px;
+    font-weight: 900;
 }
 
 .footer-column ul {
@@ -865,7 +887,7 @@
 }
 
 .footer-column ul li a {
-    color: var(--text-off-white);
+      color: var(--color-gray-500);
     text-decoration: none;
     transition: color 0.3s;
 }
@@ -878,6 +900,7 @@
 .footer-bottom {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 30px;
+    color: var(--color-gray-500);
 }
 
 .disclaimer {
@@ -892,13 +915,16 @@
     justify-content: space-between;
     align-items: center;
     font-size: 0.8rem;
+    color: var(--color-gray-900);
+    
 }
 
 .crisis-badge {
-    background-color: var(--banner-bg);
+    background-color: var(--color-brand-900);
+    color: var(--color-gray-50);
     padding: 8px 15px;
     border-radius: 4px;
-    font-weight: bold;
+    font-weight: 500;
     border: 1px solid var(--accent-mint);
 }
 
@@ -908,7 +934,6 @@
     .contact-links { flex-direction: column; gap: 20px; }
     .footer-content { grid-template-columns: 1fr; gap: 40px; }
     .footer-links-grid { grid-template-columns: 1fr 1fr; }
-}
 
   .voices-card-list {
     grid-template-columns: 1fr;
