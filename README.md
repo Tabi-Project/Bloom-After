@@ -37,6 +37,16 @@ The platform is designed to be mobile-first and accessible on low-end Android de
 
 ---
 
+## Important Links
+
+- **Live Site:** [Bloom After](https://the-bloom-after.netlify.app/)
+- **Contribution Guidelines:** [View Document](https://docs.google.com/document/d/1R9hX7qCAkG74NZYodpto4FgRB0dEhsgsqK5hv-kHwKg/edit?usp=drive_link)
+- **Team Members' Articles:** [View Document](https://docs.google.com/document/d/14iJZ-iyf5wIm2u7zc0hasp7aiVDBjOdZ/edit?usp=drive_link&ouid=110794638747214718388&rtpof=true&sd=true)
+- **Design Documentation:** [View Document](https://docs.google.com/document/d/1deaFgJFJI_zZz3UXreUOLGGY7J-mTIt7/edit?usp=drive_link&ouid=110794638747214718388&rtpof=true&sd=true)
+- **Technical Requirements Document (TRD):** [View Document](https://docs.google.com/document/d/1--xeDsOoyEhdnOGzZkKjKSW462ESHBWs/edit?usp=drive_link&ouid=110794638747214718388&rtpof=true&sd=true)
+
+---
+
 ## System Architecture
 
 Bloom After follows a layered architecture.
