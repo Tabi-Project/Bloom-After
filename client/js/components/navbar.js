@@ -39,7 +39,7 @@ function renderNavbar(activePage = '') {
           </nav>
         </span>
 
-        <a href="/contributors.html" class="navbar-link ${activePage === 'contributors' ? 'active' : ''}">
+        <a href="index.html#team" class="navbar-link ${activePage === 'contributors' ? 'active' : ''}">
           The Team
         </a>
 
@@ -74,7 +74,7 @@ function renderNavbar(activePage = '') {
       <a href="/media.html" class="mobile-menu-link">Podcasts & Media</a>
 
       <span class="mobile-menu-group-label">The Team</span>
-      <a href="/contributors.html" class="mobile-menu-link">Contributors</a>
+      <a href="index.html#team" class="mobile-menu-link">Contributors</a>
 
       <aside class="mobile-menu-crisis" aria-label="Crisis support">
         <p>If you are in crisis:</p>
