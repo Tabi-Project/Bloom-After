@@ -676,15 +676,14 @@
 
 /* Footer */
 .main-footer {
-    background-color: var(--footer-bg);
-    color: var(--text-off-white);
-    padding: 60px 80px 30px 80px;
-    font-size: 0.9rem;
+  background-color: var(--color-brand-950);
+  padding: var(--footer-padding);
+  font-size: 0.9rem;
 }
 
 /* Emergency Banner */
 .emergency-banner {
-    background-color: var(--banner-bg);
+  background-color: var(  --color-brand-900);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 30px;
@@ -694,6 +693,7 @@
 .emergency-banner h3 {
     margin-bottom: 20px;
     font-size: 1.4rem;
+    color: var( --color-gray-50);
 }
 
 .contact-links {
@@ -710,22 +710,25 @@
 }
 
 .contact-item .icon {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--color-brand-400);
     padding: 10px;
     border-radius: 50%;
+    color: var(--color-gray-50);
 }
 
 .contact-item .label {
     font-size: 0.75rem;
-    color: var(--text-muted);
+    color: var(--color-gray-500);
 }
 
 .contact-item .phone {
-    font-weight: bold;
+  font-weight: 500;
     font-size: 1.1rem;
+    color: var(--color-gray-50);
 }
 
 /* Main Content Grid */
+
 .footer-content {
     display: grid;
     grid-template-columns: 1.5fr 3fr;
@@ -736,17 +739,19 @@
 .footer-brand h2 {
     font-size: 1.8rem;
     margin-bottom: 20px;
+    color: var(--color-gray-50);
 }
 
 .footer-brand p {
     line-height: 1.6;
     margin-bottom: 15px;
     max-width: 300px;
+        color: var(--color-gray-500);
 }
 
 .footer-brand .partnership {
     font-size: 0.8rem;
-    color: var(--text-muted);
+      color: var(--color-gray-500);
 }
 
 .footer-links-grid {
@@ -756,10 +761,11 @@
 }
 
 .footer-column h4 {
-    color: var(--text-muted);
+      color: var(--color-brand-400);
     font-size: 0.75rem;
     letter-spacing: 1px;
     margin-bottom: 20px;
+    font-weight: 900;
 }
 
 .footer-column ul {
@@ -771,7 +777,7 @@
 }
 
 .footer-column ul li a {
-    color: var(--text-off-white);
+      color: var(--color-gray-500);
     text-decoration: none;
     transition: color 0.3s;
 }
@@ -784,6 +790,7 @@
 .footer-bottom {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 30px;
+    color: var(--color-gray-500);
 }
 
 .disclaimer {
@@ -798,13 +805,16 @@
     justify-content: space-between;
     align-items: center;
     font-size: 0.8rem;
+    color: var(--color-gray-900);
+    
 }
 
 .crisis-badge {
-    background-color: var(--banner-bg);
+    background-color: var(--color-brand-900);
+    color: var(--color-gray-50);
     padding: 8px 15px;
     border-radius: 4px;
-    font-weight: bold;
+    font-weight: 500;
     border: 1px solid var(--accent-mint);
 }
 
@@ -814,7 +824,6 @@
     .contact-links { flex-direction: column; gap: 20px; }
     .footer-content { grid-template-columns: 1fr; gap: 40px; }
     .footer-links-grid { grid-template-columns: 1fr 1fr; }
-}
 
   .voices-card-list {
     grid-template-columns: 1fr;
