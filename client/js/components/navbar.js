@@ -3,7 +3,7 @@ function renderNavbar(activePage = '') {
     <nav class="navbar" aria-label="Main navigation">
 
       <a href="/index.html" class="navbar-logo" aria-label="Bloom After home">
-        <img src="../assets/logo/Bloom After Primary without bg.png" alt="Bloom After logo" />
+        <img src="../assets/logo/BLOOM LIGHT primary.png" alt="Bloom After logo" />
       </a>
 
       <nav class="navbar-links" aria-label="Desktop navigation">
