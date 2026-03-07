@@ -21,7 +21,7 @@ const teamMembers = [
     github: "https://github.com/adaezeokafor",
     linkedin: "https://www.linkedin.com/in/adaezeokafor",
   },
-   {
+  {
     id: 3,
     name: "Prisca Onyemaechi",
     role: "Lead Maintainer",
@@ -44,7 +44,7 @@ const teamMembers = [
   {
     id: 5,
     name: "Chijioke Uzodinma",
-    role: "Vackend Lead",
+    role: "Backend Lead",
     img: "../assets/teamImages/Chijioke-Potrait.png",
     contribution:
       "Developed the server-side logic and integrated the database for efficient data management.",
@@ -81,7 +81,6 @@ const teamMembers = [
     github: "https://github.com/emekanwosu",
     linkedin: "https://www.linkedin.com/in/emekanwosu",
   },
- 
   {
     id: 9,
     name: "Esther Adejola",
@@ -140,88 +139,69 @@ function renderTeamMembers() {
   container.innerHTML = "";
 
   teamMembers.forEach((member) => {
-    const memberCard = document.createElement("div");
-    memberCard.classList.add("team-member", "flex", "flex-col", "text-center", "items-center");
+    const memberCard = document.createElement("article");
+    memberCard.className = "team-card";
+    memberCard.setAttribute("tabindex", "0"); // Makes it keyboard accessible
+    memberCard.setAttribute("role", "button");
 
-    const imgButton = document.createElement("button");
-    imgButton.type = "button";
-    imgButton.className = "team-member-image-button";
-    imgButton.setAttribute('aria-expanded', 'false');
-    imgButton.setAttribute('aria-controls', `member-${member.id}-info`);
-
-    const img = document.createElement("img");
-    img.src = member.img;
-    img.alt = `${member.name}'s profile picture`;
-    img.className = "team-member-photo";
-    imgButton.appendChild(img);
-    memberCard.appendChild(imgButton);
-
-    const nameEl = document.createElement("h5");
-    nameEl.textContent = member.name;
-    memberCard.appendChild(nameEl);
-
-    const details = document.createElement("div");
-    details.id = `member-${member.id}-info`;
-    details.className = "member-info";
-    details.setAttribute('role', 'region');
-    details.setAttribute('aria-hidden', 'true');
-    details.innerHTML = `
-      <p><strong>Role:</strong> ${member.role}</p>
-      <p><strong>Contribution:</strong> ${member.contribution}</p>
-      <div class="member-links">
-        ${member.github ? `<a href="${member.github}" target="_blank" rel="noopener noreferrer" aria-label="${member.name} GitHub"><i class="fa-brands fa-github"></i></a>` : ''}
-        ${member.linkedin ? `<a href="${member.linkedin}" target="_blank" rel="noopener noreferrer" aria-label="${member.name} LinkedIn"><i class="fa-brands fa-linkedin"></i></a>` : ''}
+    memberCard.innerHTML = `
+      <img src="${member.img}" alt="${member.name}" class="team-member-photo" loading="lazy" />
+      <h5 class="team-member-name">${member.name}</h5>
+      <p class="team-member-role">${member.role}</p>
+      <div class="team-card-affordance">
+        View Profile <i class="fa-solid fa-arrow-right"></i>
       </div>
     `;
-    memberCard.appendChild(details);
 
-    imgButton.addEventListener("click", () => {
-      const isOpen = details.classList.contains("open");
-      container.querySelectorAll('.member-info.open').forEach((el) => {
-        if (el !== details) {
-          el.classList.remove('open');
-          el.setAttribute('aria-hidden', 'true');
-        }
-      });
-      if (isOpen) {
-        details.classList.remove("open");
-        details.setAttribute('aria-hidden', 'true');
-        imgButton.setAttribute('aria-expanded', 'false');
-      } else {
-        details.classList.add("open");
-        details.setAttribute('aria-hidden', 'false');
-        imgButton.setAttribute('aria-expanded', 'true');
-        details.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Open modal on click or Enter key
+    const triggerModal = () => showModal(member);
+    memberCard.addEventListener("click", triggerModal);
+    memberCard.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        triggerModal();
       }
     });
 
     container.appendChild(memberCard);
   });
+}
 
-  // Add a single click-outside and Escape handler to close open detail panels
-  if (!container.dataset.clickOutsideAdded) {
-    document.addEventListener('click', (evt) => {
-      if (!evt.target.closest('.team-member')) {
-        container.querySelectorAll('.member-info.open').forEach((el) => {
-          el.classList.remove('open');
-          el.setAttribute('aria-hidden', 'true');
-        });
-        container.querySelectorAll('.team-member-image-button[aria-expanded="true"]').forEach(btn => btn.setAttribute('aria-expanded','false'));
-      }
-    });
+function showModal(member) {
+  const modal = document.getElementById("team-modal");
+  const modalBody = document.getElementById("modal-body");
+  if (!modal || !modalBody) return;
 
-    document.addEventListener('keydown', (evt) => {
-      if (evt.key === 'Escape') {
-        container.querySelectorAll('.member-info.open').forEach((el) => {
-          el.classList.remove('open');
-          el.setAttribute('aria-hidden', 'true');
-        });
-        container.querySelectorAll('.team-member-image-button[aria-expanded="true"]').forEach(btn => btn.setAttribute('aria-expanded','false'));
-      }
-    });
+  const contributionText = member.contribution || "Specific contribution details coming soon.";
 
-    container.dataset.clickOutsideAdded = 'true';
-  }
+  // Populate the modal with the clicked member's data
+  modalBody.innerHTML = `
+    <div class="flex flex-col items-center text-center">
+      <img src="${member.img}" alt="${member.name}" class="team-member-photo" style="width: 120px; height: 120px;" />
+      <h3 class="team-member-name" id="modal-name" style="font-size: var(--font-size-2xl); margin-bottom: var(--space-1);">${member.name}</h3>
+      <p class="team-member-role" style="font-size: var(--font-size-base); color: var(--color-primary); margin-bottom: var(--space-4);">${member.role}</p>
+      <p class="team-member-contribution" style="text-align: left; line-height: 1.6; color: var(--color-gray-700); margin-bottom: var(--space-6);">${contributionText}</p>
+      
+      <div class="team-socials justify-center" style="display: flex; gap: var(--space-6); font-size: var(--font-size-xl);">
+        ${member.github ? `<a href="${member.github}" target="_blank" rel="noopener noreferrer" aria-label="GitHub" style="color: var(--color-brand-400);"><i class="fa-brands fa-github"></i></a>` : ''}
+        ${member.linkedin ? `<a href="${member.linkedin}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style="color: var(--color-brand-400);"><i class="fa-brands fa-linkedin"></i></a>` : ''}
+      </div>
+    </div>
+  `;
+
+  // Show the modal
+  modal.classList.add("active");
+  modal.setAttribute("aria-hidden", "false");
+  
+  // Handle closing
+  const closeModal = () => {
+    modal.classList.remove("active");
+    modal.setAttribute("aria-hidden", "true");
+  };
+
+  modal.querySelector(".modal-close").onclick = closeModal;
+  modal.onclick = (e) => { if (e.target === modal) closeModal(); }; // Close if clicking the dark overlay
+  document.onkeydown = (e) => { if (e.key === "Escape") closeModal(); }; // Close on Esc key
 }
 
 export { teamMembers, renderTeamMembers };
