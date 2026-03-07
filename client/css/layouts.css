@@ -88,6 +88,15 @@ section:not(.hero) {
   margin-inline: auto;
 }
 
+.text-inverse {
+  color: var(--color-white) !important;
+}
+
+.text-inverse-muted {
+  color: var(--color-brand-100);
+  opacity: 0.9;
+}
+
 /* Full width strip */
 .strip {
   width: 100%;
