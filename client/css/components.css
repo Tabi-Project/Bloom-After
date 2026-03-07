@@ -690,6 +690,7 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: var(--space-6);
+  overflow: visible;
 }
 .member-list p {
   font-size: var(--font-size-sm);
@@ -701,19 +702,35 @@
 
 .member-info {
   display: none;
-  margin-top: var(--space-3);
-  width: 260px;
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
   background-color: var(--color-brand-400);
   border-radius: 8px;
   padding: var(--space-3);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  z-index: 10;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  z-index: 1200;
   color: var(--color-white);
   text-align: left;
 }
 .member-info.open { display: block; }
 .member-info p {
   color: var(--color-white);
+}
+
+.member-info::after {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: var(--color-brand-400);
+  transform: translateX(-50%) rotate(45deg);
+  z-index: -1;
 }
 
 .team-member-photo {
@@ -733,13 +750,19 @@
   cursor: pointer;
 }
 
+@media (max-width: 992px) {
+  .member-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .member-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
-  .member-info { width: 100%; }
+  .member-info { position: static; width: 100%; transform: none; }
 }
 
 /*NGOs Section*/

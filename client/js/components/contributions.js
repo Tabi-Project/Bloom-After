@@ -164,6 +164,31 @@ function renderTeamMembers() {
 
     container.appendChild(memberCard);
   });
+
+  // Add a single click-outside and Escape handler to close open detail panels
+  if (!container.dataset.clickOutsideAdded) {
+    document.addEventListener('click', (evt) => {
+      if (!evt.target.closest('.team-member')) {
+        container.querySelectorAll('.member-info.open').forEach((el) => {
+          el.classList.remove('open');
+          el.setAttribute('aria-hidden', 'true');
+        });
+        container.querySelectorAll('.team-member-image-button[aria-expanded="true"]').forEach(btn => btn.setAttribute('aria-expanded','false'));
+      }
+    });
+
+    document.addEventListener('keydown', (evt) => {
+      if (evt.key === 'Escape') {
+        container.querySelectorAll('.member-info.open').forEach((el) => {
+          el.classList.remove('open');
+          el.setAttribute('aria-hidden', 'true');
+        });
+        container.querySelectorAll('.team-member-image-button[aria-expanded="true"]').forEach(btn => btn.setAttribute('aria-expanded','false'));
+      }
+    });
+
+    container.dataset.clickOutsideAdded = 'true';
+  }
 }
 
 export { teamMembers, renderTeamMembers };
