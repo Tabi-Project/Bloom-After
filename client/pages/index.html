@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -76,6 +76,79 @@
     </header>
 
     <main id="main-content">
+      <!-- Remaining landing page sections -->
+      
+        <section class="voices-section" id="voices-section" aria-labelledby="voices-heading">
+          <section class="container voices-container" aria-labelledby="voices-heading">
+            <header class="voices-header">
+              <h2 class="voices-heading" id="voices-heading">Voices that understand.</h2>
+              <p class="voices-subheading">Listen to experts and mothers discussing real experiences.</p>
+            </header>
+
+            <section class="voices-card-list" id="voices-card-list" aria-labelledby="voices-media-heading">
+              <h3 class="visually-hidden" id="voices-media-heading">Featured podcasts and videos</h3>
+              <article class="voices-card" aria-labelledby="voices-card-title-1">
+                <p class="voices-meta" aria-label="Episode source and language">
+                  <span class="voices-meta-pill">Spotify</span>
+                  <span class="voices-meta-pill">English</span>
+                </p>
+
+                <h4 class="voices-card-title" id="voices-card-title-1">Navigating the Fourth Trimester</h4>
+
+                <a class="voices-card-link" href="/media.html" aria-label="Listen now: Navigating the Fourth Trimester">
+                  <span class="voices-card-link-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+                      <path d="M10 8.8L16 12L10 15.2V8.8Z" fill="currentColor"></path>
+                    </svg>
+                  </span>
+                  <span>Listen now</span>
+                </a>
+              </article>
+
+              <article class="voices-card" aria-labelledby="voices-card-title-2">
+                <p class="voices-meta" aria-label="Episode source and language">
+                  <span class="voices-meta-pill">Apple Podcasts</span>
+                  <span class="voices-meta-pill">Pidgin</span>
+                </p>
+
+                <h4 class="voices-card-title" id="voices-card-title-2">Motherhood Unfiltered: Lagos Edition</h4>
+
+                <a class="voices-card-link" href="/media.html" aria-label="Listen now: Motherhood Unfiltered: Lagos Edition">
+                  <span class="voices-card-link-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+                      <path d="M10 8.8L16 12L10 15.2V8.8Z" fill="currentColor"></path>
+                    </svg>
+                  </span>
+                  <span>Listen now</span>
+                </a>
+              </article>
+
+              <article class="voices-card" aria-labelledby="voices-card-title-3">
+                <p class="voices-meta" aria-label="Episode source and language">
+                  <span class="voices-meta-pill">YouTube</span>
+                  <span class="voices-meta-pill">English</span>
+                </p>
+
+                <h4 class="voices-card-title" id="voices-card-title-3">Recognizing PPD with Dr. Adeyemi</h4>
+
+                <a class="voices-card-link" href="/media.html" aria-label="Watch video: Recognizing PPD with Dr. Adeyemi">
+                  <span class="voices-card-link-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+                      <path d="M10 8.8L16 12L10 15.2V8.8Z" fill="currentColor"></path>
+                    </svg>
+                  </span>
+                  <span>Watch video</span>
+                </a>
+              </article>
+            </section>
+
+            <section class="voices-cta-wrap" aria-label="Media section actions">
+              <a class="voices-cta" id="voices-cta" href="/media.html">
+                <span>Browse podcasts and media</span>
+                <span aria-hidden="true">&rarr;</span>
       <section class="features-section">
         <div class="container">
           <h2 class="features-heading">Support that meets you where you are</h2>
@@ -258,14 +331,42 @@
             </figure>
           </section>
         </section>
+      
+
+      <!--Contributions Section-->
+      <section class="container section-header">
+        <h2>The Team</h2>
+        <p class="content-centered section-header">
+          Meet the people behind Bloom After. Tap a profile to learn more about
+          their work on the project.
+          <div class="container member-list items-center" id="contributions-container"></div>
+        </p>
+      </section>
+
+      <section class="container section-header ngo-section">
+        <h2>Local Support & NGOs</h2>
+        <p>Discover Organizations across Nigeria dedicated to mental health and family wellbeing</p>
       </section>
     </main>
 
     <div id="footer-root"></div>
 
+        <div class="partner-list flex">
+        <btn class=" btn btn-secondary partner">PostPartum Support Network</btn>
+        <btn class=" btn btn-secondary partner">Mentally Aware Nigeria</btn>
+        <btn class=" btn btn-secondary partner">Neem Foundation</btn>
+        </div>
+        <btn class="btn btn-secondary btn-ngo"> Explore the NGO directory <i class="fa-solid fa-arrow-right"></i></btn>
+      </section>
+    </main>
 
     <script type="module">
       import { renderNavbar, initNavbar } from "../js/components/navbar.js";
+      import { renderTeamMembers } from "../js/components/contributions.js";
+
+      document.getElementById("navbar-root").innerHTML = renderNavbar("home");
+      initNavbar();
+      renderTeamMembers();
       import {
         renderFeaturesCards,
         renderTrustBanner,
@@ -282,5 +383,6 @@
 
       document.getElementById("footer-root").innerHTML = renderFooter();
     </script>
+    <script src="https://kit.fontawesome.com/68a29caca4.js" crossorigin="anonymous"></script>
   </body>
 </html>
