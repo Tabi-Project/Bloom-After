@@ -103,26 +103,64 @@ const teamMembers = [
 
 function renderTeamMembers() {
   const container = document.getElementById("contributions-container");
+  if (!container) return;
+  container.innerHTML = "";
 
   teamMembers.forEach((member) => {
     const memberCard = document.createElement("div");
-    memberCard.classList.add("team-member");
-    memberCard.classList.add("flex");
-    memberCard.classList.add("flex-col");
-    memberCard.classList.add("text-center");
-    memberCard.classList.add("items-center");
-    memberCard.innerHTML = `
-      <img src="${member.img}" alt="${member.name}'s profile picture" class="team-member-photo">
-      <h5>${member.name}</h5>
-      <div class="member-info">
-        <p><strong>Role:</strong> ${member.role}</p>
-        <p><strong>Contribution:</strong> ${member.contribution}</p>
-        <a href="${member.github}" target="_blank" rel="noopener noreferrer">
-        <i class="fa-brands fa-github"></i></a>
-        <a href="${member.linkedin}" target="_blank" rel="noopener noreferrer">
-          <i class="fa-brands fa-linkedin"></i></a>
+    memberCard.classList.add("team-member", "flex", "flex-col", "text-center", "items-center");
+
+    const imgButton = document.createElement("button");
+    imgButton.type = "button";
+    imgButton.className = "team-member-image-button";
+    imgButton.setAttribute('aria-expanded', 'false');
+    imgButton.setAttribute('aria-controls', `member-${member.id}-info`);
+
+    const img = document.createElement("img");
+    img.src = member.img;
+    img.alt = `${member.name}'s profile picture`;
+    img.className = "team-member-photo";
+    imgButton.appendChild(img);
+    memberCard.appendChild(imgButton);
+
+    const nameEl = document.createElement("h5");
+    nameEl.textContent = member.name;
+    memberCard.appendChild(nameEl);
+
+    const details = document.createElement("div");
+    details.id = `member-${member.id}-info`;
+    details.className = "member-info";
+    details.setAttribute('role', 'region');
+    details.setAttribute('aria-hidden', 'true');
+    details.innerHTML = `
+      <p><strong>Role:</strong> ${member.role}</p>
+      <p><strong>Contribution:</strong> ${member.contribution}</p>
+      <div class="member-links">
+        ${member.github ? `<a href="${member.github}" target="_blank" rel="noopener noreferrer" aria-label="${member.name} GitHub"><i class="fa-brands fa-github"></i></a>` : ''}
+        ${member.linkedin ? `<a href="${member.linkedin}" target="_blank" rel="noopener noreferrer" aria-label="${member.name} LinkedIn"><i class="fa-brands fa-linkedin"></i></a>` : ''}
       </div>
     `;
+    memberCard.appendChild(details);
+
+    imgButton.addEventListener("click", () => {
+      const isOpen = details.classList.contains("open");
+      container.querySelectorAll('.member-info.open').forEach((el) => {
+        if (el !== details) {
+          el.classList.remove('open');
+          el.setAttribute('aria-hidden', 'true');
+        }
+      });
+      if (isOpen) {
+        details.classList.remove("open");
+        details.setAttribute('aria-hidden', 'true');
+        imgButton.setAttribute('aria-expanded', 'false');
+      } else {
+        details.classList.add("open");
+        details.setAttribute('aria-hidden', 'false');
+        imgButton.setAttribute('aria-expanded', 'true');
+        details.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
 
     container.appendChild(memberCard);
   });
