@@ -5,17 +5,37 @@ const resourceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    description: {
+    content: {
         type: String,
         required: true
     },
-    category: {
+    summary: {
         type: String,
         required: true
     },
-    imageUrl: {
+    theme: {
         type: String,
         required: true
+    },
+    contentType: {
+        type: String,
+        required: true
+    },
+    language: {
+        type: String,
+        default: 'en'
+    },
+    sourceUrl: {
+        type: String,
+        required: true
+    },
+    reviewedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AdminUser'
+    },
+    published: {
+        type: Boolean,
+        default: false
     },
     createdAt: {
         type: Date,
