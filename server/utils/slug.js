@@ -1,4 +1,4 @@
-export const slugify = (name) => {
+const slugify = (name) => {
     return name
         .toString()
         .toLowerCase()
@@ -7,3 +7,4 @@ export const slugify = (name) => {
         .replace(/[^\w\-]+/g, '') // Remove all non-word chars
         .replace(/\-\-+/g, '-') // Replace multiple - with single -
 }
+module.exports = slugify

@@ -9,7 +9,7 @@ cloudinary.config({
 })
 
 
-export const cloudinaryUploader = async (image) => {
+const cloudinaryUploader = async (image) => {
     try {
         const result = await cloudinary.uploader.upload(image, {
             folder: 'uploads',
@@ -23,3 +23,5 @@ export const cloudinaryUploader = async (image) => {
         throw error
     }
 }
+
+module.exports = cloudinaryUploader
