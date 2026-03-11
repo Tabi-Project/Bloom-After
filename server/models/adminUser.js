@@ -1,32 +1,50 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
-const adminUserSchema = new mongoose.Schema({
+const adminUserSchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
+      trim: true,
     },
     email: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
     },
     password: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
+      minlength: 6,
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
+    isSuperAdmin: {
+      type: Boolean,
+      default: false,
     },
     lastLogin: {
-        type: Date,
-        default: null
-    }
-}, { timestamps: true })
+      type: Date,
+      default: null,
+    },
+  },
+  { timestamps: true },
+);
 
-const AdminUser = mongoose.model('AdminUser', adminUserSchema); 
-module.exports = AdminUser;
+// Hash password before saving
+adminUserSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+// Compare password method
+adminUserSchema.methods.comparePassword = async function (password) {
+  return bcrypt.compare(password, this.password);
+};
+
+const AdminUser = mongoose.model('AdminUser', adminUserSchema);
+
+export default AdminUser;
