@@ -1,5 +1,5 @@
 import { fetchResourceById } from '../data/resources.js';
-import { renderArticle, renderInfographic, renderAudio, renderMythBusting } from '../components/renderers.js';
+import { renderArticle, renderInfographic, renderMedia, renderMythBusting } from '../components/renderers.js';
 import { renderRelatedResources } from '../components/relatedResources.js';
 import { renderCrisisStrip } from '../components/crisisStrip.js';
 import { renderNavbar, initNavbar } from '../components/navbar.js';
@@ -16,7 +16,7 @@ const errorState  = document.getElementById('error-state');
 const TYPE_LABELS = {
   'article':      'Article',
   'infographic':  'Infographic',
-  'audio':        'Audio summary',
+  'media':        'Media',
   'myth-busting': 'Myth-busting guide'
 };
 
@@ -73,8 +73,8 @@ function populateContent(resource) {
     case 'infographic':
       html = renderInfographic(resource);
       break;
-    case 'audio':
-      html = renderAudio(resource);
+    case 'media':
+      html = renderMedia(resource);
       break;
     case 'myth-busting':
       html = renderMythBusting(resource);
