@@ -6,7 +6,7 @@ const featuresData = [
     heading: "Learn",
     desc: "Understand the signs with bite-sized, clinically vetted articles.",
     linkText: "Explore Resources",
-    linkUrl: "/resources.html",
+    linkUrl: "resources.html",
   },
   {
     svg: icons.find,
