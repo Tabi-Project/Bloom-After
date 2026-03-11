@@ -1,6 +1,9 @@
+import api from "./api.js";
+
 const form = document.getElementById("admin-login-form");
 const emailInput = document.getElementById("admin-email");
 const passwordInput = document.getElementById("admin-password");
+const rememberDeviceInput = document.getElementById("remember-device");
 const passwordToggle = document.getElementById("password-toggle");
 const passwordToggleText = document.querySelector(".password-toggle-text");
 const submitButton = document.getElementById("submit-button");
@@ -78,11 +81,6 @@ const setSubmitState = (isLoading) => {
   submitLabel.textContent = isLoading ? "Signing in..." : "Sign in";
 };
 
-const resolveLoginPreview = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-  return true;
-};
-
 passwordToggle.addEventListener("click", () => {
   const revealPassword = passwordInput.type === "password";
   passwordInput.type = revealPassword ? "text" : "password";
@@ -130,6 +128,30 @@ form.addEventListener("submit", async (event) => {
   }
 
   setSubmitState(true);
-  await resolveLoginPreview();
-  setSubmitState(false);
+  try {
+    const payload = {
+      email: emailInput.value.trim(),
+      password: passwordInput.value,
+      rememberDevice: Boolean(rememberDeviceInput?.checked),
+    };
+
+    const response = await api.post("/api/v1/auth/login", payload);
+
+    setStatus(response?.message || "Login successful.", "is-success");
+
+    // Persist user details for quick access in protected client pages.
+    if (response?.user) {
+      sessionStorage.setItem("adminUser", JSON.stringify(response.user));
+    }
+
+    setTimeout(() => {
+      window.location.assign("/client/pages/admin-dashboard.html");
+    }, 800);
+  } catch (error) {
+    const message =
+      error?.message || "Unable to sign in right now. Please try again.";
+    setStatus(message, "is-error");
+  } finally {
+    setSubmitState(false);
+  }
 });

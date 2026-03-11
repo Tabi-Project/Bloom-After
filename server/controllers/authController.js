@@ -5,6 +5,7 @@ import validator from 'validator';
 
 dotenv.config();
 const JWT_KEY = process.env.JWT_KEY;
+const isProduction = process.env.NODE_ENV === 'production';
 
 export const login = async (req, res) => {
   try {
@@ -59,8 +60,8 @@ export const login = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-      //   secure: true, // secure in production
-      sameSite: 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       path: '/',
     });
 
@@ -82,8 +83,8 @@ export const logout = (req, res) => {
   res
     .clearCookie('token', {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       path: '/',
     })
     .status(200)
