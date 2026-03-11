@@ -22,9 +22,23 @@ const resourceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    language: {
+    imageUrl: {
       type: String,
-      default: 'en',
+      required: true,
+    },
+    readTime: {
+      type: String,
+      required: true,
+    },
+    ctaLabel: {
+      type: String,
+      required: true,
+    },
+    structuredContent: {
+      language: {
+        type: String,
+        default: 'en',
+      },
     },
     sourceUrl: {
       type: String,
@@ -37,6 +51,10 @@ const resourceSchema = new mongoose.Schema(
     published: {
       type: Boolean,
       default: false,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
     },
   },
   { timestamps: true },
