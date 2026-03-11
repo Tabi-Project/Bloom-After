@@ -3,25 +3,20 @@ import { createResourceCard, createSkeletonCard } from '../components/resourceCa
 import { renderNavbar, initNavbar } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 
-/* Constants */
 const ITEMS_PER_PAGE = 9;
 
-/* State */
 let allResources = [];
 let filteredResources = [];
 let currentPage = 1;
 let activeFilter = '';
 let searchQuery = '';
 
-/* DOM references */
 const grid           = document.getElementById('resources-grid');
 const emptyState     = document.getElementById('resources-empty');
 const paginationWrap = document.getElementById('pagination');
 const searchInput    = document.getElementById('search-input');
 const filterBtns     = document.querySelectorAll('[data-filter]');
-const crisisRoot     = document.getElementById('crisis-root');
 
-/* Init */
 async function init() {
   document.getElementById('navbar-root').innerHTML = renderNavbar('resources');
   initNavbar();
@@ -36,13 +31,11 @@ async function init() {
   bindEvents();
 }
 
-/* Skeletons */
 function showSkeletons() {
   grid.innerHTML = Array(ITEMS_PER_PAGE).fill(null).map(() => createSkeletonCard()).join('');
   grid.setAttribute('aria-busy', 'true');
 }
 
-/* Filtering */
 function applyFilters() {
   filteredResources = allResources.filter(r => {
     const matchesFilter = !activeFilter || r.content_type === activeFilter;
@@ -56,7 +49,6 @@ function applyFilters() {
   renderPage();
 }
 
-/* Pagination */
 function getPageSlice() {
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   return filteredResources.slice(start, start + ITEMS_PER_PAGE);
@@ -66,7 +58,6 @@ function getTotalPages() {
   return Math.ceil(filteredResources.length / ITEMS_PER_PAGE);
 }
 
-/* Render */
 function renderPage() {
   const slice = getPageSlice();
   const totalPages = getTotalPages();

@@ -5,7 +5,6 @@ import { renderCrisisStrip } from '../components/crisisStrip.js';
 import { renderNavbar, initNavbar } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 
-/* DOM references */
 const navbarRoot  = document.getElementById('navbar-root');
 const footerRoot  = document.getElementById('footer-root');
 const heroBanner  = document.getElementById('resource-hero');
@@ -14,7 +13,6 @@ const relatedRoot = document.getElementById('related-root');
 const crisisRoot  = document.getElementById('crisis-root');
 const errorState  = document.getElementById('error-state');
 
-/* Helpers */
 const TYPE_LABELS = {
   'article':      'Article',
   'infographic':  'Infographic',
@@ -22,13 +20,13 @@ const TYPE_LABELS = {
   'myth-busting': 'Myth-busting guide'
 };
 
-/* Init */
 async function init() {
   if (navbarRoot && typeof renderNavbar === 'function') {
     navbarRoot.innerHTML = renderNavbar('resources');
     initNavbar();
   }
   if (crisisRoot) crisisRoot.innerHTML = renderCrisisStrip();
+  if (footerRoot) footerRoot.innerHTML = renderFooter();
 
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
@@ -45,10 +43,6 @@ async function init() {
   if (!resource) {
     showError('Resource not found. It may have been removed or the link may be incorrect.');
     return;
-  }
-
-  if (footerRoot) {
-    footerRoot.innerHTML = renderFooter();
   }
 
   populateHero(resource);
@@ -102,16 +96,15 @@ function populateMeta(resource) {
   if (metaDesc) metaDesc.setAttribute('content', resource.summary);
 }
 
-/* Loading state ─ */
 function showLoading() {
   heroBanner.setAttribute('aria-busy', 'true');
   heroBanner.innerHTML = `
-    <div class="resource-hero-skeleton skeleton-block" style="width:100%;height:300px;"></div>
+    <div class="resource-hero-skeleton skeleton-block"></div>
   `;
 
   contentRoot.setAttribute('aria-busy', 'true');
   contentRoot.innerHTML = `
-    <div class="content-skeleton" style="padding-block:var(--space-10);">
+    <div class="content-skeleton">
       <div class="skeleton-line skeleton-line-full"></div>
       <div class="skeleton-line skeleton-line-full"></div>
       <div class="skeleton-line skeleton-line-medium"></div>

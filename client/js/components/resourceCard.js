@@ -48,7 +48,7 @@ export function createResourceCard(resource) {
   const icon        = CONTENT_TYPE_ICONS[content_type] || CONTENT_TYPE_ICONS['article'];
   const typeLabel   = CONTENT_TYPE_LABELS[content_type] || content_type;
   const href        = `resource-detail.html?id=${id}`;
-  const themeClass  = `badge-theme--${theme.toLowerCase()}`;
+  const themeClass  = `badge-theme-${theme.toLowerCase()}`;
 
   return `
     <article class="resource-card" data-id="${id}">
@@ -100,14 +100,14 @@ export function createResourceCard(resource) {
 
 export function createSkeletonCard() {
   return `
-    <article class="resource-card resource-card--skeleton" aria-hidden="true">
+    <article class="resource-card resource-card-skeleton" aria-hidden="true">
       <div class="resource-card-image skeleton-block"></div>
       <div class="resource-card-body">
-        <div class="skeleton-line skeleton-line--short"></div>
-        <div class="skeleton-line skeleton-line--full"></div>
-        <div class="skeleton-line skeleton-line--full"></div>
-        <div class="skeleton-line skeleton-line--medium"></div>
-        <div class="skeleton-line skeleton-line--short"></div>
+        <div class="skeleton-line skeleton-line-short"></div>
+        <div class="skeleton-line skeleton-line-full"></div>
+        <div class="skeleton-line skeleton-line-full"></div>
+        <div class="skeleton-line skeleton-line-medium"></div>
+        <div class="skeleton-line skeleton-line-short"></div>
       </div>
     </article>
   `;

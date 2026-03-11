@@ -329,6 +329,15 @@
   border-radius: var(--radius-sm);
 }
 
+.resource-hero-skeleton {
+  width: 100%;
+  height: 300px;
+}
+
+.content-skeleton {
+  padding-block: var(--space-10);
+}
+
 .resource-card-skeleton .resource-card-image {
   height: 200px;
   background: linear-gradient(
