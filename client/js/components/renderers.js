@@ -79,14 +79,115 @@ export function renderArticle(resource) {
   `;
 }
 
+/* Infographic renderer */
+
 export function renderInfographic(resource) {
-  return `<p class="content-paragraph">Infographic view coming soon...</p>`;
+
+  if (!resource || !resource.structured_content) {
+  return `<p class="content-paragraph">Content unavailable.</p>`;
 }
 
-export function renderAudio(resource) {
-  return `<p class="content-paragraph">Audio view coming soon...</p>`;
+  const data = resource.structured_content;
+
+  return `
+    <div class="infographic-body">
+
+      <h2 class="content-section-heading">
+        ${data.title}
+      </h2>
+
+      <div class="infographic-grid">
+
+        ${data.items.map(item => `
+          <div class="infographic-item">
+            <div class="infographic-icon">${item.icon}</div>
+            <p>${item.label}</p>
+          </div>
+        `).join('')}
+
+      </div>
+
+      <p class="infographic-tagline">
+        ${data.tagline}
+      </p>
+
+    </div>
+  `;
 }
+
+/* Media renderer */
+
+export function renderMedia(resource) {
+
+  if (!resource || !resource.structured_content) {
+  return `<p class="content-paragraph">Content unavailable.</p>`;
+}
+
+  const data = resource.structured_content;
+
+  const audioPlayer = resource.file_url
+    ? `
+      <audio controls class="audio-player">
+        <source src="${resource.file_url}" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+    `
+    : `
+      <p class="content-paragraph">Audio unavailable for this resource.</p>
+    `;
+
+  return `
+    <div class="media-body">
+
+      ${audioPlayer}
+
+      <div class="media-summary">
+        ${data.summary_paragraphs
+          .map(p => `<p class="content-paragraph">${p}</p>`)
+          .join('')}
+      </div>
+
+    </div>
+  `;
+}
+
+/* Myth-Busting renderer (temporary placeholder until redesign) */
 
 export function renderMythBusting(resource) {
-  return `<p class="content-paragraph">Myth-busting view coming soon...</p>`;
+
+  if (!resource || !resource.structured_content) {
+  return `<p class="content-paragraph">Content unavailable.</p>`;
+}
+
+  const data = resource.structured_content;
+
+  return `
+    <div class="mythbusting-body">
+
+      <div class="myth-section">
+        <h2 class="content-section-heading">Common Myths</h2>
+
+        ${data.myths.map(m => `
+          <div class="myth-item">
+            <strong>${m.label}</strong>
+            <p>${m.description}</p>
+          </div>
+        `).join('')}
+
+      </div>
+
+      <div class="fact-section">
+        <h2 class="content-section-heading">Facts</h2>
+
+        ${data.facts.map(f => `
+          <div class="fact-item">
+            <strong>${f.label}</strong>
+            <p>${f.description}</p>
+          </div>
+        `).join('')}
+
+      </div>
+
+    </div>
+  `;
 }
