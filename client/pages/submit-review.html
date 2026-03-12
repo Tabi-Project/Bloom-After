@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Review Story - Bloom After</title>
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layouts.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/stories.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  </head>
+  <body>
+    <a href="#main-content" class="visually-hidden">Skip to main content</a>
+    <main id="main-content" class="submit-layout">
+      <div class="center-column">
+        <header class="breadcrumb">
+          <a href="submit-story.html" class="back-link">Edit</a>
+          <span class="divider">/</span>
+          <span class="current">Review</span>
+        </header>
+
+        <h1 class="page-title">Review your story</h1>
+
+        <article class="resource-card review-card review-card-large" aria-labelledby="review-title">
+          <a href="#" class="resource-card-image-link" tabindex="-1" aria-hidden="true">
+            <figure class="resource-card-image">
+              <img id="review-image" src="" alt="Story image preview" />
+              <figcaption class="resource-card-badges">
+                <span class="badge badge-theme">Story</span>
+                <span id="review-badge-privacy" class="badge badge-type" aria-hidden="true"></span>
+              </figcaption>
+            </figure>
+          </a>
+
+          <div class="resource-card-body">
+            <div class="resource-card-meta">
+              <span class="review-location"></span>
+              <span class="resource-card-meta-divider">·</span>
+              <span class="review-privacy"></span>
+            </div>
+
+            <h3 id="review-title" class="resource-card-title review-name"></h3>
+
+            <p class="resource-card-summary review-body" id="review-story"></p>
+          </div>
+        </article>
+
+        <section class="privacy-consent" aria-labelledby="privacy-heading">
+          <h3 id="privacy-heading">Privacy & Consent</h3>
+          <dl>
+            <div>
+              <dt>Privacy</dt>
+              <dd class="pc-privacy"></dd>
+            </div>
+            <div>
+              <dt>Consent to moderation</dt>
+              <dd class="pc-consent"></dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="moderation-timeline" aria-label="Moderation timeline">
+          <h3>Moderation timeline</h3>
+          <ol class="timeline-steps">
+            <li class="step received"><strong>Received</strong><span class="eta">Now</span></li>
+            <li class="step review"><strong>Under review</strong><span class="eta">24–72 hours</span></li>
+            <li class="step decision"><strong>Decision</strong><span class="eta">Up to 7 days</span></li>
+          </ol>
+        </section>
+
+        <section class="final-checks" aria-labelledby="final-checks-heading">
+          <h3 id="final-checks-heading">Final checks</h3>
+          <form id="final-checks-form">
+            <label><input type="checkbox" id="check-accuracy" /> I confirm the story is accurate to the best of my knowledge.</label>
+            <label><input type="checkbox" id="check-no-identifiers" /> I have removed personal contact details or identifying information.</label>
+            <label><input type="checkbox" id="check-consent" /> I consent to moderation and publication as needed.</label>
+            <div class="form-actions">
+              <button id="edit-btn" type="button" class="btn">Back</button>
+              <button id="confirm-btn" type="button" class="btn btn-primary" disabled>Submit story</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="submit-footer">@Bloom After, 2026</section>
+      </div>
+    </main>
+
+    <script type="module" src="../js/pages/submit-review.js"></script>
+  </body>
+</html>

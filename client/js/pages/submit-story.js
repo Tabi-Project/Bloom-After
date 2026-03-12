@@ -13,8 +13,9 @@ function init() {
   // image preview for card image upload
   const imageInput = document.getElementById('image');
   const preview = document.getElementById('image-preview');
+  let previewDefaultSrc = '';
+  if (preview) previewDefaultSrc = preview.src || '';
   if (imageInput && preview) {
-    const previewDefaultSrc = preview.src || '';
     imageInput.addEventListener('change', e => {
       const file = e.target.files && e.target.files[0];
       if (!file) {
@@ -32,7 +33,7 @@ function init() {
     });
   }
 
-  // simple form submit handler (prevent default for now)
+  // form and interactions
   const form = document.getElementById('submit-story-form');
   if (form) {
     // tag selection behavior: toggle tags, and 'All' clears tags
@@ -57,8 +58,6 @@ function init() {
 
     const otherBtn = document.querySelector('.story-other');
     const otherInput = document.getElementById('other-tag-input');
-
-    // ensure other input hidden by default
     if (otherInput) otherInput.hidden = true;
 
     tagBtns.forEach(btn => {
@@ -105,6 +104,46 @@ function init() {
       });
     }
 
+    // prefill the form from sessionStorage if available
+    const pendingJson = sessionStorage.getItem('pendingStory');
+    if (pendingJson) {
+      try {
+        const pending = JSON.parse(pendingJson);
+        if (pending.name) form.querySelector('#name').value = pending.name;
+        if (pending.story) form.querySelector('#story').value = pending.story;
+        if (pending.location) form.querySelector('#location').value = pending.location;
+        if (typeof pending.consent !== 'undefined') form.querySelector('#consent').checked = !!pending.consent;
+        if (pending.image && preview) preview.src = pending.image;
+        if (pending.privacy && privacyButtons.length > 0) {
+          privacyButtons.forEach(pb => {
+            if (pb.dataset && pb.dataset.value === pending.privacy) {
+              pb.classList.add('active'); pb.setAttribute('aria-pressed','true');
+              if (privacyValueEl) privacyValueEl.value = pending.privacy;
+            } else { pb.classList.remove('active'); pb.setAttribute('aria-pressed','false'); }
+          });
+        }
+        if (Array.isArray(pending.tags)) {
+          const known = tagBtns.map(b => b.textContent.trim());
+          tagBtns.forEach(btn => {
+            const text = btn.textContent.trim();
+            if (pending.tags.includes(text)) {
+              btn.classList.add('active'); btn.setAttribute('aria-pressed','true');
+            } else {
+              btn.classList.remove('active'); btn.setAttribute('aria-pressed','false');
+            }
+          });
+          const unmatched = pending.tags.filter(t => !known.includes(t));
+          if (unmatched.length > 0 && otherBtn && otherInput) {
+            otherBtn.classList.add('active'); otherBtn.setAttribute('aria-pressed','true');
+            otherInput.hidden = false; otherInput.value = unmatched[0];
+          }
+        }
+      } catch (err) {
+        console.warn('Could not parse pendingStory', err);
+      }
+    }
+
+    // on submit: save pending story to sessionStorage and navigate to review
     form.addEventListener('submit', e => {
       e.preventDefault();
       const fd = new FormData(form);
@@ -121,17 +160,21 @@ function init() {
         if (v) selectedTags.push(v);
       }
 
-      console.log('Submit story (local):', {
-        name: fd.get('name'),
-        story: fd.get('story'),
-        location: fd.get('location'),
+      const imageSrc = preview ? preview.src : '';
+
+      const pending = {
+        name: fd.get('name') || '',
+        story: fd.get('story') || '',
+        location: fd.get('location') || '',
         privacy: privacyValue,
         consent,
         tags: selectedTags,
-      });
+        image: imageSrc,
+        savedAt: Date.now(),
+      };
 
-      // placeholder behaviour: advance to next screen or show message
-      alert('Story saved locally. Continue to review (placeholder).');
+      sessionStorage.setItem('pendingStory', JSON.stringify(pending));
+      window.location.href = 'submit-review.html';
     });
   }
 }
