@@ -14,7 +14,7 @@ function renderNavbar(activePage = '') {
           </button>
           <nav class="navbar-dropdown-menu" aria-label="Learn More">
             <a href="resources.html" class="${activePage === 'resources' ? 'active' : ''}">Resources Hub</a>
-            <a href="interventions.html" class="${activePage === 'interventions' ? 'active' : ''}">Lifestyle & Interventions</a>
+            <a href="media.html" class="${activePage === 'media' ? 'active' : ''}">Podcasts & Media</a>
           </nav>
         </span>
 
@@ -35,7 +35,7 @@ function renderNavbar(activePage = '') {
           </button>
           <nav class="navbar-dropdown-menu" aria-label="Community">
             <a href="stories.html" class="${activePage === 'stories' ? 'active' : ''}">Stories</a>
-            <a href="media.html" class="${activePage === 'media' ? 'active' : ''}">Podcasts & Media</a>
+            <a href="interventions.html" class="${activePage === 'interventions' ? 'active' : ''}">Lifestyle & Interventions</a>
           </nav>
         </span>
 

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Submit your story and share your journey with Bloom After and a community of persons that want to hear from you." />
+    <title>Submit Story - Bloom After</title>
+    <link rel="icon" type="image/x-icon" href="../assets/logo/favicon.png" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layouts.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/stories.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  </head>
+  <body>
+ <a href="#main-content" class="visually-hidden">Skip to main content</a>
+    <main id="main-content" class="submit-layout">
+        <div class="breadcrumb">
+          <a href="stories.html" class="back-link" aria-label="back to stories page">Stories</a>
+          <span class="divider">/</span>
+          <span class="current">Submit Story</span>
+        </div>
+
+        <h1 class="page-title">Share Your Journey</h1>
+
+        
+          <aside class="submit-aside">
+            <div class="card">
+              <div class="aside-icon">
+                <span class="icon" data-icon="volunteer" aria-hidden="true"></span>
+              </div>
+              <h3>Why Sharing Matters</h3>
+              <p>
+                Your story provides hope and practical guidance to others walking a
+                similar path. By sharing your experience, you contribute to a
+                growing map of recovery and resilience.
+              </p>
+            </div>
+
+            <div class="tips">
+              <div class="tip">
+                <span class="material-symbols-outlined tip-icon" aria-hidden="true">lightbulb</span>
+                <div>
+                  <h4>Tip: Be Honest</h4>
+                  <p class="tip-text">Focus on the small wins that made a difference.</p>
+                </div>
+              </div>
+
+              <div class="tip">
+                <span class="material-symbols-outlined tip-icon" aria-hidden="true">lock</span>
+                <div>
+                  <h4>Safe Space</h4>
+                  <p class="tip-text">You control your privacy. Choose to stay anonymous anytime.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="aside-visual">
+              <img id="image-preview" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjpUM_XuUssUS5_iSX97aIpD3Ati5zcrASLLiFzlOkNTDt0qsH_M0YmyYCFlVIomco2fdffoE1eBScrcxWu1Rl0bEMMtbmGkzK-4MTCqpTBLhIcVqj4jE3Pcy5gn11t8OUVaxY7Sn9x9Zh-cuwINUXbepthvhPotfiU0d5qJY2AAf4xJxGwB-xUgwo4G4J_jEfD5n2WnIaCklWdAu0YYwOo27Xr7jTqKG5vH1_JRP6Jegk07bg1UscYjrdq2HTOSJ-Hh9C-uIP5BQ2" alt="Every bloom takes time" />
+              <div class="aside-visual-text">Every bloom takes time.</div>
+            </div>
+          </aside>
+
+            <form id="submit-story-form" class="form-card" enctype="multipart/form-data">
+              <div class="form-row">
+                <label for="name">Your name</label>
+                <input type="text" id="name" name="name" placeholder="Your name (optional)" />
+              </div>
+
+              <div class="form-row">
+                <label for="image">Card image</label>
+                <input type="file" id="image" name="image" accept="image/*" />
+              </div>
+
+              <div class="form-row">
+                <label for="story">Tell Your Story</label>
+                <textarea id="story" name="story" rows="8" placeholder="What happened? How did you feel?"></textarea>
+              </div>
+
+              <div class="form-row">
+                <label>What helped you the most?</label>
+                <div class="filter-tabs" aria-label="Filter story by what helped">
+                  <button class="story-tag active" type="button">Therapy</button>
+                  <button class="story-tag" type="button">Lifestyle changes</button>
+                  <button class="story-tag" type="button">Peer support</button>
+                  <button class="story-tag" type="button">Self-help strategies</button>
+                  <button class="story-tag story-other" type="button" aria-pressed="false"><span class="material-symbols-outlined" aria-hidden="true">add</span> Other</button>
+                </div>
+                <div class="other-tag-wrapper">
+                  <input type="text" id="other-tag-input" name="otherTag" class="other-tag-input" placeholder="Add a tag" hidden />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="location">Location</label>
+                <div class="location-row">
+                  <span class="icon" data-icon="location" aria-hidden="true"></span>
+                  <input type="text" id="location" name="location" placeholder="City, Country" />
+                </div>
+              </div>
+
+              <div class="privacy-row">
+                <div class="privacy-box">
+                  <div class="privacy-header">
+                    <div>
+                      <h4>Privacy Settings</h4>
+                      <p class="privacy-desc">Choose how your name appears</p>
+                    </div>
+                    <div class="privacy-switch" role="tablist" aria-label="Name display">
+                      <button type="button" class="privacy-btn privacy-named active" data-value="named" aria-pressed="true">Named</button>
+                      <button type="button" class="privacy-btn privacy-anonymous" data-value="anonymous" aria-pressed="false">Anonymous</button>
+                    </div>
+                  </div>
+                  <input type="hidden" id="privacy-value" name="privacy" value="named" />
+                  <label class="consent">
+                    <input type="checkbox" name="consent" id="consent" />
+                    I consent to my story being moderated by the Bloom After team.
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <a href="stories.html" class="btn">Back</a>
+                <button type="submit" class="btn btn-primary">Continue to Review</button>
+              </div>
+            </form>
+
+        <section class="submit-footer">@Bloom After, 2026</section>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer-root"></div>
+
+    <script type="module" src="../js/pages/submit-story.js"></script>
+  </body>
+</html>

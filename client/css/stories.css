@@ -1,0 +1,179 @@
+/* Page-specific styles for submit story */
+
+.submit-layout, .submit-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--space-8);
+  align-items: start;
+  margin-top: var(--space-6);
+}
+
+@media (max-width: 768px) {
+  .submit-grid {
+    grid-template-columns: 1fr;
+  }
+  .submit-aside { display: none; }
+}
+
+.submit-aside {
+    margin: var(--space-3);
+  background: var(--color-white);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.card {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.breadcrumb { 
+    margin: var(--space-8);
+    display:flex;
+     gap:0.5rem;
+      align-items:center; 
+      color:var(--color-text-muted);
+       font-size:var(--font-size-sm);
+     }
+
+.breadcrumb .back-link 
+{ color:var(--color-primary);
+     font-weight:600; 
+    }
+
+
+section.breadcrumb {
+  padding-block: var(--space-3);
+  margin-block: 0 var(--space-4);
+}
+.page-title { font-size:var(--font-size-3xl); margin-top:var(--space-2); margin-bottom:var(--space-3); color:var(--color-brand-900); }
+
+.aside-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+}
+
+.form-card {
+ margin: 0 var(--space-8);
+  background: transparent;
+  border: none;
+  padding: var(--space-0);
+  border-radius: 0;
+}
+
+.form-row {
+  margin-bottom: var(--space-5);
+}
+
+.form-row label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+
+.form-row input[type="text"],
+.form-row input[type="file"],
+.form-row textarea {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.image-preview {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  display: block;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.story-tag,
+.filter-btn {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: transparent;
+  font-weight: 600;
+}
+
+.story-tag[aria-pressed="true"],
+.story-tag.active {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.filter-btn.active {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.location-row {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+/* support both .location-icon (old) and generic .icon injected via data-icon */
+.location-row .location-icon,
+.location-row .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: var(--color-text-muted);
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  margin-right: var(--space-2);
+}
+
+.location-row input[type="text"] {
+  flex: 1;
+  min-width: 0;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+/* Tips in aside */
+.tips { margin-top: var(--space-6); display:flex; flex-direction:column; gap:var(--space-4); }
+.tip { display:flex; gap:var(--space-4); align-items:flex-start; padding:var(--space-3); border-radius:var(--radius-md); background:var(--color-bg-muted); }
+.tip-icon { font-size:1.25rem; color:var(--color-primary); }
+.tip-text { color:var(--color-text-muted); font-size:var(--font-size-sm); }
+
+/* Aside visual */
+.aside-visual { margin-top: var(--space-6); border-radius: var(--radius-lg); overflow:hidden; position:relative; }
+.aside-visual img { width:100%; height:160px; object-fit:cover; display:block; }
+.aside-visual-text { position:absolute; left:var(--space-4); bottom:var(--space-4); color:var(--color-white); font-weight:700; }
+
+/* Anonymous toggle styling */
+.anonymous-toggle { display:flex; align-items:center; gap:var(--space-3); cursor:pointer; }
+.anonymous-toggle input { position:absolute; opacity:0; width:0; height:0; }
+.anonymous-toggle .toggle-slider { width:44px; height:24px; background:var(--color-border); border-radius:999px; position:relative; display:inline-block; transition:background .15s; }
+.anonymous-toggle .toggle-slider::after { content:''; width:18px; height:18px; background:white; border-radius:50%; position:absolute; top:3px; left:3px; transition:left .15s; box-shadow:0 2px 6px rgba(0,0,0,0.12); }
+.anonymous-toggle input:checked + .toggle-slider { background:var(--color-primary); }
+.anonymous-toggle input:checked + .toggle-slider::after { left:23px; }
+.anonymous-toggle .toggle-label { font-size:var(--font-size-base); color:var(--color-text); }

@@ -30,7 +30,7 @@ header {
 
 main {
   flex: 1;
-  padding-top: var(--nav-height);
+  margin: 8px 0px;
 }
 
 /* Section */
