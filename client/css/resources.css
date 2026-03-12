@@ -367,6 +367,38 @@
   font-size: var(--font-size-lg);
 }
 
+.resources-error {
+  text-align: center;
+  padding: var(--space-10);
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.resources-error-message {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text);
+}
+
+.resources-error-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 var(--space-5);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.resources-error-btn:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
 /* Pagination */
 .pagination-wrap {
   padding-block: var(--space-10);
@@ -909,9 +941,13 @@
   .content-callout {
     padding: var(--space-5);
   }
+<<<<<<< HEAD
 
   .myth-layout, .media-layout { grid-template-columns: 1fr; }
   .info-grid { grid-template-columns: repeat(2, 1fr); }
   .audio-player-box { height: 200px; }
   .content-canvas { padding: var(--space-8) var(--space-5); }
 }
+=======
+}
+>>>>>>> 86fa2e1 (feat: enhance resource management with error handling and API integration)

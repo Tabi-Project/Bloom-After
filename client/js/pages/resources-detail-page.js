@@ -1,9 +1,9 @@
-import { fetchResourceById } from '../data/resources.js';
-import { renderArticle, renderInfographic, renderMedia, renderMythBusting } from '../components/renderers.js';
-import { renderRelatedResources } from '../components/relatedResources.js';
-import { renderCrisisStrip } from '../components/crisisStrip.js';
-import { renderNavbar, initNavbar } from '../components/navbar.js';
-import { renderFooter } from '../components/footer.js';
+import { fetchResourceById } from "../data/resources-api.js";
+import { renderArticle, renderInfographic, renderMedia, renderMythBusting } from "../components/renderers.js";
+import { renderRelatedResources } from "../components/relatedResources.js";
+import { renderCrisisStrip } from "../components/crisisStrip.js";
+import { renderNavbar, initNavbar } from "../components/navbar.js";
+import { renderFooter } from "../components/footer.js";
 
 const navbarRoot  = document.getElementById('navbar-root');
 const footerRoot  = document.getElementById('footer-root');
@@ -22,8 +22,8 @@ const TYPE_LABELS = {
 };
 
 async function init() {
-  if (navbarRoot && typeof renderNavbar === 'function') {
-    navbarRoot.innerHTML = renderNavbar('resources');
+  if (navbarRoot && typeof renderNavbar === "function") {
+    navbarRoot.innerHTML = renderNavbar("resources");
     initNavbar();
   }
   if (crisisRoot) crisisRoot.innerHTML = renderCrisisStrip();
@@ -39,17 +39,26 @@ async function init() {
 
   showLoading();
 
-  const resource = await fetchResourceById(id);
+  try {
+    const resource = await fetchResourceById(id);
 
-  if (!resource) {
-    showError('Resource not found. It may have been removed or the link may be incorrect.');
-    return;
+    if (!resource) {
+      showError("Resource not found. It may have been removed or the link may be incorrect.");
+      return;
+    }
+
+    populateHero(resource);
+    populateContent(resource);
+    populateMeta(resource);
+    await renderRelatedResources(relatedRoot, resource.id, resource.theme);
+  } catch (error) {
+    if (error?.status === 404) {
+      showError("Resource not found. It may have been removed or the link may be incorrect.");
+      return;
+    }
+
+    showError(error?.message || "We could not load this resource right now. Please try again.");
   }
-
-  populateHero(resource);
-  populateContent(resource);
-  populateMeta(resource);
-  renderRelatedResources(relatedRoot, resource.id, resource.theme);
 }
 
 /* Hero */
@@ -87,7 +96,7 @@ function populateContent(resource) {
   }
   
   contentRoot.innerHTML = html;
-  contentRoot.removeAttribute('aria-busy');
+  contentRoot.removeAttribute("aria-busy");
 }
 
 /* Meta */
@@ -103,7 +112,7 @@ function showLoading() {
     <div class="resource-hero-skeleton skeleton-block"></div>
   `;
 
-  contentRoot.setAttribute('aria-busy', 'true');
+  contentRoot.setAttribute("aria-busy", "true");
   contentRoot.innerHTML = `
     <div class="content-skeleton">
       <div class="skeleton-line skeleton-line-full"></div>
@@ -117,6 +126,9 @@ function showLoading() {
 function showError(message) {
   heroBanner.innerHTML = '';
   contentRoot.innerHTML = '';
+  relatedRoot.innerHTML = "";
+  heroBanner.removeAttribute("aria-busy");
+  contentRoot.removeAttribute("aria-busy");
   errorState.hidden = false;
   errorState.querySelector('.error-message').textContent = message;
 }
