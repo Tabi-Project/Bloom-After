@@ -1,5 +1,5 @@
 import { createResourceCard, createSkeletonCard } from './resourceCard.js';
-import { fetchRelatedResources } from '../data/resources.js';
+import { fetchRelatedResources } from '../data/resources-api.js';
 
 export async function renderRelatedResources(container, resourceId, theme) {
   container.innerHTML = `
@@ -11,7 +11,13 @@ export async function renderRelatedResources(container, resourceId, theme) {
     </section>
   `;
 
-  const related = await fetchRelatedResources(resourceId, theme);
+  let related = [];
+  try {
+    related = await fetchRelatedResources(resourceId, theme);
+  } catch (error) {
+    container.innerHTML = "";
+    return;
+  }
 
   if (!related || related.length === 0) {
     container.innerHTML = '';
