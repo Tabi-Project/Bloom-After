@@ -28,7 +28,7 @@ const CONTENT_TYPE_ICONS = {
 const CONTENT_TYPE_LABELS = {
   'article':      'Article',
   'infographic':  'Infographic',
-  'audio':        'Audio summary',
+  'media':        'Media',
   'myth-busting': 'Myth-busting guide'
 };
 

@@ -83,6 +83,10 @@ export function renderArticle(resource) {
 
 export function renderInfographic(resource) {
 
+  if (!resource || !resource.structured_content) {
+  return `<p class="content-paragraph">Content unavailable.</p>`;
+}
+
   const data = resource.structured_content;
 
   return `
@@ -115,14 +119,27 @@ export function renderInfographic(resource) {
 
 export function renderMedia(resource) {
 
+  if (!resource || !resource.structured_content) {
+  return `<p class="content-paragraph">Content unavailable.</p>`;
+}
+
   const data = resource.structured_content;
+
+  const audioPlayer = resource.file_url
+    ? `
+      <audio controls class="audio-player">
+        <source src="${resource.file_url}" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+    `
+    : `
+      <p class="content-paragraph">Audio unavailable for this resource.</p>
+    `;
 
   return `
     <div class="media-body">
 
-      <audio controls class="audio-player">
-        <source src="${resource.file_url}" type="audio/mpeg">
-      </audio>
+      ${audioPlayer}
 
       <div class="media-summary">
         ${data.summary_paragraphs
@@ -137,6 +154,10 @@ export function renderMedia(resource) {
 /* Myth-Busting renderer (temporary placeholder until redesign) */
 
 export function renderMythBusting(resource) {
+
+  if (!resource || !resource.structured_content) {
+  return `<p class="content-paragraph">Content unavailable.</p>`;
+}
 
   const data = resource.structured_content;
 
