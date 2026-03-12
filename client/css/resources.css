@@ -522,7 +522,7 @@
   align-items: center;
   gap: var(--space-2);
   font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+  color: var(--color-gray-950);
   text-decoration: none;
   padding-block: var(--space-5);
   transition: color 0.2s, gap 0.2s;
@@ -665,6 +665,155 @@
   gap: var(--space-6);
 }
 
+/* Audio & Podcast */
+.media-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-12);
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-block: var(--space-6);
+}
+
+.audio-player-box {
+  background: var(--color-brand-200);
+  height: 260px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  margin-bottom: var(--space-4);
+}
+
+.custom-audio {
+  width: 100%;
+  max-width: 400px;
+}
+
+.media-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.btn-share {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-primary);
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+}
+
+/* Myth-Busting */
+.myth-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-16);
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-block: var(--space-6);
+}
+
+.mf-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.mf-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.mf-icon-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-4);
+}
+
+.mf-label {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-brand-900);
+  margin-bottom: var(--space-2);
+}
+
+.mf-desc {
+  color: var(--color-text-muted);
+}
+
+/* Infographic */
+.infographic-layout {
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-block: var(--space-6);
+}
+
+.info-canvas-title {
+  font-size: clamp(var(--font-size-xl), 3vw, var(--font-size-2xl));
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-10);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-10);
+  max-width: 1000px;
+  margin-inline: auto;
+}
+
+.info-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  padding: var(--space-6) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 140px;
+}
+
+.info-icon {
+  color: var(--color-primary);
+}
+
+.info-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+  line-height: 1.4;
+}
+
+.info-tagline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 /* Error state */
 .error-state {
   text-align: center;
@@ -687,6 +836,19 @@
   margin-bottom: var(--space-6);
 }
 
+.content-canvas {
+  background: var(--color-brand-50); 
+  border-radius: var(--radius-lg);
+  padding: var(--space-12) var(--space-10);
+}
+
+.col-title {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--color-brand-900);
+  margin-bottom: var(--space-8);
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .resources-grid {
@@ -705,6 +867,8 @@
   .content-section-image-text .content-section-image {
     order: -1;
   }
+
+  .info-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 768px) {
@@ -745,4 +909,9 @@
   .content-callout {
     padding: var(--space-5);
   }
+
+  .myth-layout, .media-layout { grid-template-columns: 1fr; }
+  .info-grid { grid-template-columns: repeat(2, 1fr); }
+  .audio-player-box { height: 200px; }
+  .content-canvas { padding: var(--space-8) var(--space-5); }
 }

@@ -16,7 +16,8 @@ const errorState  = document.getElementById('error-state');
 const TYPE_LABELS = {
   'article':      'Article',
   'infographic':  'Infographic',
-  'media':        'Media',
+  'audio':        'Audio Summary',
+  'podcast':      'Podcast',
   'myth-busting': 'Myth-busting guide'
 };
 
@@ -65,7 +66,6 @@ function populateHero(resource) {
   heroBanner.removeAttribute('aria-busy');
 }
 
-/* Content */
 function populateContent(resource) {
   let html = '';
   
@@ -73,7 +73,8 @@ function populateContent(resource) {
     case 'infographic':
       html = renderInfographic(resource);
       break;
-    case 'media':
+    case 'audio':
+    case 'podcast':
       html = renderMedia(resource);
       break;
     case 'myth-busting':
@@ -121,3 +122,41 @@ function showError(message) {
 }
 
 init();
+
+document.addEventListener('click', async (e) => {
+  const shareBtn = e.target.closest('.share-btn');
+  if (!shareBtn) return;
+
+  const url = window.location.href;
+  const originalHTML = shareBtn.innerHTML;
+
+  if (navigator.share && /Mobi|Android|Mac OS/i.test(navigator.userAgent)) {
+    try {
+      await navigator.share({
+        title: document.title,
+        text: 'Check out this resource from Bloom After',
+        url: url
+      });
+      return; 
+    } catch (err) {
+      console.log('User cancelled share or native share failed:', err);
+    }
+  }
+
+  try {
+    await navigator.clipboard.writeText(url);
+    
+    shareBtn.innerHTML = `
+      Copied!
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+    `;
+    
+    setTimeout(() => {
+      shareBtn.innerHTML = originalHTML;
+    }, 2000);
+
+  } catch (err) {
+    console.error('Failed to copy link', err);
+    alert('Failed to copy. Please manually copy the URL from your browser.');
+  }
+});
