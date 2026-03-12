@@ -30,20 +30,20 @@ const CONTENT_TYPE_LABELS = {
 export function createResourceCard(resource) {
   const {
     id,
-    title,
-    summary,
-    theme,
-    content_type,
-    image_url,
-    date,
-    read_time,
+    title = '',
+    summary = '',
+    theme = 'General',
+    content_type = 'article',
+    image_url = '',
+    date = '',
+    read_time = '',
     cta_label = 'Read more'
   } = resource;
 
   const icon        = CONTENT_TYPE_ICONS[content_type] || CONTENT_TYPE_ICONS['article'];
   const typeLabel   = CONTENT_TYPE_LABELS[content_type] || content_type;
-  const href        = `resource-detail.html?id=${id}`;
-  const themeClass  = `badge-theme-${theme.toLowerCase()}`;
+  const href        = `resource-detail.html?id=${encodeURIComponent(id)}`;
+  const themeClass  = `badge-theme-${theme.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
   return `
     <article class="resource-card" data-id="${id}">
