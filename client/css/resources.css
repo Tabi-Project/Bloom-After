@@ -941,13 +941,10 @@
   .content-callout {
     padding: var(--space-5);
   }
-<<<<<<< HEAD
+
 
   .myth-layout, .media-layout { grid-template-columns: 1fr; }
   .info-grid { grid-template-columns: repeat(2, 1fr); }
   .audio-player-box { height: 200px; }
   .content-canvas { padding: var(--space-8) var(--space-5); }
 }
-=======
-}
->>>>>>> 86fa2e1 (feat: enhance resource management with error handling and API integration)
