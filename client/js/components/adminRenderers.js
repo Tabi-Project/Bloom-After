@@ -1,17 +1,17 @@
-import { adminIcons, queueIcons, contentIcons } from '../data/admin.js';
+import { icons } from "./icons.js";
 
 /* Overview */
 function renderStatCard({ id, label, value, meta, muted = false }) {
   const metaHtml = meta
     ? muted
       ? `<div class="stat-meta muted">${meta}</div>`
-      : `<div class="stat-meta">${adminIcons.trendingUp} ${meta}</div>`
-    : '';
+      : `<div class="stat-meta">${icons.trendingUp} ${meta}</div>`
+    : "";
 
   return `
     <div class="stat-card" id="${id}">
       <div class="stat-label">${label}</div>
-      <div class="stat-value${value.length > 10 ? ' long' : ''}">${value}</div>
+      <div class="stat-value${value.length > 10 ? " long" : ""}">${value}</div>
       ${metaHtml}
     </div>
   `;
@@ -21,20 +21,26 @@ export function renderOverviewSection(stats = []) {
   return `
     <section id="overview-section">
       <div class="dashboard-section-header">
-        <span class="section-icon">${adminIcons.overview}</span>
+        <span class="section-icon">${icons.sectionOverview}</span>
         <h2 class="dashboard-section-title">Overview</h2>
       </div>
       <div class="stats-grid">
-        ${stats.map(renderStatCard).join('')}
+        ${stats.map(renderStatCard).join("")}
       </div>
     </section>
   `;
 }
 
-/* ── Moderation Queues + Content Management (side by side on desktop) ── */
+/* Moderation Queues + Content Management (side by side on desktop) */
 function renderQueueCard({ id, title, subtitle, count }) {
-  const badgeClass = count > 0 ? 'count-warning' : 'count-safe';
-  const icon = queueIcons[id] || queueIcons['clinic-queue'];
+  const badgeClass = count > 0 ? "count-warning" : "count-safe";
+  const queueIconMap = {
+    "clinic-queue": icons.queueClinic,
+    "specialist-queue": icons.queueSpecialist,
+    "stories-queue": icons.queueStories,
+    "podcast-queue": icons.queuePodcast,
+  };
+  const icon = queueIconMap[id] || icons.queueClinic;
   return `
     <div class="queue-card" id="${id}">
       <div class="queue-left">
@@ -54,39 +60,41 @@ function renderActionRow(icon, label, id) {
     <a href="#" class="action-row" id="${id}">
       <span class="action-row-icon">${icon}</span>
       <span class="action-row-label">${label}</span>
-      <span class="action-row-chevron">${adminIcons.chevronRight}</span>
+      <span class="action-row-chevron">${icons.chevronRight}</span>
     </a>
   `;
 }
 
 export function renderQueuesAndContent(queues = [], draft = {}) {
-  const { title = '', description = '' } = draft;
+  const { title = "", description = "" } = draft;
   return `
     <div class="queues-content-grid">
 
       <!-- Moderation Queues -->
       <section id="queues-section">
         <div class="dashboard-section-header">
-          <span class="section-icon">${adminIcons.queues}</span>
+          <span class="section-icon">${icons.sectionQueues}</span>
           <h2 class="dashboard-section-title">Moderation Queues</h2>
         </div>
         <div class="queue-list">
-          ${queues.map(renderQueueCard).join('')}
+          ${queues.map(renderQueueCard).join("")}
         </div>
       </section>
 
       <!-- Content Management -->
       <section id="content-section">
         <div class="dashboard-section-header">
-          <span class="section-icon">${adminIcons.content}</span>
+          <span class="section-icon">${icons.sectionContent}</span>
           <h2 class="dashboard-section-title">Content Management</h2>
         </div>
         <div class="action-stack">
-          ${renderActionRow(contentIcons.create,    'Create Resource Article',   'create-resource-action')}
-          ${renderActionRow(contentIcons.directory, 'Manage Directory Entries',  'update-directory-action')}
-          ${renderActionRow(contentIcons.featured,  'Update Featured Content',   'featured-content-action')}
+          ${renderActionRow(icons.contentCreate, "Create Resource Article", "create-resource-action")}
+          ${renderActionRow(icons.contentDirectory, "Manage Directory Entries", "update-directory-action")}
+          ${renderActionRow(icons.contentFeatured, "Update Featured Content", "featured-content-action")}
 
-          ${title ? `
+          ${
+            title
+              ? `
           <div class="editor-card" id="draft-editor-card">
             <div class="editor-top">
               <h3 class="editor-title">Edit Before Publishing</h3>
@@ -99,7 +107,9 @@ export function renderQueuesAndContent(queues = [], draft = {}) {
               <button class="mini-btn secondary" id="send-review-btn">Send to review</button>
             </div>
           </div>
-          ` : ''}
+          `
+              : ""
+          }
         </div>
       </section>
 
@@ -121,11 +131,11 @@ export function renderRolesSection(roles = []) {
   return `
     <section id="roles-section">
       <div class="dashboard-section-header">
-        <span class="section-icon">${adminIcons.roles}</span>
+        <span class="section-icon">${icons.sectionRoles}</span>
         <h2 class="dashboard-section-title">User Access</h2>
       </div>
       <div class="role-grid">
-        ${roles.map(renderRoleCard).join('')}
+        ${roles.map(renderRoleCard).join("")}
       </div>
     </section>
   `;
