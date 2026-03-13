@@ -6,29 +6,31 @@ export const adminConfig = {
 
 export const statsData = [
   {
-    id: "page-views-card",
-    label: "Page Views",
-    value: "12.4K",
-    meta: "+14% this week",
-  },
-  {
-    id: "users-card",
-    label: "Active Users",
-    value: "842",
-    meta: "+5% this week",
-  },
-  {
-    id: "searches-card",
-    label: "Most Searched Term",
-    value: '"Therapist in Lagos"',
-    meta: "340 searches",
+    id: "total-resources-card",
+    label: "Total Resources",
+    value: "0",
+    meta: "Library size",
     muted: true,
   },
   {
-    id: "clinics-card",
-    label: "Top Visited Clinic",
-    value: "MindCare Hospital",
-    meta: "128 views today",
+    id: "published-resources-card",
+    label: "Published Resources",
+    value: "0",
+    meta: "Live on Bloom After",
+    muted: true,
+  },
+  {
+    id: "draft-resources-card",
+    label: "Draft Resources",
+    value: "0",
+    meta: "Needs review",
+    muted: true,
+  },
+  {
+    id: "pending-stories-card",
+    label: "Stories Pending Review",
+    value: "0",
+    meta: "Awaiting moderation",
     muted: true,
   },
 ];

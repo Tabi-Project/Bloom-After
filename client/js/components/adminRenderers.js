@@ -31,6 +31,56 @@ export function renderOverviewSection(stats = []) {
   `;
 }
 
+export function renderOverviewSkeleton(count = 4) {
+  const cards = Array.from({ length: count }).map(
+    (_, index) => `
+      <div class="stat-card skeleton" aria-hidden="true" data-skeleton-index="${index}">
+        <div class="skeleton-line skeleton-label"></div>
+        <div class="skeleton-line skeleton-value"></div>
+        <div class="skeleton-line skeleton-meta"></div>
+      </div>
+    `,
+  );
+
+  return `
+    <section id="overview-section" aria-busy="true">
+      <div class="dashboard-section-header">
+        <span class="section-icon">${icons.sectionOverview}</span>
+        <h2 class="dashboard-section-title">Overview</h2>
+      </div>
+      <div class="stats-grid">
+        ${cards.join("")}
+      </div>
+    </section>
+  `;
+}
+
+export function renderWelcomeSection({ name = "Admin" } = {}) {
+  const safeName = String(name || "Admin")
+    .replace(/[&<>"']/g, (char) => {
+      const map = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      };
+      return map[char] || char;
+    })
+    .trim() || "Admin";
+  return `
+    <section id="welcome-section">
+      <div class="welcome-card">
+        <div class="welcome-text">
+          <p class="welcome-eyebrow">Admin Dashboard</p>
+          <h3 class="welcome-title">Welcome, ${safeName}</h3>
+          <p class="welcome-subtitle">Manage content, reviews, and approvals from one place.</p>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
 /* Moderation Queues + Content Management (side by side on desktop) */
 function renderQueueCard({ id, title, subtitle, count }) {
   const badgeClass = count > 0 ? "count-warning" : "count-safe";

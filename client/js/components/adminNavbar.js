@@ -1,5 +1,17 @@
 import { icons } from "./icons.js";
 
+const escapeHtml = (value = "") =>
+  String(value).replace(/[&<>"']/g, (char) => {
+    const map = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+    return map[char] || char;
+  });
+
 const navGroups = [
   {
     label: "MENU",
@@ -111,7 +123,11 @@ export function renderAdminSidebar({
   `;
 }
 
-export function renderAdminTopbar() {
+export function renderAdminTopbar({ name = "Admin", email = "" } = {}) {
+  const safeName = escapeHtml(name || "Admin");
+  const safeEmail = escapeHtml(email || "");
+  const emailHtml = safeEmail || "";
+
   return `
     <div class="admin-topbar" id="admin-topbar">
       <div class="topbar-left">
@@ -133,8 +149,23 @@ export function renderAdminTopbar() {
         <button class="topbar-icon-btn" aria-label="Notifications">
           ${icons.adminBell}
         </button>
-        <div class="topbar-avatar" aria-hidden="true">
-          ${icons.adminUser}
+        <div class="topbar-user-card" aria-label="Admin account">
+          <div class="topbar-user-inline">
+            <span class="topbar-user-email">${emailHtml}</span>
+            <button class="topbar-logout" data-admin-logout type="button" aria-label="Log out">
+              Logout
+            </button>
+          </div>
+          <div class="topbar-user-menu-wrap">
+            <button class="topbar-profile-btn" id="topbar-profile-btn" type="button" aria-label="Open profile menu" aria-expanded="false">
+              ${icons.adminUser}
+            </button>
+            <div class="topbar-user-menu" id="topbar-user-menu" aria-hidden="true">
+              <div class="menu-user-name">${safeName}</div>
+              <div class="menu-user-email">${emailHtml}</div>
+              <button class="menu-logout-btn" data-admin-logout type="button">Logout</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

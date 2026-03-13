@@ -5,6 +5,7 @@ import connectDB from './config/db.js';
 import authRouter from './routes/authRouter.js';
 import cookieParser from 'cookie-parser';
 import resourceRouter from './routes/resourceRoute.js';
+import adminStatsRouter from './routes/adminStatsRouter.js';
 import cors from 'cors';
 
 dotenv.config();
@@ -45,6 +46,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/resources', resourceRouter);
+app.use('/api/v1/admin/stats', adminStatsRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World');

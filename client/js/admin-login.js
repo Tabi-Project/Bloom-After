@@ -143,6 +143,9 @@ form.addEventListener("submit", async (event) => {
     if (response?.user) {
       sessionStorage.setItem("adminUser", JSON.stringify(response.user));
     }
+    if (response?.token) {
+      sessionStorage.setItem("adminToken", response.token);
+    }
 
     setTimeout(() => {
       window.location.assign("/client/pages/admin-dashboard.html");

@@ -318,6 +318,124 @@
   flex: 0 0 auto;
 }
 
+.topbar-user-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--color-bg-muted);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2) var(--space-3);
+  min-width: 0;
+}
+
+.topbar-user-inline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.topbar-user-email {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+  min-width: 0;
+}
+
+.topbar-logout {
+  border: none;
+  background: var(--color-brand-200);
+  color: var(--color-brand-900);
+  border-radius: var(--radius-pill);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease-out;
+  white-space: nowrap;
+}
+
+.topbar-logout:hover {
+  opacity: 0.85;
+}
+
+.topbar-user-menu-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.topbar-profile-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand-200);
+  color: var(--color-brand-900);
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease-out;
+}
+
+.topbar-profile-btn:hover {
+  opacity: 0.85;
+}
+
+.topbar-user-menu {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  min-width: 200px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  box-shadow: 0 12px 30px rgba(17, 33, 24, 0.12);
+  display: none;
+  z-index: 5;
+}
+
+.topbar-user-menu.open {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.menu-user-name {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-brand-900);
+}
+
+.menu-user-email {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  word-break: break-word;
+}
+
+.menu-logout-btn {
+  border: none;
+  background: var(--color-brand-200);
+  color: var(--color-brand-900);
+  border-radius: var(--radius-pill);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.menu-logout-btn:hover {
+  opacity: 0.85;
+}
+
 .topbar-icon-btn {
   display: flex;
   align-items: center;
@@ -342,6 +460,52 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Welcome section */
+.welcome-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.welcome-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.welcome-eyebrow {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.welcome-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-lg);
+  color: var(--color-brand-900);
+}
+
+.welcome-subtitle {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+@media (max-width: 768px) {
+  .topbar-user-inline {
+    display: none;
+  }
+
+  .topbar-profile-btn {
+    display: flex;
+  }
 }
 
 /* Section shared */
@@ -391,6 +555,47 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+}
+
+.stat-card.skeleton {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-line {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    rgba(227, 233, 228, 0.7) 25%,
+    rgba(243, 246, 244, 0.9) 37%,
+    rgba(227, 233, 228, 0.7) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+.skeleton-label {
+  height: 10px;
+  width: 45%;
+}
+
+.skeleton-value {
+  height: 22px;
+  width: 65%;
+}
+
+.skeleton-meta {
+  height: 10px;
+  width: 55%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
 }
 
 .stat-label {
