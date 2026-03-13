@@ -10,28 +10,68 @@ function init() {
     }
   });
 
-  // image preview for card image upload
+  // image upload zone
   const imageInput = document.getElementById('image');
   const preview = document.getElementById('image-preview');
-  let previewDefaultSrc = '';
-  if (preview) previewDefaultSrc = preview.src || '';
-  if (imageInput && preview) {
-    imageInput.addEventListener('change', e => {
-      const file = e.target.files && e.target.files[0];
-      if (!file) {
-        // restore the default placeholder image when no file selected
-        preview.src = previewDefaultSrc;
-        preview.hidden = false;
-        return;
+  const livePreview = document.getElementById('upload-live-preview');
+  const placeholder = document.getElementById('upload-placeholder');
+  const zone = document.getElementById('upload-zone');
+  const changeBtn = document.getElementById('upload-change-btn');
+
+  function showPreview(src) {
+    if (preview) preview.src = src;
+    if (livePreview) livePreview.hidden = false;
+    if (placeholder) placeholder.hidden = true;
+    if (changeBtn) changeBtn.hidden = false;
+  }
+
+  function clearPreview() {
+    if (preview) preview.src = '';
+    if (livePreview) livePreview.hidden = true;
+    if (placeholder) placeholder.hidden = false;
+    if (changeBtn) changeBtn.hidden = true;
+  }
+
+  function readFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => showPreview(String(reader.result));
+    reader.readAsDataURL(file);
+  }
+
+  if (zone && imageInput) {
+    // click zone or change-btn → open file picker
+    zone.addEventListener('click', e => {
+      if (e.target === changeBtn || changeBtn?.contains(e.target)) return;
+      imageInput.click();
+    });
+    if (changeBtn) changeBtn.addEventListener('click', () => imageInput.click());
+
+    // keyboard: Enter / Space opens picker
+    zone.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); imageInput.click(); }
+    });
+
+    // drag & drop
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      const file = e.dataTransfer?.files?.[0];
+      if (file) {
+        // sync to input if possible (DataTransfer not assignable, just read)
+        readFile(file);
       }
-      const reader = new FileReader();
-      reader.onload = () => {
-        preview.src = String(reader.result);
-        preview.hidden = false;
-      };
-      reader.readAsDataURL(file);
+    });
+
+    imageInput.addEventListener('change', e => {
+      const file = e.target.files?.[0];
+      if (file) readFile(file); else clearPreview();
     });
   }
+
+  // prefill preview from sessionStorage if available (handled later in prefill block)
 
   // form and interactions
   const form = document.getElementById('submit-story-form');
@@ -113,7 +153,7 @@ function init() {
         if (pending.story) form.querySelector('#story').value = pending.story;
         if (pending.location) form.querySelector('#location').value = pending.location;
         if (typeof pending.consent !== 'undefined') form.querySelector('#consent').checked = !!pending.consent;
-        if (pending.image && preview) preview.src = pending.image;
+        if (pending.image) showPreview(pending.image);
         if (pending.privacy && privacyButtons.length > 0) {
           privacyButtons.forEach(pb => {
             if (pb.dataset && pb.dataset.value === pending.privacy) {
@@ -160,7 +200,7 @@ function init() {
         if (v) selectedTags.push(v);
       }
 
-      const imageSrc = preview ? preview.src : '';
+      const imageSrc = (livePreview && !livePreview.hidden && preview?.src?.startsWith('data:')) ? preview.src : '';
 
       const pending = {
         name: fd.get('name') || '',

@@ -56,7 +56,7 @@
             </div>
 
             <div class="aside-visual">
-              <img id="image-preview" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjpUM_XuUssUS5_iSX97aIpD3Ati5zcrASLLiFzlOkNTDt0qsH_M0YmyYCFlVIomco2fdffoE1eBScrcxWu1Rl0bEMMtbmGkzK-4MTCqpTBLhIcVqj4jE3Pcy5gn11t8OUVaxY7Sn9x9Zh-cuwINUXbepthvhPotfiU0d5qJY2AAf4xJxGwB-xUgwo4G4J_jEfD5n2WnIaCklWdAu0YYwOo27Xr7jTqKG5vH1_JRP6Jegk07bg1UscYjrdq2HTOSJ-Hh9C-uIP5BQ2" alt="Every bloom takes time" />
+              <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjpUM_XuUssUS5_iSX97aIpD3Ati5zcrASLLiFzlOkNTDt0qsH_M0YmyYCFlVIomco2fdffoE1eBScrcxWu1Rl0bEMMtbmGkzK-4MTCqpTBLhIcVqj4jE3Pcy5gn11t8OUVaxY7Sn9x9Zh-cuwINUXbepthvhPotfiU0d5qJY2AAf4xJxGwB-xUgwo4G4J_jEfD5n2WnIaCklWdAu0YYwOo27Xr7jTqKG5vH1_JRP6Jegk07bg1UscYjrdq2HTOSJ-Hh9C-uIP5BQ2" alt="Every bloom takes time" />
               <div class="aside-visual-text">Every bloom takes time.</div>
             </div>
           </aside>
@@ -69,7 +69,20 @@
 
               <div class="form-row">
                 <label for="image">Card image</label>
-                <input type="file" id="image" name="image" accept="image/*" />
+                <div class="upload-row">
+                  <div class="upload-zone" id="upload-zone" role="button" tabindex="0" aria-label="Upload card image">
+                    <div class="upload-placeholder" id="upload-placeholder">
+                      <span class="material-symbols-outlined upload-icon" aria-hidden="true">add_photo_alternate</span>
+                      <span class="upload-label">Click or drag &amp; drop to upload</span>
+                      <span class="upload-hint">PNG, JPG up to 5 MB</span>
+                    </div>
+                    <button type="button" class="upload-change btn" id="upload-change-btn" hidden>Change image</button>
+                  </div>
+                  <figure class="upload-live-preview" id="upload-live-preview" hidden>
+                    <img id="image-preview" src="" alt="Your image preview" />
+                  </figure>
+                </div>
+                <input type="file" id="image" name="image" accept="image/*" class="visually-hidden" />
               </div>
 
               <div class="form-row">
@@ -98,9 +111,8 @@
                   <input type="text" id="location" name="location" placeholder="City, Country" />
                 </div>
               </div>
-
               <div class="privacy-row">
-                <div class="privacy-box">
+            
                   <div class="privacy-header">
                     <div>
                       <h4>Privacy Settings</h4>
@@ -116,7 +128,7 @@
                     <input type="checkbox" name="consent" id="consent" />
                     I consent to my story being moderated by the Bloom After team.
                   </label>
-                </div>
+            
               </div>
 
               <div class="form-actions">
@@ -124,7 +136,6 @@
                 <button type="submit" class="btn btn-primary">Continue to Review</button>
               </div>
             </form>
-
         <section class="submit-footer">@Bloom After, 2026</section>
     </main>
 
