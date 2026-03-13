@@ -67,6 +67,27 @@ The frontend is hosted on **Netlify**, while the backend API runs on **Render or
 
 ---
 
+## Changelog
+
+### PRD Update — 10th March, 2026
+
+**Changed by:** Nanji Lakan  
+
+**What Changed:**  
+- The Resource Hub now groups additional content types, including curated media resources.  
+- The Clinic Finder now incorporates specialist profiles within the same directory.  
+- Crisis Support and Helpline Access was introduced as a dedicated feature.  
+- Platform Capabilities (search and location services) were separated from core features.  
+- The Admin and Moderation section was expanded to better describe moderation workflows and content management responsibilities.  
+
+**Why It Changed:**  
+The intention is to make the PRD clearer, more logically structured, and better aligned with how the MVP will function. These updates are highlighted in yellow in the document titled *Bloom After PRD 2.0* on Drive.  
+
+**Impact on Other Components:**  
+The Resource Hub now has a dedicated media section to make up for removing the media.
+
+---
+
 ## Technology Stack
 
 ### Frontend
