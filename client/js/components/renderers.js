@@ -109,20 +109,37 @@ export function renderInfographic(resource) {
   `;
 }
 
-// Media/Audio renderer 
+function renderAudioPlayer(fileUrl) {
+  return fileUrl
+    ? `<audio controls class="custom-audio"><source src="${fileUrl}" type="audio/mpeg"></audio>`
+    : `<p>Audio unavailable.</p>`;
+}
+
+function renderShareButton() {
+  return `
+    <button class="btn-share share-btn" type="button">
+      Share
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    </button>
+  `;
+}
+
+// Audio renderer
 export function renderMedia(resource) {
   if (!resource || !resource.structured_content) return `<p>Content unavailable.</p>`;
   const data = resource.structured_content;
+  const summaryParagraphs = Array.isArray(data.summary_paragraphs) ? data.summary_paragraphs : [];
+  const audioPlayer = renderAudioPlayer(resource.file_url);
 
-  const audioPlayer = resource.file_url
-    ? `<audio controls class="custom-audio"><source src="${resource.file_url}" type="audio/mpeg"></audio>` 
-    : `<p>Audio unavailable.</p>`;
+  const summaryContent = summaryParagraphs.length
+    ? summaryParagraphs.map((paragraph) => `<p class="content-paragraph">${paragraph}</p>`).join('')
+    : `<p class="content-paragraph">This audio has no summary yet.</p>`;
 
   return `
     <article class="media-layout content-canvas">
       <div class="media-text-col">
         <h2 class="col-title">Summary</h2>
-        ${data.summary_paragraphs.map(p => `<p class="content-paragraph">${p}</p>`).join('')}
+        ${summaryContent}
       </div>
       
       <div class="media-player-col">
@@ -134,12 +151,60 @@ export function renderMedia(resource) {
             Download now
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           </a>
-          <button class="btn-share share-btn" type="button">
-            Share
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-          </button>
+          ${renderShareButton()}
         </div>
       </div>
+    </article>
+  `;
+}
+
+// Podcast renderer
+export function renderPodcast(resource) {
+  if (!resource || !resource.structured_content) return `<p>Content unavailable.</p>`;
+  const data = resource.structured_content;
+  const summaryParagraphs = Array.isArray(data.summary_paragraphs) ? data.summary_paragraphs : [];
+  const audioPlayer = renderAudioPlayer(resource.file_url);
+
+  const highlights = summaryParagraphs.length
+    ? summaryParagraphs.map((paragraph, index) => `
+      <li class="podcast-copycat-item">
+        <span class="podcast-copycat-index">Moment ${index + 1}</span>
+        <p class="podcast-copycat-text">${paragraph}</p>
+      </li>
+    `).join('')
+    : `
+      <li class="podcast-copycat-item">
+        <span class="podcast-copycat-index">Moment</span>
+        <p class="podcast-copycat-text">Episode highlights will appear here.</p>
+      </li>
+    `;
+
+  return `
+    <article class="podcast-layout content-canvas">
+      <section class="podcast-main-col">
+        <p class="podcast-kicker">Now Playing</p>
+        <h2 class="podcast-episode-title">${resource.title}</h2>
+        <p class="podcast-meta">${resource.date || 'Latest release'} · ${resource.read_time || 'Podcast episode'}</p>
+
+        <div class="audio-player-box podcast-player-box">
+          ${audioPlayer}
+        </div>
+
+        <div class="media-actions podcast-actions">
+          <a href="${resource.file_url || '#'}" download target="_blank" class="btn btn-primary">
+            Download episode
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </a>
+          ${renderShareButton()}
+        </div>
+      </section>
+
+      <aside class="podcast-copycat-col" aria-label="Episode copy">
+        <h3 class="podcast-copycat-title">Copycat Highlights</h3>
+        <ol class="podcast-copycat-list">
+          ${highlights}
+        </ol>
+      </aside>
     </article>
   `;
 }
