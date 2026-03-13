@@ -3,11 +3,15 @@
 }
 
 .w-100 { width: 100%; }
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+.text-capitalize { text-transform: capitalize; }
 .empty-state-msg { margin-top: var(--space-8); color: var(--color-text-muted); }
 
 .directory-hero {
   position: relative;
-  background-image: url('https://images.unsplash.com/photo-1531983412531-1f49a365ffed?w=1400&q=80'); 
+  background-image: url('https://images.unsplash.com/photo-1531983412531-1f49a365ffed?w=1400&q=80');
   background-color: var(--color-brand-900);
   background-size: cover;
   background-position: center;
@@ -52,9 +56,9 @@
   padding-block: var(--space-6);
   border-bottom: 1px solid var(--color-border);
   margin-bottom: var(--space-8);
-  position: sticky; 
-  top: var(--nav-height); 
-  z-index: 100; 
+  position: sticky;
+  top: var(--nav-height);
+  z-index: 100;
   background: var(--color-surface);
 }
 
@@ -113,7 +117,7 @@
 
 .directory-sidebar {
   position: sticky;
-  top: calc(var(--nav-height) + 100px); 
+  top: calc(var(--nav-height) + 100px);
   max-height: calc(100vh - var(--nav-height) - 120px);
   overflow-y: auto;
   padding-right: var(--space-2);
@@ -140,7 +144,7 @@
   text-transform: uppercase;
 }
 
-.custom-checkbox, 
+.custom-checkbox,
 .custom-radio {
   display: flex;
   align-items: center;
@@ -152,7 +156,7 @@
   position: relative;
 }
 
-.custom-checkbox input, 
+.custom-checkbox input,
 .custom-radio input {
   position: absolute;
   opacity: 0;
@@ -161,7 +165,7 @@
   width: 0;
 }
 
-.checkmark, 
+.checkmark,
 .radio-mark {
   height: 18px;
   width: 18px;
@@ -180,7 +184,7 @@
   border-radius: 50%;
 }
 
-.custom-checkbox input:checked ~ .checkmark, 
+.custom-checkbox input:checked ~ .checkmark,
 .custom-radio input:checked ~ .radio-mark {
   border-color: var(--color-primary);
 }
@@ -191,7 +195,7 @@
 
 .custom-checkbox input:checked ~ .checkmark:after {
   content: "✓";
-  color: white;
+  color: var(--color-white);
   font-size: 12px;
 }
 
@@ -210,7 +214,6 @@
   padding-bottom: var(--space-4);
   margin-bottom: var(--space-6);
   border-bottom: 1px solid var(--color-border);
-  
   position: sticky;
   top: calc(var(--nav-height) + 90px);
   background: var(--color-surface);
@@ -251,13 +254,13 @@
   min-height: 600px;
 }
 
-.clinics-list-view, 
+.clinics-list-view,
 .clinics-map-view {
   display: none;
   width: 100%;
 }
 
-.clinics-list-view.active-view, 
+.clinics-list-view.active-view,
 .clinics-map-view.active-view {
   display: block;
 }
@@ -270,7 +273,7 @@
 
 .clinics-map-view {
   position: sticky;
-  top: calc(var(--nav-height) + 160px); 
+  top: calc(var(--nav-height) + 160px);
 }
 
 .actual-map {
@@ -317,7 +320,6 @@
 
 .skeleton-line.short { width: 40%; }
 .skeleton-line.medium { width: 70%; }
-.mt-4 { margin-top: var(--space-4); }
 
 @keyframes pulse {
   0% { opacity: 0.6; }
@@ -328,7 +330,7 @@
 .clinic-card {
   display: grid;
   grid-template-columns: 80px 1fr auto;
-  grid-template-areas: 
+  grid-template-areas:
     "avatar header distance"
     "avatar tags ."
     "avatar fee actions";
@@ -358,7 +360,23 @@
   color: var(--color-brand-600);
 }
 
-.card-header { grid-area: header; }
+.card-header {
+  grid-area: header;
+}
+
+.card-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.card-provider-type {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-weight: 500;
+  text-transform: capitalize;
+}
 
 .card-title {
   font-size: var(--font-size-lg);
@@ -395,12 +413,27 @@
 }
 
 .tag-pill {
-  font-size: var(--font-size-xs);
-  padding: 4px 10px;
+  font-size: 0.6rem;
+  padding: 4px 8px;
   background: var(--color-gray-100);
   color: var(--color-text-muted);
   border-radius: var(--radius-pill);
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  display: inline-block;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.status-accepting {
+  background-color: var(--color-brand-100);
+  color: var(--color-brand-900);
+}
+
+.status-full {
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-700);
 }
 
 .tag-pill.highlight {
@@ -512,6 +545,10 @@
   padding: var(--space-6);
 }
 
+.panel-header-section {
+  margin-bottom: var(--space-3);
+}
+
 .panel-clinic-name {
   font-family: var(--font-heading);
   font-size: var(--font-size-2xl);
@@ -522,28 +559,58 @@
 .panel-clinic-address {
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
-  margin-bottom: var(--space-6);
 }
 
-.panel-contact-card {
-  background: var(--color-brand-50);
-  padding: var(--space-5);
+.clinic-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+  background-color: var(--color-surface);
+  padding: var(--space-4);
   border-radius: var(--radius-md);
-  margin-bottom: var(--space-6);
+  border: 1px solid var(--color-border);
 }
 
-.panel-contact-phone {
-  font-size: var(--font-size-xl);
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
   font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+
+.info-value {
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+}
+
+.panel-contact-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+}
+
+.btn-action {
+  flex: 1;
+  text-align: center;
+  padding: var(--space-2);
+  border: 1px solid var(--color-primary);
   color: var(--color-primary);
-  display: block;
-  margin-bottom: var(--space-2);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all 0.2s ease;
   text-decoration: none;
 }
 
-.panel-contact-email {
-  font-size: var(--font-size-sm);
-  color: var(--color-text);
+.btn-action:hover {
+  background-color: var(--color-primary);
+  color: var(--color-white);
 }
 
 .panel-section-title {
@@ -564,12 +631,6 @@
 .panel-reviews-section {
   border-top: 1px solid var(--color-border);
   padding-top: var(--space-6);
-}
-
-.panel-review-rating {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-4);
 }
 
 .panel-review-intro {
@@ -645,7 +706,7 @@
 }
 
 .review-form .error-msg {
-  color: #d93025;
+  color: var(--color-danger);
   font-size: var(--font-size-xs);
   margin-top: var(--space-1);
 }
@@ -682,27 +743,27 @@
   display: none;
 }
 
-.leaflet-top, 
+.leaflet-top,
 .leaflet-bottom {
-  z-index: 90 !important; 
+  z-index: 90 !important;
 }
 
 @media (max-width: 1024px) {
   .directory-main {
-    grid-template-columns: 220px 1fr; 
+    grid-template-columns: 220px 1fr;
     gap: var(--space-6);
   }
 
   .clinic-card {
     grid-template-columns: 1fr;
-    grid-template-areas: 
-      "header" 
-      "distance" 
-      "tags" 
-      "fee" 
+    grid-template-areas:
+      "header"
+      "distance"
+      "tags"
+      "fee"
       "actions";
   }
-  
+
   .card-avatar { display: none; }
   .card-distance { text-align: left; margin-bottom: var(--space-2); }
   .card-actions { width: 100%; margin-top: var(--space-4); display: flex; }
@@ -716,7 +777,7 @@
 
   .directory-search-bar {
     flex-direction: column;
-    position: static; 
+    position: static;
   }
 
   .btn-location {
@@ -738,9 +799,9 @@
     border-bottom: none;
     padding-bottom: 0;
   }
-  
+
   .results-count {
-    grid-column: 1 / -1; 
+    grid-column: 1 / -1;
     text-align: left;
     border-bottom: 1px solid var(--color-border);
     padding-bottom: var(--space-3);
@@ -749,7 +810,7 @@
   .view-toggles {
     justify-content: flex-start;
   }
-  
+
   #mobile-filter-btn {
     margin: 0;
   }
@@ -759,7 +820,7 @@
   }
 
   .actual-map {
-    height: 65vh; 
+    height: 65vh;
     min-height: 400px;
   }
 
@@ -771,7 +832,7 @@
     height: auto;
     top: auto;
     background: var(--color-surface);
-    z-index: 1050; 
+    z-index: 1050;
     padding: var(--space-6);
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
