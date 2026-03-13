@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import validator from 'validator';
 
 dotenv.config();
-const JWT_KEY = process.env.JWT_KEY;
+const JWT_KEY = process.env.JWT_KEY || process.env.JWT_SECRET;
 const isProduction = process.env.NODE_ENV === 'production';
 
 export const login = async (req, res) => {
@@ -67,6 +67,7 @@ export const login = async (req, res) => {
 
     res.status(200).json({
       message: 'Login successful',
+      token,
       user: {
         id: user._id,
         name: user.name,

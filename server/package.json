@@ -8,7 +8,8 @@
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "seed:resources": "node scripts/seedResources.js"
+    "seed:resources": "node scripts/seedResources.js",
+    "seed:admin": "node scripts/seedAdmin.js"
   },
   "repository": {
     "type": "git",

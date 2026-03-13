@@ -1,10 +1,12 @@
 import jwt from 'jsonwebtoken';
 import AdminUser from '../models/adminUser.js';
 
-const JWT_KEY = process.env.JWT_SECRET;
+const JWT_KEY = process.env.JWT_KEY || process.env.JWT_SECRET;
 
 export const getCurrentUser = async (req, res, next) => {
-  const token = req.cookies?.token;
+  const authHeader = req.headers?.authorization || '';
+  const bearerMatch = authHeader.match(/^Bearer\s+(.+)$/i);
+  const token = req.cookies?.token || bearerMatch?.[1];
 
   if (!token) {
     return res.status(401).json({ status: 'error', error: 'Not authorized' });
