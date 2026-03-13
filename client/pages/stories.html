@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Read real recovery journeys shared by mothers navigating postpartum depression. Every story is a light for someone still in the dark." />
+    <title>Stories - Bloom After</title>
+    <link rel="icon" type="image/x-icon" href="../assets/logo/favicon.png" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layouts.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/resources.css" />
+    <link rel="stylesheet" href="../css/stories.css" />
+  </head>
+  <body>
+
+    <a href="#main-content" class="visually-hidden">Skip to main content</a>
+
+    <div id="navbar-root"></div>
+
+    <main id="main-content">
+
+      <!-- Hero banner -->
+      <section
+        class="resources-hero"
+        style="background-image: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80')"
+        aria-labelledby="stories-hero-heading"
+      >
+        <div class="resources-hero-content container">
+          <h1 class="resources-hero-title" id="stories-hero-heading">Stories of Hope</h1>
+          <p class="resources-hero-subtitle">
+            Real journeys, shared with courage. Every story here is a light for someone
+            still finding their way through postpartum depression.
+          </p>
+          <a href="submit-story.html" class="btn btn-outline-white stories-hero-cta">Share Your Story</a>
+        </div>
+      </section>
+
+      <!-- Search & filters -->
+      <div class="resources-controls" role="search">
+        <div class="container resources-controls-inner">
+
+          <div class="search-wrap">
+            <span class="search-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </span>
+            <input
+              type="search"
+              id="search-input"
+              class="search-input"
+              placeholder="Search by name, location, or keyword"
+              aria-label="Search stories"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="filter-dropdown" id="filter-dropdown">
+            <button
+              class="filter-dropdown-toggle"
+              id="filter-toggle"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="filter-menu"
+              aria-label="Filter stories"
+            >
+              <span data-icon="filter" aria-hidden="true"></span>
+              Filter
+            </button>
+
+            <nav
+              class="filter-dropdown-menu"
+              id="filter-menu"
+              aria-label="Filter stories by what helped"
+              hidden
+            >
+              <button class="filter-btn active" data-filter="" aria-pressed="true">All</button>
+              <button class="filter-btn" data-filter="Therapy"              aria-pressed="false">Therapy</button>
+              <button class="filter-btn" data-filter="Lifestyle changes"    aria-pressed="false">Lifestyle changes</button>
+              <button class="filter-btn" data-filter="Peer support"         aria-pressed="false">Peer support</button>
+              <button class="filter-btn" data-filter="Self-help strategies" aria-pressed="false">Self-help strategies</button>
+              <button class="filter-btn" data-filter="Other"                aria-pressed="false">Other</button>
+            </nav>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Stories grid -->
+      <section class="resources-grid-section" aria-labelledby="stories-list-label">
+        <div class="container">
+          <h2 class="visually-hidden" id="stories-list-label">Stories</h2>
+
+          <div
+            id="stories-grid"
+            class="resources-grid"
+            aria-live="polite"
+            aria-atomic="false"
+          ></div>
+
+          <p id="stories-empty" class="resources-empty" hidden role="status">
+            <strong>No stories found.</strong><br />
+            Try a different search term or filter.
+          </p>
+
+          <div id="pagination" class="pagination-wrap" aria-live="polite"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <div id="footer-root"></div>
+
+    <script type="module" src="../js/pages/stories-page.js"></script>
+  </body>
+</html>
