@@ -1,0 +1,48 @@
+/* Container & Typography */
+.directory-container {
+    background-color: #FFF8F0; /* Floral White */
+    padding: 60px 20px;
+}
+
+.brand-serif {
+    font-family: 'Fraunces', serif; /* */
+    color: #002626; /* Evergreen */
+}
+
+.body-text {
+    font-family: 'Inter', sans-serif; /* */
+    color: #4B4B4B; /* Charcoal for WCAG compliance */
+}
+
+/* Responsive Layout */
+.ngo-grid {
+    display: grid; /* */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* Components */
+.ngo-card {
+    background-color: #FFFFFF;
+    border: 1px solid #A8CBB7; /* Soft Sage */
+    border-radius: 12px;
+    padding: 25px;
+}
+
+.card-badge {
+    background-color: #A8CBB7; /* Soft Sage */
+    color: #002626; /* Evergreen */
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.btn-primary {
+    background-color: #4F8A6F; /* Jungle Teal */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+}
