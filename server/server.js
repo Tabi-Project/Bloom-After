@@ -1,13 +1,32 @@
-const express = require('express')
-const cloudinary = require('cloudinary').v2
+import express from 'express';
+import { v2 as cloudinary } from 'cloudinary';
+import dotenv from 'dotenv';
+import connectDB from './config/db.js';
+import authRouter from './routes/authRouter.js';
+import cookieParser from 'cookie-parser';
+import resourceRouter from './routes/resourceRoute.js';
 
-const app = express()
-app.use(express.json())
+dotenv.config();
+
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/resources', resourceRouter);
 
 app.get('/', (req, res) => {
-  res.send('Hello World')
-})
+  res.send('Hello World');
+});
 
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000')
-})
+const startServer = async () => {
+  try {
+    await connectDB(process.env.MONGO_URI);
+    app.listen(3000, () => {
+      console.log('Server is running on port 3000');
+    });
+  } catch (err) {
+    console.error('Error starting server:', err);
+  }
+};
+
+startServer();

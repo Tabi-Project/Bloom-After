@@ -1015,7 +1015,7 @@
 }
 
 .footer-column ul li a:hover {
-  color: var(--color-brand-300); /* Fixed from broken --accent-mint */
+  color: var(--color-brand-300);
 }
 
 /* Bottom Section */
@@ -1027,7 +1027,7 @@
 
 .disclaimer {
   font-size: var(--font-size-xs);
-  color: var(--color-text-muted); /* Fixed from broken --text-muted */
+  color: var(--color-text-muted); 
   line-height: 1.5;
   margin-bottom: var(--space-8);
 }
@@ -1046,10 +1046,10 @@
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-sm);
   font-weight: 500;
-  border: 1px solid var(--color-brand-300); /* Fixed from broken --accent-mint */
+  border: 1px solid var(--color-brand-300); 
 }
 
-/* Responsiveness (Footer & Voices overrides) */
+/* Responsiveness */
 @media (max-width: 768px) {
   .main-footer {
     padding: var(--space-10) var(--space-5);
