@@ -62,59 +62,17 @@ document.addEventListener('DOMContentLoaded', () => {
   if (editBtn) editBtn.addEventListener('click', () => { window.location.href = 'submit-story.html'; });
 
   const confirmBtn  = document.getElementById('confirm-btn');
-  const submitError  = document.getElementById('submit-error');
 
   if (confirmBtn) {
-    confirmBtn.addEventListener('click', async () => {
+    confirmBtn.addEventListener('click', () => {
       confirmBtn.disabled = true;
       confirmBtn.textContent = 'Submitting…';
-      if (submitError) submitError.hidden = true;
 
-      try {
-        const formData = new FormData();
-        formData.append('name',     pending.name     || '');
-        formData.append('story',    pending.story    || '');
-        formData.append('location', pending.location || '');
-        formData.append('privacy',  pending.privacy  || 'named');
-        formData.append('consent',  pending.consent ? 'true' : 'false');
-        // repeated key — multer collects these as req.body.what_helped array
-        (pending.tags || []).forEach(t => formData.append('what_helped', t));
-
-        if (pending.image && pending.image.startsWith('data:')) {
-          const blob = base64ToBlob(pending.image);
-          formData.append('image', blob, 'story-image.jpg');
-        }
-
-        const res = await fetch('/api/v1/stories', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!res.ok) throw new Error(`Server error: ${res.status}`);
-
-        const json = await res.json();
-
-        pending.confirmedAt = Date.now();
-        pending.storyId     = json.data?._id ?? null;
-        sessionStorage.setItem('submittedStory', JSON.stringify(pending));
-        sessionStorage.removeItem('pendingStory');
-        window.location.href = 'submit-success.html';
-
-      } catch (err) {
-        console.error('Submission error:', err);
-        confirmBtn.disabled = false;
-        confirmBtn.innerHTML = 'Submit for Moderation <span class="material-symbols-outlined" aria-hidden="true">send</span>';
-        if (submitError) submitError.hidden = false;
-      }
+      pending.confirmedAt = Date.now();
+      pending.storyId = null;
+      sessionStorage.setItem('submittedStory', JSON.stringify(pending));
+      sessionStorage.removeItem('pendingStory');
+      window.location.href = 'submit-success.html';
     });
   }
 });
-
-function base64ToBlob(dataUrl) {
-  const [header, data] = dataUrl.split(',');
-  const mime  = header.match(/:(.*?);/)[1];
-  const bytes = atob(data);
-  const arr   = new Uint8Array(bytes.length);
-  for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
-  return new Blob([arr], { type: mime });
-}
