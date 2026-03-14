@@ -14,6 +14,12 @@ const normalizeClinic = (clinic) => ({
   is_open_247: Boolean(clinic?.is_open_247),
   opening_hours: clinic?.opening_hours || "",
   consultation_mode: clinic?.consultation_mode || "both",
+  accepting_new_patients:
+    typeof clinic?.accepting_new_patients === "boolean"
+      ? clinic.accepting_new_patients
+      : undefined,
+  credentials: clinic?.credentials || "",
+  languages: clinic?.languages || [],
   focus_areas: clinic?.focus_areas || [],
   contact: clinic?.contact || {},
   services: clinic?.services || [],

@@ -75,6 +75,18 @@ const clinicSchema = new mongoose.Schema(
       enum: ['both', 'remote', 'in_person'],
       required: true,
     },
+    accepting_new_patients: {
+      type: Boolean,
+      default: true,
+    },
+    credentials: {
+      type: String,
+      default: '',
+    },
+    languages: {
+      type: [String],
+      default: [],
+    },
     focus_areas: {
       type: [String],
       default: [],

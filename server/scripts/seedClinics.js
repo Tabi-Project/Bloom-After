@@ -19,6 +19,9 @@ const clinics = [
     is_open_247: true,
     opening_hours: 'Open 24/7',
     consultation_mode: 'both',
+    accepting_new_patients: true,
+    credentials: 'MBBS, FMCPsych',
+    languages: ['English', 'Yoruba'],
     focus_areas: ['perinatal_anxiety', 'psychiatric_medication'],
     contact: {
       phone: '0800 111 2222',
@@ -40,6 +43,9 @@ const clinics = [
     is_open_247: false,
     opening_hours: 'Mon-Fri: 9 AM - 5 PM',
     consultation_mode: 'remote',
+    accepting_new_patients: true,
+    credentials: 'Licensed Counsellors',
+    languages: ['English'],
     focus_areas: ['perinatal_anxiety', 'relationship_support'],
     contact: {
       phone: '0809 111 6264',
@@ -61,6 +67,9 @@ const clinics = [
     is_open_247: false,
     opening_hours: 'Mon-Sat: 10 AM - 4 PM',
     consultation_mode: 'both',
+    accepting_new_patients: true,
+    credentials: 'MBBS, FWACPsych',
+    languages: ['English', 'Igbo'],
     focus_areas: ['psychiatric_medication', 'birth_trauma'],
     contact: {
       phone: '0810 222 3333',
@@ -82,6 +91,9 @@ const clinics = [
     is_open_247: false,
     opening_hours: 'Mon-Fri: 8 AM - 6 PM',
     consultation_mode: 'in_person',
+    accepting_new_patients: false,
+    credentials: 'Clinical Psychologists',
+    languages: ['English', 'Yoruba'],
     focus_areas: ['pregnancy_loss', 'birth_trauma', 'relationship_support'],
     contact: {
       phone: '0800 000 1111',
@@ -103,6 +115,9 @@ const clinics = [
     is_open_247: true,
     opening_hours: 'Open 24/7',
     consultation_mode: 'both',
+    accepting_new_patients: true,
+    credentials: 'Consultant Psychiatrist',
+    languages: ['English', 'Yoruba'],
     focus_areas: ['psychiatric_medication'],
     contact: {
       phone: '0800 999 8888',
@@ -124,6 +139,9 @@ const clinics = [
     is_open_247: true,
     opening_hours: 'Open 24/7',
     consultation_mode: 'both',
+    accepting_new_patients: true,
+    credentials: 'Psychiatry Department',
+    languages: ['English', 'Hausa'],
     focus_areas: ['psychiatric_medication', 'perinatal_anxiety'],
     contact: {
       phone: '09 290 3222',
@@ -145,6 +163,9 @@ const clinics = [
     is_open_247: true,
     opening_hours: 'Open 24/7',
     consultation_mode: 'both',
+    accepting_new_patients: true,
+    credentials: 'Mental Health Specialists',
+    languages: ['English'],
     focus_areas: ['perinatal_anxiety', 'relationship_support'],
     contact: {
       phone: '0815 288 8888',
@@ -166,6 +187,9 @@ const clinics = [
     is_open_247: false,
     opening_hours: 'Sat: 10 AM - 12 PM',
     consultation_mode: 'in_person',
+    accepting_new_patients: true,
+    credentials: 'Peer Facilitators',
+    languages: ['English'],
     focus_areas: ['pregnancy_loss', 'perinatal_anxiety'],
     contact: {
       phone: '09 291 0000',
@@ -187,6 +211,9 @@ const clinics = [
     is_open_247: true,
     opening_hours: 'Open 24/7',
     consultation_mode: 'both',
+    accepting_new_patients: true,
+    credentials: 'Teaching Hospital Psychiatry',
+    languages: ['English', 'Yoruba'],
     focus_areas: ['psychiatric_medication', 'perinatal_anxiety'],
     contact: {
       phone: '0810 000 0000',
@@ -208,6 +235,9 @@ const clinics = [
     is_open_247: false,
     opening_hours: 'Mon-Fri: 9 AM - 5 PM',
     consultation_mode: 'remote',
+    accepting_new_patients: true,
+    credentials: 'Licensed Therapist',
+    languages: ['English', 'Yoruba'],
     focus_areas: ['relationship_support', 'perinatal_anxiety'],
     contact: {
       phone: '0803 111 2222',
@@ -229,6 +259,9 @@ const clinics = [
     is_open_247: true,
     opening_hours: 'Open 24/7',
     consultation_mode: 'both',
+    accepting_new_patients: true,
+    credentials: 'Psychiatry Department',
+    languages: ['English', 'Pidgin'],
     focus_areas: ['psychiatric_medication'],
     contact: {
       phone: '0800 777 6666',
@@ -250,6 +283,9 @@ const clinics = [
     is_open_247: true,
     opening_hours: 'Open 24/7',
     consultation_mode: 'both',
+    accepting_new_patients: true,
+    credentials: 'Neuropsychiatric Hospital',
+    languages: ['English', 'Pidgin'],
     focus_areas: ['psychiatric_medication'],
     contact: {
       phone: '0802 222 1111',
@@ -271,6 +307,9 @@ const clinics = [
     is_open_247: true,
     opening_hours: 'Open 24/7',
     consultation_mode: 'both',
+    accepting_new_patients: true,
+    credentials: 'Neuropsychiatric Hospital',
+    languages: ['English', 'Igbo'],
     focus_areas: ['perinatal_anxiety', 'relationship_support'],
     contact: {
       phone: '0804 444 5555',
@@ -292,6 +331,9 @@ const clinics = [
     is_open_247: false,
     opening_hours: 'Wed: 4 PM - 6 PM',
     consultation_mode: 'remote',
+    accepting_new_patients: true,
+    credentials: 'Support Group Facilitators',
+    languages: ['English', 'Igbo'],
     focus_areas: ['birth_trauma', 'perinatal_anxiety'],
     contact: {
       phone: '0805 555 6666',
@@ -313,6 +355,9 @@ const clinics = [
     is_open_247: true,
     opening_hours: 'Open 24/7',
     consultation_mode: 'both',
+    accepting_new_patients: true,
+    credentials: 'Teaching Hospital Psychiatry',
+    languages: ['English', 'Hausa'],
     focus_areas: ['psychiatric_medication', 'perinatal_anxiety'],
     contact: {
       phone: '0806 666 7777',

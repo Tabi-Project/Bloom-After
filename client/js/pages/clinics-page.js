@@ -54,11 +54,8 @@ async function init() {
     <div class="skeleton-card"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div><div class="skeleton-line mt-4"></div></div></div>
   `.repeat(4);
 
-  clinicsData = await fetchClinics();
-  filteredClinics = [...clinicsData];
-
   initMap();
-  applyFilters();
+  await refreshClinics({ q: '' });
   bindEvents();
 }
 
@@ -126,9 +123,12 @@ function renderList() {
     if (clinic.cost_type === 'free' || clinic.cost_type === 'subsidised') tags.unshift('Free / Subsidised');
     let tagHtml = tags.map(t => `<span class="tag-pill">${t}</span>`).join('');
 
-    const statusBadge = clinic.accepting_new_patients
-      ? `<span class="tag-pill status-accepting">Accepting New Patients</span>`
-      : `<span class="tag-pill status-full">Currently Full</span>`;
+    const hasStatus = typeof clinic.accepting_new_patients === 'boolean';
+    const statusBadge = hasStatus
+      ? clinic.accepting_new_patients
+        ? `<span class="tag-pill status-accepting">Accepting New Patients</span>`
+        : `<span class="tag-pill status-full">Currently Full</span>`
+      : '';
 
     return `
       <article class="clinic-card" data-id="${clinic.id}" tabindex="0">
@@ -164,26 +164,6 @@ function applyFilters() {
   refreshClinics({ q: query, lat, lng });
 }
 
-  filteredClinics = clinicsData.filter(c => {
-    const matchesSearch = c.name.toLowerCase().includes(query) || c.city.toLowerCase().includes(query) || c.state.toLowerCase().includes(query);
-    const matchesProvider = activeProvider === 'all' || c.provider_type === activeProvider;
-    const matchesMode = activeMode === 'all' || c.consultation_mode === 'both' || c.consultation_mode === activeMode;
-    const matchesCost = activeCosts.length === 0 ||
-      (activeCosts.includes('free_subsidised') && (c.cost_type === 'free' || c.cost_type === 'subsidised')) ||
-      (activeCosts.includes('private') && c.cost_type === 'private');
-    const matchesFocus = activeFocus.length === 0 || activeFocus.some(focus => c.focus_areas.includes(focus));
-
-    return matchesSearch && matchesProvider && matchesMode && matchesCost && matchesFocus;
-  });
-
-  if (userLocation) {
-    filteredClinics.forEach(c => c.distance = calculateDistance(userLocation[0], userLocation[1], c.coordinates[0], c.coordinates[1]));
-    filteredClinics.sort((a, b) => a.distance - b.distance);
-  }
-
-  displayLimit = INITIAL_LIMIT;
-  renderList();
-  renderMarkers();
 function scheduleFilterRefresh() {
   if (searchDebounceId) clearTimeout(searchDebounceId);
   searchDebounceId = setTimeout(() => applyFilters(), 350);
@@ -284,11 +264,6 @@ function toggleLocationState(forceState) {
     DOM.locationText.textContent = `Use my current location`;
     DOM.locationBtn.classList.remove('active');
 
-    map.eachLayer(layer => { if (layer instanceof L.CircleMarker) map.removeLayer(layer); });
-
-    clinicsData.forEach(c => c.distance = null);
-    clinicsData.sort((a, b) => a.id - b.id);
-    
     if (geoWatchId !== null) {
       navigator.geolocation.clearWatch(geoWatchId);
       geoWatchId = null;
@@ -304,21 +279,10 @@ function toggleLocationState(forceState) {
   }
 }
 
-function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180, dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
-  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
-}
-
 function openDetailsPanel(id) {
   const clinic = clinicsData.find(c => String(c.id) === String(id));
   if (!clinic) return;
   currentClinicId = clinic.id;
-
-  const statusBadge = clinic.accepting_new_patients
-    ? `<span class="tag-pill status-accepting">Accepting New Patients</span>`
-    : `<span class="tag-pill status-full">Currently Full</span>`;
 
   const expertiseText = clinic.focus_areas && clinic.focus_areas.length > 0
     ? clinic.focus_areas.map(f => f.replace('_', ' ')).join(', ')
@@ -328,13 +292,13 @@ function openDetailsPanel(id) {
     <div class="clinic-info-grid">
       ${clinic.credentials ? `<div class="info-item"><span class="info-label">Credentials</span><span class="info-value">${clinic.credentials}</span></div>` : ''}
       ${expertiseText ? `<div class="info-item"><span class="info-label">Expertise</span><span class="info-value text-capitalize">${expertiseText}</span></div>` : ''}
-      ${clinic.languages ? `<div class="info-item"><span class="info-label">Languages</span><span class="info-value">${clinic.languages.join(', ')}</span></div>` : ''}
+      ${clinic.languages && clinic.languages.length ? `<div class="info-item"><span class="info-label">Languages</span><span class="info-value">${clinic.languages.join(', ')}</span></div>` : ''}
       ${clinic.opening_hours ? `<div class="info-item"><span class="info-label">Hours</span><span class="info-value">${clinic.opening_hours}</span></div>` : ''}
       ${clinic.fee_range ? `<div class="info-item"><span class="info-label">Consultation Fee</span><span class="info-value">${clinic.fee_range}</span></div>` : ''}
     </div>
   `;
 
-  const cleanPhone = clinic.contact.phone.replace(/\s+/g, '');
+  const cleanPhone = (clinic.contact?.phone || '').replace(/\s+/g, '');
   const waPhone = cleanPhone.startsWith('0') ? '234' + cleanPhone.substring(1) : cleanPhone;
 
   DOM.panelContent.innerHTML = `
@@ -351,7 +315,7 @@ function openDetailsPanel(id) {
     <div class="panel-contact-actions">
       <a href="tel:${cleanPhone}" class="btn-action">Call</a>
       <a href="https://wa.me/${waPhone}" target="_blank" class="btn-action">WhatsApp</a>
-      <a href="mailto:${clinic.contact.email}" class="btn-action">Email</a>
+      <a href="mailto:${clinic.contact?.email || ''}" class="btn-action">Email</a>
     </div>
 
     <h3 class="panel-section-title mt-4">Services Offered</h3>
