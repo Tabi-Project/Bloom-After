@@ -1,4 +1,4 @@
-import { fetchClinics } from '../data/clinics.js';
+import { fetchClinics, submitClinicReview } from '../data/clinics-api.js';
 import { renderNavbar, initNavbar } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 
@@ -29,7 +29,14 @@ let filteredClinics = [];
 let map;
 let markersLayer;
 let isLocationActive = false;
-let userLocation = null;
+let userLocation = null; 
+let activeSearchQuery = '';
+let inFlightController = null;
+let currentClinicId = null;
+let searchDebounceId = null;
+let geoWatchId = null;
+let geoWatchTimeoutId = null;
+let bestAccuracy = null;
 
 const INITIAL_LIMIT = 5;
 let displayLimit = INITIAL_LIMIT;
@@ -47,12 +54,54 @@ async function init() {
     <div class="skeleton-card"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div><div class="skeleton-line mt-4"></div></div></div>
   `.repeat(4);
 
-  clinicsData = await fetchClinics();
-  filteredClinics = [...clinicsData];
-
   initMap();
-  applyFilters();
+  await refreshClinics({ q: '' });
   bindEvents();
+}
+
+async function refreshClinics({ q = '', lat, lng } = {}) {
+  if (inFlightController) {
+    inFlightController.abort();
+  }
+  inFlightController = new AbortController();
+  const { signal } = inFlightController;
+
+  const activeProvider = document.querySelector('input[name="provider_type"]:checked').value;
+  const activeMode = document.querySelector('input[name="consultation_mode"]:checked').value;
+  const activeCosts = Array.from(document.querySelectorAll('input[data-filter-group="cost"]:checked')).map(cb => cb.value);
+  const activeFocus = Array.from(document.querySelectorAll('input[data-filter-group="focus"]:checked')).map(cb => cb.value);
+
+  const costType = activeCosts.length === 1 ? activeCosts[0] : '';
+
+  try {
+    const response = await fetchClinics(
+      {
+        q,
+        lat,
+        lng,
+        provider_type: activeProvider,
+        consultation_mode: activeMode,
+        cost_type: costType,
+        focus: activeFocus,
+        limit: 50,
+      },
+      { signal }
+    );
+
+    clinicsData = response.data || [];
+    filteredClinics = [...clinicsData];
+    activeSearchQuery = q;
+    displayLimit = INITIAL_LIMIT;
+    renderList();
+    renderMarkers();
+  } catch (error) {
+    if (error?.name === 'AbortError') return;
+    clinicsData = [];
+    filteredClinics = [];
+    DOM.resultsCount.textContent = 'Unable to load clinics right now.';
+    DOM.listContainer.innerHTML = `<p class="empty-state-msg">Please try again shortly.</p>`;
+    DOM.loadMoreBtn.hidden = true;
+  }
 }
 
 function renderList() {
@@ -74,9 +123,12 @@ function renderList() {
     if (clinic.cost_type === 'free' || clinic.cost_type === 'subsidised') tags.unshift('Free / Subsidised');
     let tagHtml = tags.map(t => `<span class="tag-pill">${t}</span>`).join('');
 
-    const statusBadge = clinic.accepting_new_patients
-      ? `<span class="tag-pill status-accepting">Accepting New Patients</span>`
-      : `<span class="tag-pill status-full">Currently Full</span>`;
+    const hasStatus = typeof clinic.accepting_new_patients === 'boolean';
+    const statusBadge = hasStatus
+      ? clinic.accepting_new_patients
+        ? `<span class="tag-pill status-accepting">Accepting New Patients</span>`
+        : `<span class="tag-pill status-full">Currently Full</span>`
+      : '';
 
     return `
       <article class="clinic-card" data-id="${clinic.id}" tabindex="0">
@@ -106,32 +158,15 @@ function renderList() {
 }
 
 function applyFilters() {
-  const query = DOM.searchInput.value.toLowerCase();
-  const activeProvider = document.querySelector('input[name="provider_type"]:checked').value;
-  const activeMode = document.querySelector('input[name="consultation_mode"]:checked').value;
-  const activeCosts = Array.from(document.querySelectorAll('input[data-filter-group="cost"]:checked')).map(cb => cb.value);
-  const activeFocus = Array.from(document.querySelectorAll('input[data-filter-group="focus"]:checked')).map(cb => cb.value);
+  const query = DOM.searchInput.value.trim();
+  const lat = userLocation ? userLocation[0] : undefined;
+  const lng = userLocation ? userLocation[1] : undefined;
+  refreshClinics({ q: query, lat, lng });
+}
 
-  filteredClinics = clinicsData.filter(c => {
-    const matchesSearch = c.name.toLowerCase().includes(query) || c.city.toLowerCase().includes(query) || c.state.toLowerCase().includes(query);
-    const matchesProvider = activeProvider === 'all' || c.provider_type === activeProvider;
-    const matchesMode = activeMode === 'all' || c.consultation_mode === 'both' || c.consultation_mode === activeMode;
-    const matchesCost = activeCosts.length === 0 ||
-      (activeCosts.includes('free_subsidised') && (c.cost_type === 'free' || c.cost_type === 'subsidised')) ||
-      (activeCosts.includes('private') && c.cost_type === 'private');
-    const matchesFocus = activeFocus.length === 0 || activeFocus.some(focus => c.focus_areas.includes(focus));
-
-    return matchesSearch && matchesProvider && matchesMode && matchesCost && matchesFocus;
-  });
-
-  if (userLocation) {
-    filteredClinics.forEach(c => c.distance = calculateDistance(userLocation[0], userLocation[1], c.coordinates[0], c.coordinates[1]));
-    filteredClinics.sort((a, b) => a.distance - b.distance);
-  }
-
-  displayLimit = INITIAL_LIMIT;
-  renderList();
-  renderMarkers();
+function scheduleFilterRefresh() {
+  if (searchDebounceId) clearTimeout(searchDebounceId);
+  searchDebounceId = setTimeout(() => applyFilters(), 350);
 }
 
 function initMap() {
@@ -166,45 +201,88 @@ function toggleLocationState(forceState) {
     if (!navigator.geolocation) return alert("Geolocation not supported.");
     DOM.locationText.textContent = `Locating...`;
 
-    navigator.geolocation.getCurrentPosition((pos) => {
-      userLocation = [pos.coords.latitude, pos.coords.longitude];
+    const geoOptions = {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0,
+    };
+
+    const applyLocationUpdate = (pos) => {
+      const { latitude, longitude, accuracy } = pos.coords || {};
+      if (typeof latitude !== 'number' || typeof longitude !== 'number') return;
+
+      if (bestAccuracy !== null && typeof accuracy === 'number' && accuracy >= bestAccuracy) {
+        return;
+      }
+
+      bestAccuracy = typeof accuracy === 'number' ? accuracy : bestAccuracy;
+      userLocation = [latitude, longitude];
       DOM.locationText.textContent = `✕ Clear Location`;
       DOM.locationBtn.classList.add('active');
 
       applyFilters();
       map.setView(userLocation, 12);
-      L.circleMarker(userLocation, { color: '#4f8a6f', radius: 8, fillOpacity: 1 }).addTo(map).bindPopup("You are here").openPopup();
+      L.circleMarker(userLocation, { color: '#4f8a6f', radius: 8, fillOpacity: 1 })
+        .addTo(map)
+        .bindPopup("You are here")
+        .openPopup();
+
+      if (bestAccuracy !== null && bestAccuracy <= 100 && geoWatchId !== null) {
+        navigator.geolocation.clearWatch(geoWatchId);
+        geoWatchId = null;
+      }
+    };
+
+    navigator.geolocation.getCurrentPosition((pos) => {
+      applyLocationUpdate(pos);
     }, () => {
       toggleLocationState(false);
       alert("Unable to retrieve location. Please check browser permissions.");
-    });
+    }, geoOptions);
+
+    if (geoWatchId !== null) {
+      navigator.geolocation.clearWatch(geoWatchId);
+      geoWatchId = null;
+    }
+
+    geoWatchId = navigator.geolocation.watchPosition(
+      (pos) => applyLocationUpdate(pos),
+      () => {},
+      geoOptions,
+    );
+
+    if (geoWatchTimeoutId) clearTimeout(geoWatchTimeoutId);
+    geoWatchTimeoutId = setTimeout(() => {
+      if (geoWatchId !== null) {
+        navigator.geolocation.clearWatch(geoWatchId);
+        geoWatchId = null;
+      }
+    }, 20000);
   } else {
     userLocation = null;
+    bestAccuracy = null;
     DOM.locationText.textContent = `Use my current location`;
     DOM.locationBtn.classList.remove('active');
 
-    map.eachLayer(layer => { if (layer instanceof L.CircleMarker) map.removeLayer(layer); });
+    if (geoWatchId !== null) {
+      navigator.geolocation.clearWatch(geoWatchId);
+      geoWatchId = null;
+    }
+    if (geoWatchTimeoutId) {
+      clearTimeout(geoWatchTimeoutId);
+      geoWatchTimeoutId = null;
+    }
 
-    clinicsData.forEach(c => c.distance = null);
-    clinicsData.sort((a, b) => a.id - b.id);
+    map.eachLayer(layer => { if (layer instanceof L.CircleMarker) map.removeLayer(layer); });
+    
     applyFilters();
   }
 }
 
-function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180, dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
-  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
-}
-
 function openDetailsPanel(id) {
-  const clinic = clinicsData.find(c => c.id === Number(id));
+  const clinic = clinicsData.find(c => String(c.id) === String(id));
   if (!clinic) return;
-
-  const statusBadge = clinic.accepting_new_patients
-    ? `<span class="tag-pill status-accepting">Accepting New Patients</span>`
-    : `<span class="tag-pill status-full">Currently Full</span>`;
+  currentClinicId = clinic.id;
 
   const expertiseText = clinic.focus_areas && clinic.focus_areas.length > 0
     ? clinic.focus_areas.map(f => f.replace('_', ' ')).join(', ')
@@ -214,20 +292,22 @@ function openDetailsPanel(id) {
     <div class="clinic-info-grid">
       ${clinic.credentials ? `<div class="info-item"><span class="info-label">Credentials</span><span class="info-value">${clinic.credentials}</span></div>` : ''}
       ${expertiseText ? `<div class="info-item"><span class="info-label">Expertise</span><span class="info-value text-capitalize">${expertiseText}</span></div>` : ''}
-      ${clinic.languages ? `<div class="info-item"><span class="info-label">Languages</span><span class="info-value">${clinic.languages.join(', ')}</span></div>` : ''}
+      ${clinic.languages && clinic.languages.length ? `<div class="info-item"><span class="info-label">Languages</span><span class="info-value">${clinic.languages.join(', ')}</span></div>` : ''}
       ${clinic.opening_hours ? `<div class="info-item"><span class="info-label">Hours</span><span class="info-value">${clinic.opening_hours}</span></div>` : ''}
       ${clinic.fee_range ? `<div class="info-item"><span class="info-label">Consultation Fee</span><span class="info-value">${clinic.fee_range}</span></div>` : ''}
     </div>
   `;
 
-  const cleanPhone = clinic.contact.phone.replace(/\s+/g, '');
+  const cleanPhone = (clinic.contact?.phone || '').replace(/\s+/g, '');
   const waPhone = cleanPhone.startsWith('0') ? '234' + cleanPhone.substring(1) : cleanPhone;
 
   DOM.panelContent.innerHTML = `
-    <div class="panel-header-section">
-      ${statusBadge}
-      <h2 id="slide-panel-title" class="panel-clinic-name mt-2">${clinic.name}</h2>
-      <p class="panel-clinic-address">${clinic.contact.address}</p>
+    <h2 id="slide-panel-title" class="panel-clinic-name">${clinic.name}</h2>
+    <p class="panel-clinic-address">${clinic.contact?.address || ''}</p>
+    
+    <div class="panel-contact-card">
+      <a href="tel:${(clinic.contact?.phone || '').replace(/\s+/g, '')}" class="panel-contact-phone">${clinic.contact?.phone || ''}</a>
+      <p class="panel-contact-email">${clinic.contact?.email || ''}</p>
     </div>
 
     ${detailsGrid}
@@ -235,7 +315,7 @@ function openDetailsPanel(id) {
     <div class="panel-contact-actions">
       <a href="tel:${cleanPhone}" class="btn-action">Call</a>
       <a href="https://wa.me/${waPhone}" target="_blank" class="btn-action">WhatsApp</a>
-      <a href="mailto:${clinic.contact.email}" class="btn-action">Email</a>
+      <a href="mailto:${clinic.contact?.email || ''}" class="btn-action">Email</a>
     </div>
 
     <h3 class="panel-section-title mt-4">Services Offered</h3>
@@ -319,7 +399,7 @@ function setupReviewForm() {
     textError.hidden = true;
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     let isValid = true;
 
@@ -338,10 +418,23 @@ function setupReviewForm() {
       btnSubmit.disabled = true;
       btnSubmit.classList.add('submitting-state');
 
-      setTimeout(() => {
+      try {
+        if (!currentClinicId) {
+          throw new Error('Missing clinic selection.');
+        }
+        await submitClinicReview(currentClinicId, {
+          rating: Number(ratingInput.value),
+          text: reviewText.value.trim(),
+        });
         form.classList.add('submitted');
         successState.hidden = false;
-      }, 1200);
+      } catch (error) {
+        alert(error?.message || 'Unable to submit review right now.');
+      } finally {
+        btnSubmit.textContent = 'Submit for Moderation';
+        btnSubmit.disabled = false;
+        btnSubmit.classList.remove('submitting-state');
+      }
     }
   });
 }
@@ -352,7 +445,7 @@ function closePanel() {
 }
 
 function bindEvents() {
-  DOM.searchInput.addEventListener('input', applyFilters);
+  DOM.searchInput.addEventListener('input', scheduleFilterRefresh);
   DOM.filterRadios.forEach(r => r.addEventListener('change', applyFilters));
   DOM.filterCheckboxes.forEach(cb => cb.addEventListener('change', applyFilters));
 
@@ -382,7 +475,7 @@ function bindEvents() {
 
     const card = e.target.closest('.clinic-card');
     if (card) {
-      const clinic = clinicsData.find(c => c.id === Number(card.dataset.id));
+      const clinic = clinicsData.find(c => String(c.id) === String(card.dataset.id));
       if (clinic && map) {
         map.flyTo(clinic.coordinates, 15, { duration: 0.5 });
         DOM.toggleMap.click();
