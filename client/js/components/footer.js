@@ -15,28 +15,28 @@ const footerLinks = [
   {
     title: 'SUPPORT',
     items: [
-      { text: 'Resources', href: '/resources.html' },
-      { text: 'Find a Clinic', href: '/clinics.html' },
-      { text: 'Specialists', href: '/specialists.html' },
-      { text: 'Lifestyle Guides', href: '/lifestyle.html' },
+      { text: 'Resources', href: 'resources.html' },
+      { text: 'Find a Clinic', href: 'clinics.html' },
+      { text: 'Specialists', href: 'specialists.html' },
+      { text: 'Lifestyle Guides', href: 'lifestyle.html' },
     ],
   },
   {
     title: 'COMMUNITY',
     items: [
-      { text: 'Stories', href: '/stories.html' },
-      { text: 'Share Your Story', href: '/submit-story.html' },
-      { text: 'Podcasts & Media', href: '/media.html' },
-      { text: 'NGO Directory', href: '/ngos.html' },
+      { text: 'Stories', href: 'stories.html' },
+      { text: 'Share Your Story', href: 'submit-story.html' },
+      { text: 'Podcasts & Media', href: 'media.html' },
+      { text: 'NGO Directory', href: 'ngos.html' },
     ],
   },
   {
     title: 'PROJECT',
     items: [
-      { text: 'Our Team', href: '#' },
+      { text: 'Our Team', href: 'index.html#team' },
       { text: 'Privacy Policy', href: '#' },
-      { text: 'GitHub', href: '#' },
-      { text: 'Contributing Guide', href: '#' },
+      { text: 'GitHub', href: 'https://github.com/Tabi-Project/Bloom-After.git' },
+      { text: 'Contributing Guide', href: 'https://github.com/Tabi-Project/Bloom-After.git' },
     ],
   },
 ];
@@ -67,9 +67,19 @@ export const renderFooter = () => {
           ${footerLinks
             .map(
               (col) =>
-                `<div class="footer-column"><h4>${col.title}</h4><ul>${col.items
-                  .map((link) => `<li><a href="${link.href}">${link.text}</a></li>`)
-                  .join('')}</ul></div>`
+                `<div class="footer-column">
+                  <h4>${col.title}</h4>
+                  <ul>
+                    ${col.items
+                      .map((link) => {
+                        const isExternal = link.href.startsWith('http');
+                        const externalAttrs = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+                        
+                        return `<li><a href="${link.href}"${externalAttrs}>${link.text}</a></li>`;
+                      })
+                      .join('')}
+                  </ul>
+                </div>`
             )
             .join('')}
         </div>

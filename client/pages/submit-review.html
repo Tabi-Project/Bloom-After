@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Review Story - Bloom After</title>
+    <link rel="icon" type="image/x-icon" href="../assets/logo/favicon.png" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layouts.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/resources.css" />
+    <link rel="stylesheet" href="../css/stories.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  </head>
+  <body>
+    <a href="#main-content" class="visually-hidden">Skip to main content</a>
+    <main id="main-content" class="review-page">
+
+      <h1 class="page-title">Review Your Story</h1>
+      <p class="review-subtitle">This is how your story will appear to others in the library.</p>
+
+      <article class="resource-card review-card-large" aria-labelledby="review-title">
+        <figure class="resource-card-image" id="review-image-wrap">
+          <img id="review-image" src="" alt="Story image preview" />
+        </figure>
+        <div class="resource-card-body">
+          <div class="review-tags" id="review-tags-wrap" aria-label="Topics that helped"></div>
+          <h2 id="review-title" class="resource-card-title review-name"></h2>
+          <p class="review-body" id="review-story"></p>
+          <div class="review-author">
+            <div class="review-avatar" aria-hidden="true">
+              <span class="material-symbols-outlined">person</span>
+            </div>
+            <span class="review-author-name"></span>
+            <span class="review-author-meta"></span>
+          </div>
+        </div>
+      </article>
+
+      <section class="privacy-consent" aria-labelledby="privacy-heading">
+        <h3 id="privacy-heading">Privacy &amp; Consent Summary</h3>
+        <dl>
+          <div>
+            <dt><span class="material-symbols-outlined" aria-hidden="true">lock</span>Identity Preference</dt>
+            <dd class="pc-privacy"></dd>
+          </div>
+          <div>
+            <dt><span class="material-symbols-outlined" aria-hidden="true">fact_check</span>Moderation Agreement</dt>
+            <dd class="pc-consent"></dd>
+          </div>
+          <div>
+            <dt><span class="material-symbols-outlined" aria-hidden="true">public</span>Visibility</dt>
+            <dd>Community Library</dd>
+          </div>
+        </dl>
+      </section>
+
+      <p id="submit-error" class="submit-error" hidden role="alert">
+        Something went wrong. Please try again.
+      </p>
+
+      <div class="form-actions review-actions">
+        <button id="edit-btn" type="button" class="btn btn-secondary">Back</button>
+        <button id="confirm-btn" type="button" class="btn btn-primary">
+          Submit for Moderation
+          <span class="material-symbols-outlined" aria-hidden="true">send</span>
+        </button>
+      </div>
+
+      <p class="review-legal">By submitting, you agree to our Terms of Service and Community Guidelines.</p>
+
+    </main>
+
+    <script type="module" src="../js/pages/submit-review.js"></script>
+  </body>
+</html>

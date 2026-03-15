@@ -2,7 +2,7 @@ function renderNavbar(activePage = '') {
   return `
     <nav class="navbar" aria-label="Main navigation">
 
-      <a href="/index.html" class="navbar-logo" aria-label="Bloom After home">
+      <a href="../pages/index.html" class="navbar-logo" aria-label="Bloom After home">
         <img src="../assets/logo/BLOOM LIGHT primary.png" alt="Bloom After logo" />
       </a>
 
@@ -13,8 +13,8 @@ function renderNavbar(activePage = '') {
             Learn More <span class="navbar-chevron" aria-hidden="true">▾</span>
           </button>
           <nav class="navbar-dropdown-menu" aria-label="Learn More">
-            <a href="/resources.html" class="${activePage === 'resources' ? 'active' : ''}">Educational Hub</a>
-            <a href="/interventions.html" class="${activePage === 'interventions' ? 'active' : ''}">Lifestyle & Interventions</a>
+            <a href="resources.html" class="${activePage === 'resources' ? 'active' : ''}">Resources Hub</a>
+            <a href="media.html" class="${activePage === 'media' ? 'active' : ''}">Podcasts & Media</a>
           </nav>
         </span>
 
@@ -23,9 +23,9 @@ function renderNavbar(activePage = '') {
             Get Support <span class="navbar-chevron" aria-hidden="true">▾</span>
           </button>
           <nav class="navbar-dropdown-menu" aria-label="Get Support">
-            <a href="/clinics.html" class="${activePage === 'clinics' ? 'active' : ''}">Clinics & Hospitals</a>
-            <a href="/specialists.html" class="${activePage === 'specialists' ? 'active' : ''}">Specialists</a>
-            <a href="/ngos.html" class="${activePage === 'ngos' ? 'active' : ''}">NGO Directory</a>
+            <a href="clinics.html" class="${activePage === 'clinics' ? 'active' : ''}">Clinics & Hospitals</a>
+            <a href="specialists.html" class="${activePage === 'specialists' ? 'active' : ''}">Specialists</a>
+            <a href="ngos.html" class="${activePage === 'ngos' ? 'active' : ''}">NGO Directory</a>
           </nav>
         </span>
 
@@ -34,8 +34,8 @@ function renderNavbar(activePage = '') {
             Community <span class="navbar-chevron" aria-hidden="true">▾</span>
           </button>
           <nav class="navbar-dropdown-menu" aria-label="Community">
-            <a href="/stories.html" class="${activePage === 'stories' ? 'active' : ''}">Stories</a>
-            <a href="/media.html" class="${activePage === 'media' ? 'active' : ''}">Podcasts & Media</a>
+            <a href="stories.html" class="${activePage === 'stories' ? 'active' : ''}">Stories</a>
+            <a href="interventions.html" class="${activePage === 'interventions' ? 'active' : ''}">Lifestyle & Interventions</a>
           </nav>
         </span>
 
@@ -45,7 +45,7 @@ function renderNavbar(activePage = '') {
 
       </nav>
 
-      <a href="/clinics.html" class="navbar-cta">Start a Conversation</a>
+      <a href="clinics.html" class="navbar-cta">Start a Conversation</a>
 
       <button
         class="navbar-hamburger"
@@ -61,17 +61,17 @@ function renderNavbar(activePage = '') {
     <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation" aria-hidden="true">
 
       <span class="mobile-menu-group-label">Learn More</span>
-      <a href="/resources.html" class="mobile-menu-link">Educational Hub</a>
-      <a href="/interventions.html" class="mobile-menu-link">Lifestyle & Interventions</a>
+      <a href="resources.html" class="mobile-menu-link">Educational Hub</a>
+      <a href="interventions.html" class="mobile-menu-link">Lifestyle & Interventions</a>
 
       <span class="mobile-menu-group-label">Get Support</span>
-      <a href="/clinics.html" class="mobile-menu-link">Clinics & Hospitals</a>
-      <a href="/specialists.html" class="mobile-menu-link">Specialists</a>
-      <a href="/ngos.html" class="mobile-menu-link">NGO Directory</a>
+      <a href="clinics.html" class="mobile-menu-link">Clinics & Hospitals</a>
+      <a href="specialists.html" class="mobile-menu-link">Specialists</a>
+      <a href="ngos.html" class="mobile-menu-link">NGO Directory</a>
 
       <span class="mobile-menu-group-label">Community</span>
-      <a href="/stories.html" class="mobile-menu-link">Stories</a>
-      <a href="/media.html" class="mobile-menu-link">Podcasts & Media</a>
+      <a href="stories.html" class="mobile-menu-link">Stories</a>
+      <a href="media.html" class="mobile-menu-link">Podcasts & Media</a>
 
       <span class="mobile-menu-group-label">The Team</span>
       <a href="index.html#team" class="mobile-menu-link">Contributors</a>
