@@ -16,8 +16,7 @@ const errorState  = document.getElementById('error-state');
 const TYPE_LABELS = {
   'article':      'Article',
   'infographic':  'Infographic',
-  'audio':        'Audio Summary',
-  'podcast':      'Podcast',
+  'media':        'Media',
   'myth-busting': 'Myth-busting guide'
 };
 
@@ -82,11 +81,8 @@ function populateContent(resource) {
     case 'infographic':
       html = renderInfographic(resource);
       break;
-    case 'audio':
+    case 'media':
       html = renderMedia(resource);
-      break;
-    case 'podcast':
-      html = renderPodcast(resource);
       break;
     case 'myth-busting':
       html = renderMythBusting(resource);
