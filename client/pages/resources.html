@@ -35,8 +35,8 @@
       </section>
 
       <!-- Search & filters -->
-      <div class="resources-controls" role="search">
-        <div class="container resources-controls-inner">
+      <div class="page-controls" role="search">
+        <div class="container page-controls-inner">
 
           <div class="search-wrap">
             <span class="search-icon" aria-hidden="true">
@@ -55,15 +55,7 @@
           </div>
 
           <nav class="filter-tabs" aria-label="Filter resources by type">
-            <button
-              class="filter-btn active"
-              data-filter=""
-              aria-pressed="true"
-              aria-label="Show all resource types"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
+            <button class="filter-btn active" data-filter="" aria-pressed="true" aria-label="Show all focus areas">
               All
             </button>
             <button class="filter-btn" data-filter="article" aria-pressed="false">Articles</button>
@@ -88,7 +80,7 @@
             aria-atomic="false"
           ></div>
 
-          <p id="resources-empty" class="resources-empty" hidden role="status">
+          <p id="resources-empty" class="empty-state" hidden role="status">
             <strong>No resources found.</strong><br />
             Try a different search term or filter.
           </p>
