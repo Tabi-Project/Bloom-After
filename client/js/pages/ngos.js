@@ -1,6 +1,7 @@
 import { fetchNGOs } from '../data/ngos.js';
 import { renderNavbar, initNavbar } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
+import { icons } from '../components/icons.js';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -13,6 +14,7 @@ let filteredNGOs = [];
 const DOM = {
   grid: document.getElementById("ngo-grid"),
   emptyState: document.getElementById("ngo-empty"),
+  errorState: document.getElementById("ngo-error"),
   paginationWrap: document.getElementById("pagination"),
   searchInput: document.getElementById("search-input"),
   filterBtns: document.querySelectorAll("[data-filter]"),
@@ -22,7 +24,8 @@ const DOM = {
   btnCloseModal: document.getElementById("close-modal"),
   ngoForm: document.getElementById("ngo-submit-form"),
   formContainer: document.getElementById("modal-form-container"),
-  successState: document.getElementById("modal-success-state")
+  successState: document.getElementById("modal-success-state"),
+  btnRetry: document.getElementById("btn-retry")
 };
 
 async function init() {
@@ -64,14 +67,15 @@ function applyFiltersAndRender({ resetPage = false, scrollToGrid = false } = {})
 }
 
 function renderPage({ scrollToGrid = false } = {}) {
+  DOM.emptyState.hidden = true;
+  DOM.errorState.hidden = true;
+
   if (filteredNGOs.length === 0) {
     DOM.grid.innerHTML = "";
     DOM.emptyState.hidden = false;
     DOM.paginationWrap.innerHTML = "";
     return;
   }
-
-  DOM.emptyState.hidden = true;
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedItems = filteredNGOs.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -80,7 +84,7 @@ function renderPage({ scrollToGrid = false } = {}) {
   DOM.grid.innerHTML = paginatedItems.map(ngo => createNGOCard(ngo)).join("");
   renderPagination(totalPages);
 
-  if (scrollToGrid ) {
+  if (scrollToGrid) {
     DOM.grid.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 }
@@ -88,10 +92,6 @@ function renderPage({ scrollToGrid = false } = {}) {
 function createNGOCard(ngo) {
   const servicesText = ngo.services.join(', ');
   
-  const phoneIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`;
-  const mailIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`;
-  const linkIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
-
   return `
     <article class="ngo-card">
       <div class="ngo-card-image-wrapper">
@@ -107,15 +107,15 @@ function createNGOCard(ngo) {
         
         <ul class="ngo-contact-list">
           <li class="ngo-contact-item">
-            <span class="ngo-icon">${phoneIcon}</span> 
+            <span class="ngo-icon">${icons.phone}</span> 
             <a href="tel:${ngo.contact.phone.replace(/\s+/g, '')}">${ngo.contact.phone}</a>
           </li>
           <li class="ngo-contact-item">
-            <span class="ngo-icon">${mailIcon}</span> 
+            <span class="ngo-icon">${icons.email}</span> 
             <a href="mailto:${ngo.contact.email}">${ngo.contact.email}</a>
           </li>
           <li class="ngo-contact-item">
-            <span class="ngo-icon">${linkIcon}</span> 
+            <span class="ngo-icon">${icons.link}</span> 
             <a href="${ngo.website}" target="_blank" rel="noopener noreferrer">Visit Website</a>
           </li>
         </ul>
@@ -135,32 +135,56 @@ function createNGOCard(ngo) {
   `;
 }
 
+function buildPageNumbers(current, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+  const pages = [1];
+  if (current > 3) pages.push("...");
+
+  const start = Math.max(2, current - 1);
+  const end = Math.min(total - 1, current + 1);
+
+  for (let i = start; i <= end; i++) pages.push(i);
+
+  if (current < total - 2) pages.push("...");
+  pages.push(total);
+
+  return pages;
+}
+
 function renderPagination(totalPages) {
   if (totalPages <= 1) {
     DOM.paginationWrap.innerHTML = "";
     return;
   }
 
-  const pages = [];
-  for (let i = 1; i <= totalPages; i++) pages.push(i);
+  const pages = buildPageNumbers(currentPage, totalPages);
 
   DOM.paginationWrap.innerHTML = `
     <nav class="pagination" aria-label="NGO pages">
-      <button class="pagination-btn pagination-btn--prev" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled aria-disabled="true"' : ''}>Previous</button>
+      <button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled aria-disabled="true"' : ''}>
+        Previous
+      </button>
       <div class="pagination-pages" role="list">
-        ${pages.map(p => `
-          <button class="pagination-page ${p === currentPage ? "pagination-page-active" : ""}" data-page="${p}" ${p === currentPage ? 'aria-current="page"' : ''}>${p}</button>
-        `).join('')}
+        ${pages.map(p => p === "..." 
+          ? `<span class="pagination-ellipsis" aria-hidden="true">...</span>` 
+          : `<button class="pagination-page ${p === currentPage ? "pagination-page-active" : ""}" 
+                    data-page="${p}" 
+                    ${p === currentPage ? 'aria-current="page"' : ''}>${p}</button>`
+        ).join('')}
       </div>
-      <button class="pagination-btn pagination-btn--next" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled aria-disabled="true"' : ''}>Next</button>
+      <button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled aria-disabled="true"' : ''}>
+        Next
+      </button>
     </nav>
   `;
 }
 
 function showError(message) {
   DOM.grid.innerHTML = "";
-  DOM.emptyState.hidden = false;
-  DOM.emptyState.innerHTML = `<strong>Error:</strong><br/>${message}`;
+  DOM.emptyState.hidden = true;
+  DOM.errorState.hidden = false;
+  DOM.errorState.querySelector('.error-card-message').textContent = message;
 }
 
 function openModal() {
@@ -210,12 +234,13 @@ function bindEvents() {
 
   DOM.btnOpenModal.addEventListener("click", openModal);
   DOM.btnCloseModal.addEventListener("click", closeModal);
-  
   DOM.modalOverlay.addEventListener("click", (e) => {
-    if (e.target === DOM.modalOverlay) {
-      closeModal();
-    }
+    if (e.target === DOM.modalOverlay) closeModal();
   });
+
+  if (DOM.btnRetry) {
+    DOM.btnRetry.addEventListener("click", () => window.location.reload());
+  }
 
   DOM.ngoForm.addEventListener("submit", (e) => {
     e.preventDefault();
