@@ -2,7 +2,7 @@ import { fetchResources } from "../data/resources-api.js";
 import { createResourceCard, createSkeletonCard } from "../components/resourceCard.js";
 import { renderNavbar, initNavbar } from "../components/navbar.js";
 import { renderFooter } from "../components/footer.js";
-import { renderCrisisStrip } from "../components/crisisStrip.js";
+// import { renderCrisisStrip } from "../components/crisisStrip.js";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -23,9 +23,9 @@ async function init() {
   document.getElementById("navbar-root").innerHTML = renderNavbar("resources");
   initNavbar();
   document.getElementById("footer-root").innerHTML = renderFooter();
-  if (crisisRoot) {
-    crisisRoot.innerHTML = renderCrisisStrip();
-  }
+  // if (crisisRoot) {
+  //   crisisRoot.innerHTML = renderCrisisStrip();
+  // }
 
   bindEvents();
   await loadResources();
