@@ -11,6 +11,7 @@ body {
   max-width: 1300px;
   margin-inline: auto;
   padding-inline: var(--space-8);
+  margin-top: var(--space-3);
 }
 
 header {
@@ -31,11 +32,11 @@ header {
 
 main {
   flex: 1;
-  padding-top: var(--nav-height);
+  margin: 8px 0px;
 }
 
 /* Section */
-section:not(.hero) {
+.feature-section {
   padding-block: var(--space-16);
 }
 

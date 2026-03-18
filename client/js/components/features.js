@@ -13,14 +13,14 @@ const featuresData = [
     heading: "Find Care",
     desc: "Locate vetted clinics, hospitals, and specialists near you.",
     linkText: "Search Directory",
-    linkUrl: "/clinics.html",
+    linkUrl: "clinics.html",
   },
   {
     svg: icons.connect,
     heading: "Connect",
     desc: "Read moderated, real stories from other mothers who have been there.",
     linkText: "Read Stories",
-    linkUrl: "/stories.html",
+    linkUrl: "stories.html",
   },
 ];
 

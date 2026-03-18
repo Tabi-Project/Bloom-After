@@ -109,40 +109,6 @@ export function renderInfographic(resource) {
   `;
 }
 
-// Media/Audio renderer 
-export function renderMedia(resource) {
-  if (!resource || !resource.structured_content) return `<p>Content unavailable.</p>`;
-  const data = resource.structured_content;
-
-  const audioPlayer = resource.file_url
-    ? `<audio controls class="custom-audio"><source src="${resource.file_url}" type="audio/mpeg"></audio>` 
-    : `<p>Audio unavailable.</p>`;
-
-  return `
-    <article class="media-layout content-canvas">
-      <div class="media-text-col">
-        <h2 class="col-title">Summary</h2>
-        ${data.summary_paragraphs.map(p => `<p class="content-paragraph">${p}</p>`).join('')}
-      </div>
-      
-      <div class="media-player-col">
-        <div class="audio-player-box">
-          ${audioPlayer}
-        </div>
-        <div class="media-actions">
-          <a href="${resource.file_url || '#'}" download target="_blank" class="btn btn-primary">
-            Download now
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          </a>
-          <button class="btn-share share-btn" type="button">
-            Share
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-          </button>
-        </div>
-      </div>
-    </article>
-  `;
-}
 
 // Myth-Busting renderer 
 export function renderMythBusting(resource) {
@@ -175,5 +141,15 @@ export function renderMythBusting(resource) {
         `).join('')}
       </div>
     </article>
+  `;
+}
+
+export function renderMedia(resource) {
+  return `
+    <div style="text-align: center; padding: var(--space-16) 0;">
+      <p class="content-paragraph" style="font-weight: 700; color: var(--color-primary);">
+        Coming soon: Audio & Podcast content
+      </p>
+    </div>
   `;
 }
