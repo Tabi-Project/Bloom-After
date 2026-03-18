@@ -1,15 +1,13 @@
 const teamMembers = [
-  
   {
     id: 1,
     name: "Nanji Lakan",
     img: "../assets/teamImages/Nanji-Portrait.jpg",
     role: "Project/Product Lead",
-    contribution:
-      "Manage Project Priorities, Documentation and Direction",
+    contribution: "Manage Project Priorities, Documentation and Direction",
     github: "https://github.com/Shaelle11",
     linkedin: "https://www.linkedin.com/in/nanji-lakan-theshaelle",
-  }, 
+  },
 
   {
     id: 2,
@@ -31,7 +29,7 @@ const teamMembers = [
     github: "https://github.com/chiomaeze",
     linkedin: "https://www.linkedin.com/in/chiomaeze",
   },
-    {
+  {
     id: 4,
     name: "Genevieve Agugua",
     role: "Design Lead",
@@ -81,8 +79,98 @@ const teamMembers = [
     github: "https://github.com/bisialade",
     linkedin: "https://www.linkedin.com/in/bisialade",
   },
-  
 ];
+
+function initCarousel() {
+  if (window.innerWidth > 768) return;
+
+  const track = document.getElementById("contributions-container");
+  const cards = Array.from(track.children);
+  const total = cards.length;
+  if (total === 0) return;
+
+  let current = 0;
+  let startX = 0;
+  let autoPlayTimer;
+
+  // Make track scrollable via transform
+  track.style.display = "flex";
+  track.style.gap = "var(--space-4)";
+  track.style.transition = "transform 0.4s ease";
+
+  // Force each card to full width
+  cards.forEach((card) => {
+    card.style.minWidth = "96%";
+    card.style.flexShrink = "0";
+  });
+
+  // Create dots container
+  const dotsContainer = document.createElement("div");
+  dotsContainer.className = "carousel-dots";
+
+  cards.forEach((_, i) => {
+    const dot = document.createElement("button");
+    dot.className = "carousel-dot" + (i === 0 ? " active" : "");
+    dot.setAttribute("aria-label", `Go to card ${i + 1}`);
+    dot.addEventListener("click", () => goTo(i));
+    dotsContainer.appendChild(dot);
+  });
+
+  // Insert dots after the track's parent
+  track.parentElement.appendChild(dotsContainer);
+
+  
+
+  function goTo(index) {
+    current = ((index % total) + total) % total;
+    track.style.transform = `translateX(-${current * 100}%)`;
+
+    // Scale active card
+    cards.forEach((card, i) => {
+      card.style.transform = i === current ? "scale(1.05)" : "scale(0.95)";
+      card.style.transition = "transform 0.4s ease";
+      card.style.opacity = i === current ? "1" : "0.6";
+    });
+
+    dotsContainer.querySelectorAll(".carousel-dot").forEach((dot, i) => {
+      dot.classList.toggle("active", i === current);
+    });
+  }
+
+  
+
+  function startAutoPlay() {
+    autoPlayTimer = setInterval(() => goTo(current + 1), 3500);
+  }
+
+  function stopAutoPlay() {
+    clearInterval(autoPlayTimer);
+  }
+
+  startAutoPlay();
+
+  track.addEventListener("mouseenter", stopAutoPlay);
+  track.addEventListener("mouseleave", startAutoPlay);
+
+  track.addEventListener(
+    "touchstart",
+    (e) => {
+      startX = e.touches[0].clientX;
+      stopAutoPlay();
+    },
+    { passive: true },
+  );
+
+  track.addEventListener(
+    "touchend",
+    (e) => {
+      const diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+      startAutoPlay();
+    },
+    { passive: true },
+  );
+}
 
 function renderTeamMembers() {
   const container = document.getElementById("contributions-container");
@@ -116,6 +204,7 @@ function renderTeamMembers() {
 
     container.appendChild(memberCard);
   });
+  initCarousel();
 }
 
 function showModal(member) {
@@ -123,7 +212,8 @@ function showModal(member) {
   const modalBody = document.getElementById("modal-body");
   if (!modal || !modalBody) return;
 
-  const contributionText = member.contribution || "Specific contribution details coming soon.";
+  const contributionText =
+    member.contribution || "Specific contribution details coming soon.";
 
   // Populate the modal with the clicked member's data
   modalBody.innerHTML = `
@@ -134,8 +224,8 @@ function showModal(member) {
       <p class="team-member-contribution" style="text-align: left; line-height: 1.6; color: var(--color-gray-700); margin-bottom: var(--space-6);">${contributionText}</p>
       
       <div class="team-socials justify-center" style="display: flex; gap: var(--space-6); font-size: var(--font-size-xl);">
-        ${member.github ? `<a href="${member.github}" target="_blank" rel="noopener noreferrer" aria-label="GitHub" style="color: var(--color-brand-400);"><i class="fa-brands fa-github"></i></a>` : ''}
-        ${member.linkedin ? `<a href="${member.linkedin}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style="color: var(--color-brand-400);"><i class="fa-brands fa-linkedin"></i></a>` : ''}
+        ${member.github ? `<a href="${member.github}" target="_blank" rel="noopener noreferrer" aria-label="GitHub" style="color: var(--color-brand-400);"><i class="fa-brands fa-github"></i></a>` : ""}
+        ${member.linkedin ? `<a href="${member.linkedin}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style="color: var(--color-brand-400);"><i class="fa-brands fa-linkedin"></i></a>` : ""}
       </div>
     </div>
   `;
@@ -143,7 +233,7 @@ function showModal(member) {
   // Show the modal
   modal.classList.add("active");
   modal.setAttribute("aria-hidden", "false");
-  
+
   // Handle closing
   const closeModal = () => {
     modal.classList.remove("active");
@@ -151,8 +241,12 @@ function showModal(member) {
   };
 
   modal.querySelector(".modal-close").onclick = closeModal;
-  modal.onclick = (e) => { if (e.target === modal) closeModal(); }; // Close if clicking the dark overlay
-  document.onkeydown = (e) => { if (e.key === "Escape") closeModal(); }; // Close on Esc key
+  modal.onclick = (e) => {
+    if (e.target === modal) closeModal();
+  }; // Close if clicking the dark overlay
+  document.onkeydown = (e) => {
+    if (e.key === "Escape") closeModal();
+  }; // Close on Esc key
 }
 
 export { teamMembers, renderTeamMembers };

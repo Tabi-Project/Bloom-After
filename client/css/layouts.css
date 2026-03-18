@@ -131,6 +131,22 @@ section:not(.hero) {
     gap: var(--space-8);
   }
 
+  .hero-heading {
+    width: 100% !important;
+    text-align: left;
+    font-size: var(--font-size-3xl);
+  }
+
+  .hero-content {
+    background:
+      linear-gradient(
+        0deg,
+        rgba(18, 18, 18, 0.56) 0%,
+        rgba(18, 18, 18, 0.56) 100%
+      ),
+      url("../assets/images\ 1/hero-bg.png") lightgray 65% / cover no-repeat !important;
+  }
+
   .hero figure {
     order: -1;
   }
