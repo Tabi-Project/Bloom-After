@@ -419,11 +419,53 @@
   margin-bottom: var(--space-6);
 }
 
-.story-edit-body .story-paragraph {
+.story-edit-body .story-paragraph,
+.mod-rich-text p {
   font-size: var(--font-size-base);
   line-height: 1.8;
   color: var(--color-text);
   margin-bottom: var(--space-5);
+}
+
+.mod-rich-text h2 {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xl);
+  color: var(--color-brand-900);
+  margin: var(--space-3) 0 var(--space-3);
+}
+
+.mod-rich-text h3 {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-lg);
+  color: var(--color-brand-900);
+  margin: var(--space-3) 0 var(--space-3);
+}
+
+.mod-rich-text ul,
+.mod-rich-text ol {
+  margin: 0 0 var(--space-4);
+  padding-left: var(--space-6);
+}
+
+.mod-rich-text li {
+  margin-bottom: var(--space-2);
+  line-height: 1.7;
+}
+
+.mod-rich-text blockquote {
+  margin: 0 0 var(--space-4);
+  padding-left: var(--space-4);
+  border-left: 3px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.mod-rich-text a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.mod-rich-text > *:last-child {
+  margin-bottom: 0;
 }
 
 /* Submission details card */

@@ -22,10 +22,10 @@ const fmtDate = (iso) => {
 //  Content type config
 const TYPE_CONFIG = {
   story:      { label: "Story",      reviewBase: "stories-moderation.html",      badgeClass: "mod-type-story"      },
-  clinic:     { label: "Clinic",     reviewBase: "clinics-moderation.html",      badgeClass: "mod-type-clinic"     },
-  specialist: { label: "Specialist", reviewBase: "specialists-onboarding.html",  badgeClass: "mod-type-specialist" },
-  media:      { label: "Media",      reviewBase: "media-suggestions.html",       badgeClass: "mod-type-media"      },
-  request:    { label: "Request",    reviewBase: "requests-moderation.html",     badgeClass: "mod-type-request"    },
+  clinic:     { label: "Clinic",     reviewBase: "",      badgeClass: "mod-type-clinic"     },
+  specialist: { label: "Specialist", reviewBase: "",      badgeClass: "mod-type-specialist" },
+  media:      { label: "Media",      reviewBase: "",      badgeClass: "mod-type-media"      },
+  request:    { label: "Request",    reviewBase: "",      badgeClass: "mod-type-request"    },
 };
 
 function getTypeConfig(type = "") {
@@ -197,6 +197,7 @@ export function renderModerationQueue(
       : "";
 
   const typeLinks = Object.entries(TYPE_CONFIG)
+  .filter(([, cfg]) => Boolean(cfg.reviewBase))
   .map(([, cfg]) => {
     const plural = cfg.label === "Story" ? "Stories" : `${cfg.label}s`;
     return `<a href="${cfg.reviewBase}" class="mod-queue-type-link">${plural}</a>`;

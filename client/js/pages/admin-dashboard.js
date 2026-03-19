@@ -20,7 +20,6 @@ import {
 } from "../data/admin.js";
 import { renderFooter } from "../components/footer.js";
 import api from "../api.js";
-import { MOCK_STORIES } from "../data/stories.js";
 
 const ADMIN_USER_KEY = "adminUser";
 
@@ -55,7 +54,7 @@ const fetchOverviewStats = async () => {
     return { authorized: true, stats: buildOverviewStats(res.data) };
   } catch (err) {
     if (err?.status === 401 || err?.status === 403) {
-      window.location.assign("/client/pages/admin-login.html");
+      
       return { authorized: false, stats: null };
     }
     return { authorized: true, stats: statsData };
@@ -63,106 +62,38 @@ const fetchOverviewStats = async () => {
 };
 
 const fetchAllSubmissions = async () => {
-  // Mock data for all types — replace each try/catch branch with real API calls
-  const mockSubmissions = [
-    // Stories from mock data
-    ...[...MOCK_STORIES].slice(0, 3).map((s, i) => ({
-      ...s,
-      type: "story",
-      title: s.story ? s.story.slice(0, 50) + "…" : "Story submission",
-      submittedBy: s.privacy === "named" ? s.name : "Anonymous",
-      status: ["pending", "pending", "approved"][i % 3],
-      submittedAt: s.createdAt || new Date().toISOString(),
-    })),
-    // Mock clinic submissions
-    {
-      id: "clinic-1",
-      type: "clinic",
-      title: "Grace Medical Centre, Lagos",
-      submittedBy: "Dr. Amaka O.",
-      status: "pending",
-      submittedAt: new Date(Date.now() - 1 * 86400000).toISOString(),
-    },
-    {
-      id: "clinic-2",
-      type: "clinic",
-      title: "Safe Haven Postpartum Clinic",
-      submittedBy: "Chidi N.",
-      status: "pending",
-      submittedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
-    },
-    // Mock specialist submissions
-    {
-      id: "spec-1",
-      type: "specialist",
-      title: "Dr. Funmi Adeyemi — Perinatal Psychiatry",
-      submittedBy: "Dr. Funmi Adeyemi",
-      status: "pending",
-      submittedAt: new Date(Date.now() - 3 * 86400000).toISOString(),
-    },
-    // Mock media suggestion
-    {
-      id: "media-1",
-      type: "media",
-      title: "Podcast: Motherhood Unfiltered (Ep. 12)",
-      submittedBy: "Nkechi A.",
-      status: "pending",
-      submittedAt: new Date(Date.now() - 4 * 86400000).toISOString(),
-    },
-    // Mock other request
-    {
-      id: "req-1",
-      type: "request",
-      title: "Partnership request — Postpartum Support Int'l",
-      submittedBy: "admin@ppsi.org",
-      status: "pending",
-      submittedAt: new Date(Date.now() - 5 * 86400000).toISOString(),
-    },
-  ];
-
   try {
-    // Attempt to fetch all types from real API in parallel
-    const [storiesRes, clinicsRes, specialistsRes, mediaRes, requestsRes] =
-      await Promise.allSettled([
-        api.get("/api/v1/admin/stories?limit=5&sort=newest"),
-        api.get("/api/v1/admin/clinics?limit=3&sort=newest"),
-        api.get("/api/v1/admin/specialists?limit=2&sort=newest"),
-        api.get("/api/v1/admin/media?limit=2&sort=newest"),
-        api.get("/api/v1/admin/requests?limit=2&sort=newest"),
-      ]);
+    const storiesRes = await api.get("/api/v1/admin/stories");
+    const stories = storiesRes?.data?.stories || [];
 
-    const extract = (res, type) => {
-      if (res.status !== "fulfilled") return [];
-      const data = res.value?.data?.items || res.value?.data?.data || res.value?.data || [];
-      return Array.isArray(data)
-        ? data.map((item) => ({ ...item, type }))
-        : [];
-    };
+    if (!Array.isArray(stories)) return [];
 
-    const live = [
-      ...extract(storiesRes, "story"),
-      ...extract(clinicsRes, "clinic"),
-      ...extract(specialistsRes, "specialist"),
-      ...extract(mediaRes, "media"),
-      ...extract(requestsRes, "request"),
-    ];
-
-    // If we got real data use it, otherwise fall back to mock
-    if (live.length > 0) {
-      return live.sort(
+    return stories
+      .map((story) => ({
+        ...story,
+        type: "story",
+        title:
+          story.story_text?.slice(0, 80)
+          || story.story?.replace(/<[^>]+>/g, " ").trim().slice(0, 80)
+          || "Story submission",
+        submittedBy:
+          story.privacy === "named" && story.name
+            ? story.name
+            : "Anonymous",
+        submittedAt: story.createdAt || story.submittedAt,
+      }))
+      .sort(
         (a, b) =>
           new Date(b.submittedAt || b.createdAt || 0) -
           new Date(a.submittedAt || a.createdAt || 0),
       );
+  } catch (err) {
+    if (err?.status === 401 || err?.status === 403) {
+      
+      return [];
     }
-  } catch (_) {
-    // fall through to mock
+    return [];
   }
-
-  return mockSubmissions.sort(
-    (a, b) =>
-      new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0),
-  );
 };
 
 // Auth 

@@ -23,8 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (titleEl) titleEl.textContent = displayName;
-      if (excerptEl) excerptEl.textContent = s.story
-        ? (s.story.length > 300 ? s.story.slice(0, 300) + '\u2026' : s.story)
+      const storyText = s.storyText || (s.story || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      if (excerptEl) excerptEl.textContent = storyText
+        ? (storyText.length > 300 ? storyText.slice(0, 300) + '\u2026' : storyText)
         : '';
 
       if (tagsWrap) {

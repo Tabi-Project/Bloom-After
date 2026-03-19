@@ -13,6 +13,7 @@ import {
 import { renderFooter } from "../components/footer.js";
 import api from "../api.js";
 import { MOCK_STORIES } from "../data/stories.js";
+import { toRichTextHtml } from "../richText.js";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -91,11 +92,7 @@ function renderStoryEdit(story) {
     .map((t) => `<span class="review-tag">${escHtml(t)}</span>`)
     .join("");
 
-  const paragraphs = (story.story || "")
-    .split(/\n+/)
-    .filter((p) => p.trim())
-    .map((p) => `<p class="story-paragraph">${escHtml(p)}</p>`)
-    .join("");
+  const storyHtml = toRichTextHtml(story.story || "");
 
   const statusClass = `mod-status-${escHtml(story.status || "pending")}`;
 
@@ -125,7 +122,7 @@ function renderStoryEdit(story) {
           <div class="review-tags story-edit-tags">${tagsHtml}</div>
         ` : ""}
 
-        <div class="story-edit-body">${paragraphs}</div>
+        <div class="story-edit-body mod-rich-text">${storyHtml}</div>
 
         <!-- Submitter meta -->
         <div class="story-edit-submitter-card">
@@ -315,12 +312,14 @@ async function confirmAction(story, status) {
   [btnApprove, btnReject].forEach((b) => { if (b) b.disabled = true; });
 
   try {
-    await api.patch(`/api/v1/admin/stories/${id}`, {
+    const result = await api.patch(`/api/v1/admin/stories/${id}`, {
       status,
       moderatorNote: note,
       notificationEmail: email || undefined,
       rejectionMessage: status === "rejected" ? message || undefined : undefined,
     });
+
+    const emailNotification = result?.data?.emailNotification;
 
     // Update badge
     const badge = document.getElementById("story-status-badge");
@@ -338,10 +337,29 @@ async function confirmAction(story, status) {
       </p>
     `;
 
-    showFeedback(feedback, status === "approved"
+    const baseMessage = status === "approved"
       ? "Story approved and published successfully."
-      : "Story rejected. The submitter will be notified if an email address was provided.",
-      status === "approved" ? "success" : "info"
+      : "Story rejected.";
+
+    const emailMessage = (() => {
+      if (!emailNotification?.attempted) return "";
+      if (emailNotification.sent) return " Notification email sent.";
+      if (emailNotification.skipped && emailNotification.reason === "no-recipient") {
+        return " Email skipped: no notification email provided.";
+      }
+      if (emailNotification.skipped && emailNotification.reason === "service-unconfigured") {
+        return " Email skipped: Resend is not configured.";
+      }
+      if (emailNotification.reason === "send-failed") {
+        return " Email failed to send.";
+      }
+      return "";
+    })();
+
+    showFeedback(
+      feedback,
+      `${baseMessage}${emailMessage}`,
+      status === "approved" ? "success" : "info",
     );
 
   } catch (err) {

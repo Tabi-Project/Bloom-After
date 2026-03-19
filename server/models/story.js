@@ -31,6 +31,11 @@ const storySchema = new mongoose.Schema(
       trim: true,
       default: '',
     },
+    email: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     privacy: {
       type: String,
       enum: ['named', 'anonymous'],
@@ -51,7 +56,6 @@ const storySchema = new mongoose.Schema(
     // What helped — multi-select tags from the form
     what_helped: {
       type: [String],
-      enum: ['Therapy', 'Lifestyle changes', 'Peer support', 'Self-help strategies', 'Other'],
       default: [],
     },
 
@@ -82,6 +86,11 @@ const storySchema = new mongoose.Schema(
     reviewedAt: {
       type: Date,
       default: null,
+    },
+    moderatorNote: {
+      type: String,
+      trim: true,
+      default: '',
     },
   },
   { timestamps: true },
