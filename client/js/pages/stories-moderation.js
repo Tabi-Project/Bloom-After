@@ -11,7 +11,6 @@ import {
 } from "../components/adminNavbar.js";
 import { renderFooter } from "../components/footer.js";
 import api from "../api.js";
-import { MOCK_STORIES } from "../data/stories.js";
 
 // constants
 
@@ -56,6 +55,7 @@ async function init() {
   // Load stories
   renderListSkeleton();
   allStories = await fetchStories();
+  if (!allStories) return;
   applyFilters();
   bindControls();
 }
@@ -67,15 +67,14 @@ async function fetchStories() {
     const res = await api.get("/api/v1/admin/stories");
     if (res?.data?.stories) return res.data.stories;
     if (Array.isArray(res?.data))  return res.data;
-  } catch (_) { /* fall through to mock */ }
-
-  // Mock fallback — tag stories with fake statuses for demo
-  return MOCK_STORIES.map((s, i) => ({
-    ...s,
-    status: ["pending", "pending", "approved", "rejected", "pending"][i % 5],
-    submittedAt: s.createdAt || new Date().toISOString(),
-    email: s.email || null,
-  }));
+    return [];
+  } catch (err) {
+    if (err?.status === 401 || err?.status === 403) {
+      window.location.assign("/client/pages/admin-login.html");
+      return null;
+    }
+    return [];
+  }
 }
 
 // ── Filtering & pagination 
@@ -83,15 +82,18 @@ async function fetchStories() {
 function applyFilters() {
   const q = currentQuery.toLowerCase().trim();
   filtered = allStories.filter((s) => {
+    const textSource = String(s.story_text || s.story || "")
+      .replace(/<[^>]+>/g, " ")
+      .toLowerCase();
     const matchStatus = !currentStatus || s.status === currentStatus;
     const matchQuery  = !q || [
-      s.name || "", s.location || "", s.story || "",
+      s.name || "", s.location || "", textSource,
     ].some((f) => f.toLowerCase().includes(q));
     return matchStatus && matchQuery;
   });
 
   // Sort: newest first
-  filtered.sort((a, b) => new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0));
+  filtered.sort((a, b) => new Date(b.createdAt || b.submittedAt || 0) - new Date(a.createdAt || a.submittedAt || 0));
 
   currentPage = 1;
   renderList();
@@ -134,10 +136,12 @@ function renderList() {
 function renderStoryRow(story) {
   const id       = story._id || story.id;
   const name     = story.privacy === "named" && story.name ? story.name : "Anonymous";
-  const excerpt  = (story.story || "").slice(0, 120).trim() + ((story.story || "").length > 120 ? "…" : "");
+  const plain = String(story.story_text || story.story || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  const excerpt  = plain.slice(0, 120).trim() + (plain.length > 120 ? "…" : "");
   const location = story.location ? `<span class="mod-row-location">${escHtml(story.location)}</span>` : "";
-  const date     = story.submittedAt
-    ? new Date(story.submittedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+  const dateValue = story.createdAt || story.submittedAt;
+  const date     = dateValue
+    ? new Date(dateValue).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
     : "";
   const tags     = (story.what_helped || [])
     .slice(0, 2)
@@ -269,12 +273,17 @@ async function handleListClick(e) {
   btn.textContent = "…";
 
   try {
-    await api.patch(`/api/v1/admin/stories/${id}`, { status: action === "approve" ? "approved" : "rejected" });
+    const nextStatus = action === "approve" ? "approved" : "rejected";
+    await api.patch(`/api/v1/admin/stories/${id}`, { status: nextStatus });
     // Update local state
     const story = allStories.find((s) => (s._id || s.id) === id);
-    if (story) story.status = action === "approve" ? "approved" : "rejected";
+    if (story) story.status = nextStatus;
     applyFilters();
-  } catch (_) {
+  } catch (err) {
+    if (err?.status === 401 || err?.status === 403) {
+      window.location.assign("/client/pages/admin-login.html");
+      return;
+    }
     btn.disabled = false;
     btn.textContent = original;
   }

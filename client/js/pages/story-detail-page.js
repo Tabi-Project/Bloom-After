@@ -1,12 +1,21 @@
-import { MOCK_STORIES } from '../data/stories.js';
 import { renderNavbar, initNavbar } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
+import { richTextToPlainText, toRichTextHtml } from '../richText.js';
+import api from '../api.js';
 
 const navbarRoot  = document.getElementById('navbar-root');
 const footerRoot  = document.getElementById('footer-root');
 const heroBanner  = document.getElementById('resource-hero');
 const contentRoot = document.getElementById('resource-content');
 const errorState  = document.getElementById('error-state');
+
+const escapeHtml = (value = '') =>
+  String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 
 async function init() {
   if (navbarRoot) {
@@ -37,18 +46,14 @@ async function init() {
   populateMeta(story);
 }
 
-/* Fetch a single story — live API first, mock fallback */
+/* Fetch a single story from backend */
 async function fetchStory(id) {
   try {
-    const res = await fetch(`/api/v1/stories/${id}`);
-    if (res.ok) {
-      const data = await res.json();
-      return data.story || data;
-    }
+    const response = await api.get(`/api/v1/stories/${id}`);
+    return response?.story || response?.data || null;
   } catch (_) {
-    // fall through to mock
+    return null;
   }
-  return MOCK_STORIES.find(s => s._id === id) || null;
 }
 
 /* Hero */
@@ -62,7 +67,7 @@ function populateHero(story) {
   });
 
   const tagsHtml = (story.what_helped || [])
-    .map(t => `<span class="resource-hero-tag">${t}</span>`)
+    .map(t => `<span class="resource-hero-tag">${escapeHtml(t)}</span>`)
     .join('');
 
   if (story.image_url) {
@@ -75,9 +80,9 @@ function populateHero(story) {
     <div class="resource-hero-overlay" aria-hidden="true"></div>
     <div class="resource-hero-content container">
       ${tagsHtml ? `<div class="story-hero-tags">${tagsHtml}</div>` : ''}
-      <h1 class="resource-hero-title">${authorName}'s Story</h1>
+      <h1 class="resource-hero-title">${escapeHtml(authorName)}'s Story</h1>
       <p class="resource-hero-summary">
-        ${[story.location, date].filter(Boolean).join(' · ')}
+        ${escapeHtml([story.location, date].filter(Boolean).join(' · '))}
       </p>
     </div>
   `;
@@ -86,24 +91,20 @@ function populateHero(story) {
 
 /* Content */
 function populateContent(story) {
-  const paragraphs = story.story
-    .split(/\n+/)
-    .filter(p => p.trim())
-    .map(p => `<p class="story-paragraph">${p}</p>`)
-    .join('');
+  const storyHtml = toRichTextHtml(story.story || '');
 
   const whatHelpedHtml = (story.what_helped || []).length > 0
     ? `<div class="story-what-helped">
         <h2 class="story-what-helped-heading">What helped me</h2>
         <div class="review-tags">
-          ${story.what_helped.map(t => `<span class="review-tag">${t}</span>`).join('')}
+          ${story.what_helped.map(t => `<span class="review-tag">${escapeHtml(t)}</span>`).join('')}
         </div>
       </div>`
     : '';
 
   contentRoot.innerHTML = `
     <div class="story-article">
-      <div class="story-body">${paragraphs}</div>
+      <div class="story-body rich-text-display">${storyHtml}</div>
       ${whatHelpedHtml}
     </div>
   `;
@@ -117,7 +118,10 @@ function populateMeta(story) {
     : 'Anonymous';
   document.title = `${authorName}'s Story — Bloom After`;
   const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) metaDesc.setAttribute('content', story.story.slice(0, 150));
+  if (metaDesc) {
+    const plainText = richTextToPlainText(story.story || '');
+    metaDesc.setAttribute('content', plainText.slice(0, 150));
+  }
 }
 
 /* Loading skeleton */

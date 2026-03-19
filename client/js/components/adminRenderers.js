@@ -24,36 +24,11 @@ const fmtDate = (iso) => {
 // editPage    → individual review page (row Review buttons)
 
 const TYPE_CONFIG = {
-  story: {
-    label:      "Story",
-    reviewBase: "stories-moderation.html",
-    editPage:   "story-edit.html",
-    badgeClass: "mod-type-story",
-  },
-  clinic: {
-    label:      "Clinic",
-    reviewBase: "moderation-list.html?type=clinic",
-    editPage:   "clinic-edit.html",
-    badgeClass: "mod-type-clinic",
-  },
-  specialist: {
-    label:      "Specialist",
-    reviewBase: "moderation-list.html?type=specialist",
-    editPage:   "specialist-edit.html",
-    badgeClass: "mod-type-specialist",
-  },
-  media: {
-    label:      "Media",
-    reviewBase: "moderation-list.html?type=media",
-    editPage:   "media-edit.html",
-    badgeClass: "mod-type-media",
-  },
-  request: {
-    label:      "Request",
-    reviewBase: "moderation-list.html?type=request",
-    editPage:   "request-edit.html",
-    badgeClass: "mod-type-request",
-  },
+  story:      { label: "Story",      reviewBase: "stories-moderation.html",      badgeClass: "mod-type-story"      },
+  clinic:     { label: "Clinic",     reviewBase: "",      badgeClass: "mod-type-clinic"     },
+  specialist: { label: "Specialist", reviewBase: "",      badgeClass: "mod-type-specialist" },
+  media:      { label: "Media",      reviewBase: "",      badgeClass: "mod-type-media"      },
+  request:    { label: "Request",    reviewBase: "",      badgeClass: "mod-type-request"    },
 };
 
 function getTypeConfig(type = "") {
@@ -218,12 +193,12 @@ export function renderModerationQueue(
 
   // Footer jump links — use reviewBase (list pages)
   const typeLinks = Object.entries(TYPE_CONFIG)
-    .map(([, cfg]) => {
-      const plural =
-        cfg.label === "Story" ? "Stories" : `${cfg.label}s`;
-      return `<a href="${cfg.reviewBase}" class="mod-queue-type-link">${plural}</a>`;
-    })
-    .join("");
+  .filter(([, cfg]) => Boolean(cfg.reviewBase))
+  .map(([, cfg]) => {
+    const plural = cfg.label === "Story" ? "Stories" : `${cfg.label}s`;
+    return `<a href="${cfg.reviewBase}" class="mod-queue-type-link">${plural}</a>`;
+  })
+  .join("");
 
   return `
     <div class="dash-stories-widget" id="moderation-queue-widget">

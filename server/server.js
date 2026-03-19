@@ -8,6 +8,8 @@ import resourceRouter from './routes/resourceRoute.js';
 import adminStatsRouter from './routes/adminStatsRouter.js';
 import cors from 'cors';
 import clinicsRouter from './routes/clinicsRouter.js';
+import storiesRouter from './routes/storiesRouter.js';
+import adminStoriesRouter from './routes/adminStoriesRouter.js';
 
 dotenv.config();
 
@@ -43,12 +45,14 @@ app.use(
   })
 );
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/resources', resourceRouter);
 app.use('/api/v1/admin/stats', adminStatsRouter);
+app.use('/api/v1/admin/stories', adminStoriesRouter);
 app.use('/api/v1/clinics', clinicsRouter);
+app.use('/api/v1/stories', storiesRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World');

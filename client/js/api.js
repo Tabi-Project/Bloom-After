@@ -101,6 +101,14 @@ const parseResponse = async (response) => {
   return text || null;
 };
 
+const getSessionToken = () => {
+  try {
+    return sessionStorage.getItem("adminToken") || "";
+  } catch {
+    return "";
+  }
+};
+
 const request = async (
   route,
   {
@@ -125,6 +133,14 @@ const request = async (
 
   const upperMethod = method.toUpperCase();
   const finalHeaders = { ...headers };
+  const hasAuthorizationHeader = Object.keys(finalHeaders).some(
+    (key) => key.toLowerCase() === "authorization"
+  );
+  const sessionToken = getSessionToken();
+  if (!hasAuthorizationHeader && sessionToken) {
+    finalHeaders.Authorization = `Bearer ${sessionToken}`;
+  }
+
   const options = {
     method: upperMethod,
     headers: finalHeaders,
