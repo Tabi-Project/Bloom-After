@@ -54,7 +54,7 @@ const fetchOverviewStats = async () => {
     return { authorized: true, stats: buildOverviewStats(res.data) };
   } catch (err) {
     if (err?.status === 401 || err?.status === 403) {
-      
+      window.location.assign("/client/pages/admin-login.html");
       return { authorized: false, stats: null };
     }
     return { authorized: true, stats: statsData };
@@ -89,7 +89,7 @@ const fetchAllSubmissions = async () => {
       );
   } catch (err) {
     if (err?.status === 401 || err?.status === 403) {
-      
+      window.location.assign("/client/pages/admin-login.html");
       return [];
     }
     return [];
