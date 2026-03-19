@@ -1,4 +1,6 @@
 import { Resend } from 'resend';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const PRIMARY_COLOR = '#4f8a6f';
 const BG_COLOR = '#f6f8f7';
