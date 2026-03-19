@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../css/layouts.css" />
     <link rel="stylesheet" href="../css/clinics.css" />
     <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/suggest-drawer.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
   </head>
   <body class="clinics-page">
@@ -121,5 +122,9 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script type="module" src="../js/pages/clinics-page.js"></script>
+    <script type="module">
+      import { initSuggestDrawer } from "../js/components/suggest-drawer.js";
+      initSuggestDrawer();
+    </script>
   </body>
 </html>

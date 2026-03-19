@@ -19,20 +19,48 @@ const fmtDate = (iso) => {
   }
 };
 
-//  Content type config
+// Content type config 
+// reviewBase  → full list page  (footer jump links)
+// editPage    → individual review page (row Review buttons)
+
 const TYPE_CONFIG = {
-  story:      { label: "Story",      reviewBase: "stories-moderation.html",      badgeClass: "mod-type-story"      },
-  clinic:     { label: "Clinic",     reviewBase: "clinics-moderation.html",      badgeClass: "mod-type-clinic"     },
-  specialist: { label: "Specialist", reviewBase: "specialists-onboarding.html",  badgeClass: "mod-type-specialist" },
-  media:      { label: "Media",      reviewBase: "media-suggestions.html",       badgeClass: "mod-type-media"      },
-  request:    { label: "Request",    reviewBase: "requests-moderation.html",     badgeClass: "mod-type-request"    },
+  story: {
+    label:      "Story",
+    reviewBase: "stories-moderation.html",
+    editPage:   "story-edit.html",
+    badgeClass: "mod-type-story",
+  },
+  clinic: {
+    label:      "Clinic",
+    reviewBase: "moderation-list.html?type=clinic",
+    editPage:   "clinic-edit.html",
+    badgeClass: "mod-type-clinic",
+  },
+  specialist: {
+    label:      "Specialist",
+    reviewBase: "moderation-list.html?type=specialist",
+    editPage:   "specialist-edit.html",
+    badgeClass: "mod-type-specialist",
+  },
+  media: {
+    label:      "Media",
+    reviewBase: "moderation-list.html?type=media",
+    editPage:   "media-edit.html",
+    badgeClass: "mod-type-media",
+  },
+  request: {
+    label:      "Request",
+    reviewBase: "moderation-list.html?type=request",
+    editPage:   "request-edit.html",
+    badgeClass: "mod-type-request",
+  },
 };
 
 function getTypeConfig(type = "") {
   return TYPE_CONFIG[type.toLowerCase()] || TYPE_CONFIG.request;
 }
 
-//  Overview
+// Overview
 
 function renderStatCard({ id, label, value, meta, muted = false }) {
   const metaHtml = meta
@@ -72,7 +100,7 @@ export function renderOverviewSkeleton(count = 4) {
         <div class="skeleton-line skeleton-value"></div>
         <div class="skeleton-line skeleton-meta"></div>
       </div>
-    `,
+    `
   );
 
   return `
@@ -103,8 +131,8 @@ export function renderWelcomeSection({ name = "Admin" } = {}) {
   `;
 }
 
-// Unified Moderation Queue table 
-// 
+// Unified Moderation Queue
+// 4 columns: Type · Title + date stacked · Status · Action
 
 function renderModerationQueueRows(submissions) {
   if (!submissions.length) {
@@ -120,44 +148,36 @@ function renderModerationQueueRows(submissions) {
   return submissions
     .slice(0, 8)
     .map((item) => {
-      const id    = item._id || item.id;
-      const cfg   = getTypeConfig(item.type);
-      const title = item.title
-        || (item.story ? item.story.slice(0, 55) + (item.story.length > 55 ? "…" : "") : "")
-        || item.name
-        || "Untitled";
+      const id     = item._id || item.id;
+      const cfg    = getTypeConfig(item.type);
+      const title  =
+        item.title ||
+        (item.story
+          ? item.story.slice(0, 55) + (item.story.length > 55 ? "…" : "")
+          : "") ||
+        item.name ||
+        "Untitled";
       const date   = fmtDate(item.submittedAt || item.createdAt);
       const status = item.status || "pending";
-const reviewUrl = item.type === "story"
-  ? `story-edit.html?id=${escHtml(id)}`
-  : item.type === "clinic"
-  ? `clinic-edit.html?id=${escHtml(id)}`
-  : item.type === "specialist"
-  ? `specialist-edit.html?id=${escHtml(id)}`
-  : item.type === "media"
-  ? `media-edit.html?id=${escHtml(id)}`
-  : `request-edit.html?id=${escHtml(id)}`;
+
+      // Row Review button always goes to the type-specific edit page
+      const reviewUrl = `${cfg.editPage}?id=${escHtml(id)}`;
 
       return `
         <tr class="stories-table-row">
-
           <td class="stories-td">
             <span class="mod-type-badge ${cfg.badgeClass}">${cfg.label}</span>
           </td>
-
           <td class="stories-td stories-td-title">
             <span class="mod-queue-title">${escHtml(title)}</span>
             ${date ? `<span class="mod-queue-date">${date}</span>` : ""}
           </td>
-
           <td class="stories-td">
             <span class="mod-status-badge mod-status-${escHtml(status)}">${escHtml(status)}</span>
           </td>
-
           <td class="stories-td stories-td-action">
             <a href="${reviewUrl}" class="stories-review-btn">Review</a>
           </td>
-
         </tr>
       `;
     })
@@ -177,7 +197,7 @@ function renderModerationQueueSkeleton() {
         <td class="stories-td"><div class="skeleton-line" style="width:60px;border-radius:999px"></div></td>
         <td class="stories-td"></td>
       </tr>
-    `,
+    `
     )
     .join("");
 }
@@ -185,7 +205,7 @@ function renderModerationQueueSkeleton() {
 export function renderModerationQueue(
   submissions = [],
   totalPending = 0,
-  loading = false,
+  loading = false
 ) {
   const rowsHtml = loading
     ? renderModerationQueueSkeleton()
@@ -196,12 +216,14 @@ export function renderModerationQueue(
       ? `<span class="dash-stories-badge">${totalPending} pending</span>`
       : "";
 
+  // Footer jump links — use reviewBase (list pages)
   const typeLinks = Object.entries(TYPE_CONFIG)
-  .map(([, cfg]) => {
-    const plural = cfg.label === "Story" ? "Stories" : `${cfg.label}s`;
-    return `<a href="${cfg.reviewBase}" class="mod-queue-type-link">${plural}</a>`;
-  })
-  .join("");
+    .map(([, cfg]) => {
+      const plural =
+        cfg.label === "Story" ? "Stories" : `${cfg.label}s`;
+      return `<a href="${cfg.reviewBase}" class="mod-queue-type-link">${plural}</a>`;
+    })
+    .join("");
 
   return `
     <div class="dash-stories-widget" id="moderation-queue-widget">
@@ -237,7 +259,7 @@ export function renderModerationQueue(
   `;
 }
 
-// Content Management + Moderation Queue combined render
+// Content Management + Queue combined render
 
 function renderActionRow(icon, label, id) {
   return `
@@ -253,7 +275,7 @@ export function renderQueuesAndContent(
   _queues = [],
   draft = {},
   submissions = [],
-  queueLoading = false,
+  queueLoading = false
 ) {
   const { title = "", description = "" } = draft;
   const totalPending = submissions.filter((s) => s.status === "pending").length;
@@ -261,21 +283,25 @@ export function renderQueuesAndContent(
   return `
     <div class="queues-content-grid">
 
+      <!-- Left: unified moderation queue -->
       <div class="queues-left-col" id="queues-section">
         ${renderModerationQueue(submissions, totalPending, queueLoading)}
       </div>
 
+      <!-- Right: content management -->
       <section id="content-section">
         <div class="dashboard-section-header">
           <span class="section-icon">${icons.sectionContent}</span>
           <h2 class="dashboard-section-title">Content Management</h2>
         </div>
         <div class="action-stack">
-          ${renderActionRow(icons.contentCreate, "Create Resource Article", "create-resource-action")}
-          ${renderActionRow(icons.contentDirectory, "Manage Directory Entries", "update-directory-action")}
-          ${renderActionRow(icons.contentFeatured, "Update Featured Content", "featured-content-action")}
+          ${renderActionRow(icons.contentCreate,    "Create Resource Article",    "create-resource-action"  )}
+          ${renderActionRow(icons.contentDirectory, "Manage Directory Entries",   "update-directory-action" )}
+          ${renderActionRow(icons.contentFeatured,  "Update Featured Content",    "featured-content-action" )}
 
-          ${title ? `
+          ${
+            title
+              ? `
             <div class="editor-card" id="draft-editor-card">
               <div class="editor-top">
                 <h3 class="editor-title">Edit Before Publishing</h3>
@@ -288,7 +314,9 @@ export function renderQueuesAndContent(
                 <button class="mini-btn secondary" id="send-review-btn">Send to review</button>
               </div>
             </div>
-          ` : ""}
+          `
+              : ""
+          }
         </div>
       </section>
 
@@ -296,6 +324,7 @@ export function renderQueuesAndContent(
   `;
 }
 
+// Role Access
 
 function renderRoleCard({ id, name, desc }) {
   return `

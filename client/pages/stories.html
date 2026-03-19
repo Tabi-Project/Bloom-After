@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../css/components.css" />
     <link rel="stylesheet" href="../css/resources.css" />
     <link rel="stylesheet" href="../css/stories.css" />
+    <link rel="stylesheet" href="../css/suggest-drawer.css" />
   </head>
   <body>
 
@@ -114,5 +115,9 @@
     <div id="footer-root"></div>
 
     <script type="module" src="../js/pages/stories-page.js"></script>
+    <script type="module">
+      import { initSuggestDrawer } from "../js/components/suggest-drawer.js";
+      initSuggestDrawer();
+    </script>
   </body>
 </html>
