@@ -93,18 +93,20 @@ function initCarousel() {
   let startX = 0;
   let autoPlayTimer;
 
-  // Make track scrollable via transform
   track.style.display = "flex";
   track.style.gap = "var(--space-4)";
   track.style.transition = "transform 0.4s ease";
 
-  // Force each card to full width
-  cards.forEach((card) => {
-    card.style.minWidth = "96%";
+  const cardWidth = cards[0].offsetWidth;
+
+  cards.forEach((card, i) => {
+    card.style.minWidth = 96 + "%";
     card.style.flexShrink = "0";
+    card.classList.add("carousel-card");
+    if (i === 0) card.classList.add("active");
   });
 
-  // Create dots container
+  // Dots
   const dotsContainer = document.createElement("div");
   dotsContainer.className = "carousel-dots";
 
@@ -116,28 +118,20 @@ function initCarousel() {
     dotsContainer.appendChild(dot);
   });
 
-  // Insert dots after the track's parent
-  track.parentElement.appendChild(dotsContainer);
-
-  
+  track.parentElement.insertAdjacentElement("afterend", dotsContainer);
 
   function goTo(index) {
     current = ((index % total) + total) % total;
     track.style.transform = `translateX(-${current * 100}%)`;
 
-    // Scale active card
     cards.forEach((card, i) => {
-      card.style.transform = i === current ? "scale(1.05)" : "scale(0.95)";
-      card.style.transition = "transform 0.4s ease";
-      card.style.opacity = i === current ? "1" : "0.6";
+      card.classList.toggle("active", i === current);
     });
 
     dotsContainer.querySelectorAll(".carousel-dot").forEach((dot, i) => {
       dot.classList.toggle("active", i === current);
     });
   }
-
-  
 
   function startAutoPlay() {
     autoPlayTimer = setInterval(() => goTo(current + 1), 3500);
@@ -244,9 +238,9 @@ function showModal(member) {
   modal.onclick = (e) => {
     if (e.target === modal) closeModal();
   }; // Close if clicking the dark overlay
-  document.onkeydown = (e) => {
+  document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeModal();
-  }; // Close on Esc key
+  }); // Close on Esc key
 }
 
 export { teamMembers, renderTeamMembers };

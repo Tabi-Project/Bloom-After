@@ -1121,4 +1121,19 @@
   .voices-header {
     text-align: left;
   }
+
+  .team-card.carousel-card {
+    flex-shrink: 0;
+    min-width: 350px;
+    transition:
+      transform 0.4s ease,
+      opacity 0.4s ease;
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+
+  .team-card.carousel-card.active {
+    transform: scale(1.05);
+    opacity: 1;
+  }
 }
