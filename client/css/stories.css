@@ -126,7 +126,96 @@
   outline: none;
 }
 
-/* Upload row: zone + live preview side by side */
+.form-row input[type="email"] {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-surface);
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+ 
+.form-row input[type="email"]:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 6px 20px rgba(79, 138, 111, 0.08);
+  outline: none;
+}
+ 
+.form-row input[type="email"]::placeholder {
+  color: var(--color-text-muted);
+}
+ 
+/* 2. Location row — tighten the icon + input alignment */
+.location-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+ 
+.location-row:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 6px 20px rgba(79, 138, 111, 0.08);
+}
+ 
+/* Icon lives inside the border */
+.location-row .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  min-width: 48px;
+  height: 48px;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  margin: 0;
+  pointer-events: none;
+}
+ 
+/* Input strips its own border — the row wrapper provides it */
+.location-row input[type="text"],
+.location-row input[type="email"] {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3) var(--space-3) var(--space-3) 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  box-shadow: none;
+}
+ 
+.location-row input[type="text"]:focus,
+.location-row input[type="email"]:focus {
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+ 
+.location-row input[type="text"]::placeholder,
+.location-row input[type="email"]::placeholder {
+  color: var(--color-text-muted);
+}
+ 
+/* 3. Email description text under the label */
+.email-desc {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin-bottom: var(--space-3);
+  margin-top: calc(-1 * var(--space-1));
+}
+ 
 .upload-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
