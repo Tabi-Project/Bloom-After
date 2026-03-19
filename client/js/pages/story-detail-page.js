@@ -1,7 +1,7 @@
-import { MOCK_STORIES } from '../data/stories.js';
 import { renderNavbar, initNavbar } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { richTextToPlainText, toRichTextHtml } from '../richText.js';
+import api from '../api.js';
 
 const navbarRoot  = document.getElementById('navbar-root');
 const footerRoot  = document.getElementById('footer-root');
@@ -46,18 +46,14 @@ async function init() {
   populateMeta(story);
 }
 
-/* Fetch a single story — live API first, mock fallback */
+/* Fetch a single story from backend */
 async function fetchStory(id) {
   try {
-    const res = await fetch(`/api/v1/stories/${id}`);
-    if (res.ok) {
-      const data = await res.json();
-      return data.story || data;
-    }
+    const response = await api.get(`/api/v1/stories/${id}`);
+    return response?.story || response?.data || null;
   } catch (_) {
-    // fall through to mock
+    return null;
   }
-  return MOCK_STORIES.find(s => s._id === id) || null;
 }
 
 /* Hero */
