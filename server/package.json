@@ -33,6 +33,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.1.0",
     "mongoose": "^9.2.4",
+    "resend": "^4.8.0",
     "validator": "^13.15.26"
   },
   "devDependencies": {

@@ -72,9 +72,10 @@ function showSkeletons() {
 function applyFilters() {
   filteredStories = allStories.filter(s => {
     const helped = s.what_helped ?? [];
+    const storyText = (s.story_text ?? s.story ?? '').replace(/<[^>]+>/g, ' ').toLowerCase();
     const matchesFilter = !activeFilter || helped.includes(activeFilter);
     const matchesSearch = !searchQuery ||
-      (s.story    ?? '').toLowerCase().includes(searchQuery) ||
+      storyText.includes(searchQuery) ||
       (s.name     ?? '').toLowerCase().includes(searchQuery) ||
       (s.location ?? '').toLowerCase().includes(searchQuery);
     return matchesFilter && matchesSearch;

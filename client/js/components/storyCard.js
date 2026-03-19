@@ -16,7 +16,8 @@ export function createStoryCard(story) {
   const date    = createdAt
     ? new Date(createdAt).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' })
     : '';
-  const excerpt = text && text.length > 130 ? text.slice(0, 130).trim() + '…' : (text ?? '');
+  const plainText = story.story_text || (text ?? '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  const excerpt = plainText && plainText.length > 130 ? plainText.slice(0, 130).trim() + '…' : plainText;
   const img     = image_url || FALLBACK_IMAGE;
   const tags    = what_helped.slice(0, 3);
   const href    = `story-detail.html?id=${_id}`;

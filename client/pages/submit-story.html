@@ -87,7 +87,7 @@
         class="form-card"
         enctype="multipart/form-data"
       >
-        <div class="form-row">
+        <div class="form-row" id="name-row">
           <label for="name">Your name</label>
           <input
             type="text"
@@ -142,12 +142,45 @@
 
         <div class="form-row">
           <label for="story">Tell Your Story</label>
-          <textarea
-            id="story"
-            name="story"
-            rows="8"
-            placeholder="What happened? How did you feel?"
-          ></textarea>
+          <div class="story-editor" id="story-editor-wrap">
+            <div class="story-editor-toolbar" role="toolbar" aria-label="Story formatting">
+              <button type="button" class="story-editor-btn" data-editor-action="bold" aria-label="Bold">
+                <span class="material-symbols-outlined" aria-hidden="true">format_bold</span>
+              </button>
+              <button type="button" class="story-editor-btn" data-editor-action="italic" aria-label="Italic">
+                <span class="material-symbols-outlined" aria-hidden="true">format_italic</span>
+              </button>
+              <button type="button" class="story-editor-btn" data-editor-action="heading2" aria-label="Heading">
+                <span class="material-symbols-outlined" aria-hidden="true">title</span>
+              </button>
+              <button type="button" class="story-editor-btn" data-editor-action="bulletList" aria-label="Bulleted list">
+                <span class="material-symbols-outlined" aria-hidden="true">format_list_bulleted</span>
+              </button>
+              <button type="button" class="story-editor-btn" data-editor-action="orderedList" aria-label="Numbered list">
+                <span class="material-symbols-outlined" aria-hidden="true">format_list_numbered</span>
+              </button>
+              <button type="button" class="story-editor-btn" data-editor-action="blockquote" aria-label="Quote">
+                <span class="material-symbols-outlined" aria-hidden="true">format_quote</span>
+              </button>
+              <button type="button" class="story-editor-btn" data-editor-action="link" aria-label="Insert link">
+                <span class="material-symbols-outlined" aria-hidden="true">link</span>
+              </button>
+              <button type="button" class="story-editor-btn" data-editor-action="undo" aria-label="Undo">
+                <span class="material-symbols-outlined" aria-hidden="true">undo</span>
+              </button>
+              <button type="button" class="story-editor-btn" data-editor-action="redo" aria-label="Redo">
+                <span class="material-symbols-outlined" aria-hidden="true">redo</span>
+              </button>
+            </div>
+            <div
+              id="story-editor"
+              class="story-editor-content"
+              role="textbox"
+              aria-label="Story content"
+              aria-multiline="true"
+            ></div>
+            <input type="hidden" id="story" name="story" />
+          </div>
         </div>
 
         <div class="form-row">
