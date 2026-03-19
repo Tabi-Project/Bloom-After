@@ -1,88 +1,94 @@
-import { fetchResources } from '../data/resources.js';
-import { createResourceCard, createSkeletonCard } from '../components/resourceCard.js';
-import { renderNavbar, initNavbar } from '../components/navbar.js';
-import { renderFooter } from '../components/footer.js';
+import { fetchResources } from "../data/resources-api.js";
+import { createResourceCard, createSkeletonCard } from "../components/resourceCard.js";
+import { renderNavbar, initNavbar } from "../components/navbar.js";
+import { renderFooter } from "../components/footer.js";
+// import { renderCrisisStrip } from "../components/crisisStrip.js";
 
 const ITEMS_PER_PAGE = 9;
 
-let allResources = [];
-let filteredResources = [];
 let currentPage = 1;
-let activeFilter = '';
-let searchQuery = '';
+let activeFilter = "";
+let searchQuery = "";
+let currentTotalPages = 0;
+let requestSequence = 0;
 
-const grid           = document.getElementById('resources-grid');
-const emptyState     = document.getElementById('resources-empty');
-const paginationWrap = document.getElementById('pagination');
-const searchInput    = document.getElementById('search-input');
-const filterBtns     = document.querySelectorAll('[data-filter]');
+const grid = document.getElementById("resources-grid");
+const emptyState = document.getElementById("resources-empty");
+const paginationWrap = document.getElementById("pagination");
+const searchInput = document.getElementById("search-input");
+const filterBtns = document.querySelectorAll("[data-filter]");
+const crisisRoot = document.getElementById("crisis-root");
 
 async function init() {
-  document.getElementById('navbar-root').innerHTML = renderNavbar('resources');
+  document.getElementById("navbar-root").innerHTML = renderNavbar("resources");
   initNavbar();
-  document.getElementById('footer-root').innerHTML = renderFooter();
+  document.getElementById("footer-root").innerHTML = renderFooter();
+  // if (crisisRoot) {
+  //   crisisRoot.innerHTML = renderCrisisStrip();
+  // }
 
+  bindEvents();
+  await loadResources();
+}
+
+async function loadResources({ resetPage = false, scrollToGrid = false } = {}) {
+  if (resetPage) currentPage = 1;
+
+  const requestId = ++requestSequence;
   showSkeletons();
 
-  allResources = await fetchResources();
-  filteredResources = [...allResources];
+  try {
+    const { data, pagination } = await fetchResources({
+      page: currentPage,
+      limit: ITEMS_PER_PAGE,
+      content_type: activeFilter,
+      q: searchQuery,
+      published: true,
+    });
 
-  renderPage();
-  bindEvents();
+    if (requestId !== requestSequence) return;
+
+    currentPage = pagination?.currentPage || currentPage;
+    currentTotalPages = pagination?.totalPages || 0;
+    renderPage(data, { scrollToGrid });
+  } catch (error) {
+    if (requestId !== requestSequence) return;
+    showError(error?.message || "We could not load resources right now. Please try again.");
+  }
 }
 
 function showSkeletons() {
-  grid.innerHTML = Array(ITEMS_PER_PAGE).fill(null).map(() => createSkeletonCard()).join('');
-  grid.setAttribute('aria-busy', 'true');
+  grid.innerHTML = Array(ITEMS_PER_PAGE)
+    .fill(null)
+    .map(() => createSkeletonCard())
+    .join("");
+  grid.setAttribute("aria-busy", "true");
+  emptyState.hidden = true;
+  paginationWrap.innerHTML = "";
 }
 
-function applyFilters() {
-  filteredResources = allResources.filter(r => {
-    const matchesFilter = !activeFilter || r.content_type === activeFilter;
-    const matchesSearch = !searchQuery ||
-      r.title.toLowerCase().includes(searchQuery) ||
-      r.summary.toLowerCase().includes(searchQuery);
-    return matchesFilter && matchesSearch;
-  });
+function renderPage(resources, { scrollToGrid = false } = {}) {
+  grid.removeAttribute("aria-busy");
 
-  currentPage = 1;
-  renderPage();
-}
-
-function getPageSlice() {
-  const start = (currentPage - 1) * ITEMS_PER_PAGE;
-  return filteredResources.slice(start, start + ITEMS_PER_PAGE);
-}
-
-function getTotalPages() {
-  return Math.ceil(filteredResources.length / ITEMS_PER_PAGE);
-}
-
-function renderPage() {
-  const slice = getPageSlice();
-  const totalPages = getTotalPages();
-
-  grid.removeAttribute('aria-busy');
-
-  if (filteredResources.length === 0) {
-    grid.innerHTML = '';
+  if (!resources.length) {
+    grid.innerHTML = "";
     emptyState.hidden = false;
-    paginationWrap.innerHTML = '';
+    paginationWrap.innerHTML = "";
     return;
   }
 
   emptyState.hidden = true;
-  grid.innerHTML = slice.map(r => createResourceCard(r)).join('');
-  renderPagination(totalPages);
+  grid.innerHTML = resources.map((resource) => createResourceCard(resource)).join("");
+  renderPagination(currentTotalPages);
 
-  if (currentPage > 1) {
-    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (scrollToGrid && currentPage > 1) {
+    grid.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 }
 
 function renderPagination(totalPages) {
   if (totalPages <= 1) {
-    paginationWrap.innerHTML = '';
+    paginationWrap.innerHTML = "";
     return;
   }
 
@@ -93,7 +99,7 @@ function renderPagination(totalPages) {
       <button
         class="pagination-btn pagination-btn--prev"
         data-page="${currentPage - 1}"
-        ${currentPage === 1 ? 'disabled aria-disabled="true"' : ''}
+        ${currentPage === 1 ? "disabled aria-disabled=\"true\"" : ""}
         aria-label="Previous page"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -104,15 +110,15 @@ function renderPagination(totalPages) {
 
       <div class="pagination-pages" role="list">
         ${pages.map(p => {
-          if (p === '...') {
+          if (p === "...") {
             return `<span class="pagination-ellipsis" aria-hidden="true">...</span>`;
           }
           return `
             <button
-              class="pagination-page ${p === currentPage ? 'pagination-page-active' : ''}"
+              class="pagination-page ${p === currentPage ? "pagination-page-active" : ""}"
               data-page="${p}"
               aria-label="Page ${p}"
-              ${p === currentPage ? 'aria-current="page"' : ''}
+              ${p === currentPage ? "aria-current=\"page\"" : ""}
               role="listitem"
             >${p}</button>
           `;
@@ -122,7 +128,7 @@ function renderPagination(totalPages) {
       <button
         class="pagination-btn pagination-btn--next"
         data-page="${currentPage + 1}"
-        ${currentPage === totalPages ? 'disabled aria-disabled="true"' : ''}
+        ${currentPage === totalPages ? "disabled aria-disabled=\"true\"" : ""}
         aria-label="Next page"
       >
         Next
@@ -139,48 +145,82 @@ function buildPageNumbers(current, total) {
 
   const pages = [1];
 
-  if (current > 3) pages.push('...');
+  if (current > 3) pages.push("...");
 
   const start = Math.max(2, current - 1);
   const end   = Math.min(total - 1, current + 1);
 
   for (let i = start; i <= end; i++) pages.push(i);
 
-  if (current < total - 2) pages.push('...');
+  if (current < total - 2) pages.push("...");
 
   pages.push(total);
   return pages;
 }
 
+function showError(message) {
+  grid.removeAttribute("aria-busy");
+  emptyState.hidden = true;
+  paginationWrap.innerHTML = "";
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "resources-error";
+  wrapper.setAttribute("role", "alert");
+
+  const text = document.createElement("p");
+  text.className = "resources-error-message";
+  text.textContent = message;
+
+  const retryButton = document.createElement("button");
+  retryButton.className = "resources-error-btn";
+  retryButton.type = "button";
+  retryButton.dataset.retry = "true";
+  retryButton.textContent = "Try again";
+
+  wrapper.appendChild(text);
+  wrapper.appendChild(retryButton);
+
+  grid.innerHTML = "";
+  grid.appendChild(wrapper);
+}
+
 /* Events */
 function bindEvents() {
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => {
-        b.classList.remove('active');
-        b.setAttribute('aria-pressed', 'false');
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      filterBtns.forEach((button) => {
+        button.classList.remove("active");
+        button.setAttribute("aria-pressed", "false");
       });
-      btn.classList.add('active');
-      btn.setAttribute('aria-pressed', 'true');
-      activeFilter = btn.dataset.filter;
-      applyFilters();
+      btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
+      activeFilter = btn.dataset.filter || "";
+      await loadResources({ resetPage: true });
     });
   });
 
   let searchTimer;
-  searchInput.addEventListener('input', () => {
+  searchInput.addEventListener("input", () => {
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => {
+    searchTimer = setTimeout(async () => {
       searchQuery = searchInput.value.trim().toLowerCase();
-      applyFilters();
+      await loadResources({ resetPage: true });
     }, 350);
   });
 
-  paginationWrap.addEventListener('click', e => {
-    const btn = e.target.closest('[data-page]');
+  paginationWrap.addEventListener("click", async (event) => {
+    const btn = event.target.closest("[data-page]");
     if (!btn || btn.disabled) return;
-    currentPage = Number(btn.dataset.page);
-    renderPage();
+    const nextPage = Number(btn.dataset.page);
+    if (!nextPage || nextPage < 1 || nextPage > currentTotalPages) return;
+    currentPage = nextPage;
+    await loadResources({ scrollToGrid: true });
+  });
+
+  grid.addEventListener("click", async (event) => {
+    const retryButton = event.target.closest("[data-retry='true']");
+    if (!retryButton) return;
+    await loadResources();
   });
 }
 

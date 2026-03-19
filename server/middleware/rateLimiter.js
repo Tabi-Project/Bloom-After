@@ -12,3 +12,27 @@ export const authLimiter = rateLimit({
     });
   },
 });
+
+export const geoLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  handler: (req, res) => {
+    res.status(429).json({
+      status: 'error',
+      error: 'Too many location searches. Please wait a moment and try again.',
+      retryAfter: 60,
+    });
+  },
+});
+
+export const reviewLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 10,
+  handler: (req, res) => {
+    res.status(429).json({
+      status: 'error',
+      error: 'Too many review submissions. Please try again later.',
+      retryAfter: 10 * 60,
+    });
+  },
+});

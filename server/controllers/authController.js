@@ -4,7 +4,8 @@ import dotenv from 'dotenv';
 import validator from 'validator';
 
 dotenv.config();
-const JWT_KEY = process.env.JWT_KEY;
+const JWT_SECRET = process.env.JWT_KEY || process.env.JWT_SECRET;
+const isProduction = process.env.NODE_ENV === 'production';
 
 export const login = async (req, res) => {
   try {
@@ -37,8 +38,8 @@ export const login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    if (!JWT_KEY) {
-      console.error('JWT_KEY is missing!');
+    if (!JWT_SECRET) {
+      console.error('JWT_SECRET is missing!');
       return res.status(500).json({ error: 'Server misconfiguration' });
     }
 
@@ -49,7 +50,7 @@ export const login = async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       { id: user._id, email: user.email, isSuperAdmin: user.isSuperAdmin },
-      JWT_KEY,
+      JWT_SECRET,
       {
         expiresIn: '1d',
       },
@@ -59,13 +60,14 @@ export const login = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-      //   secure: true, // secure in production
-      sameSite: 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       path: '/',
     });
 
     res.status(200).json({
       message: 'Login successful',
+      token,
       user: {
         id: user._id,
         name: user.name,
@@ -82,8 +84,8 @@ export const logout = (req, res) => {
   res
     .clearCookie('token', {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       path: '/',
     })
     .status(200)
