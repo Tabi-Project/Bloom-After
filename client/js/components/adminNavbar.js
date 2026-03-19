@@ -12,14 +12,11 @@ const escapeHtml = (value = "") =>
     return map[char] || char;
   });
 
-//  Chevron SVG 
+// ── Chevron ───────────────────────────────────────────────────────────────────
 
 const chevronDown = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>`;
 
-//  Nav structure 
-//
-// Items with `children` render as an accordion group.
-// `activePage` matches either the parent id OR a child id.
+// ── Nav structure ─────────────────────────────────────────────────────────────
 
 const navGroups = [
   {
@@ -32,7 +29,6 @@ const navGroups = [
         href: "admin-dashboard.html",
       },
       {
-        // Accordion parent
         id: "moderation",
         icon: icons.adminQueues,
         label: "Moderation",
@@ -42,27 +38,27 @@ const navGroups = [
             id: "moderation-stories",
             label: "Stories",
             href: "stories-moderation.html",
-            badge: true, // shows pending count
+            badge: true,
           },
           {
             id: "moderation-clinics",
             label: "Clinics",
-            href: "clinics-moderation.html",
+            href: "moderation-list.html?type=clinic",
           },
           {
             id: "specialists-onboarding",
             label: "Specialists Onboarding",
-            href: "specialists-onboarding.html",
+            href: "moderation-list.html?type=specialist",
           },
-  {
+          {
             id: "media-suggestions",
             label: "Media Suggestions",
-            href: "media-suggestions.html",
+            href: "moderation-list.html?type=media",
           },
           {
             id: "moderation-other",
             label: "Other Requests",
-            href: "requests-moderation.html",
+            href: "moderation-list.html?type=request",
           },
         ],
       },
@@ -93,7 +89,7 @@ const navGroups = [
   },
 ];
 
-// Render sidebar 
+// ── Render sidebar ────────────────────────────────────────────────────────────
 
 export function renderAdminSidebar({
   activePage = "overview",
@@ -102,21 +98,30 @@ export function renderAdminSidebar({
 } = {}) {
   const logoSrc = "../assets/logo/favicon.png";
 
-  // Determine if a moderation child is active so we keep the parent open
-  const moderationChildIds = ["moderation-stories", "moderation-clinics", "moderation-other"];
+  const moderationChildIds = [
+    "moderation-stories",
+    "moderation-clinics",
+    "specialists-onboarding",
+    "media-suggestions",
+    "moderation-other",
+  ];
   const moderationIsActive =
     activePage === "moderation" || moderationChildIds.includes(activePage);
 
   const groupsHtml = navGroups
     .map(
       (group) => `
-    <div class="sidebar-group">
-      <span class="sidebar-group-label">${group.label}</span>
-      <ul class="sidebar-nav-list" role="list">
-        ${group.items.map((item) => renderNavItem(item, activePage, totalPending, moderationIsActive)).join("")}
-      </ul>
-    </div>
-  `,
+      <div class="sidebar-group">
+        <span class="sidebar-group-label">${group.label}</span>
+        <ul class="sidebar-nav-list" role="list">
+          ${group.items
+            .map((item) =>
+              renderNavItem(item, activePage, totalPending, moderationIsActive)
+            )
+            .join("")}
+        </ul>
+      </div>
+    `
     )
     .join("");
 
@@ -151,13 +156,16 @@ export function renderAdminSidebar({
 function renderNavItem(item, activePage, totalPending, moderationIsActive) {
   const isActive = activePage === item.id;
 
-  // Accordion item (has children) 
+  // ── Accordion item ────────────────────────────────────────────────────────
   if (item.children) {
     const isOpen = moderationIsActive;
     const subItems = item.children
       .map((child) => {
         const childActive = activePage === child.id;
-        const showBadge   = child.badge && child.id === "moderation-stories" && totalPending > 0;
+        const showBadge =
+          child.badge &&
+          child.id === "moderation-stories" &&
+          totalPending > 0;
         return `
           <li class="sidebar-subnav-item">
             <a
@@ -167,7 +175,11 @@ function renderNavItem(item, activePage, totalPending, moderationIsActive) {
             >
               <span class="sidebar-subnav-dot" aria-hidden="true"></span>
               <span>${child.label}</span>
-              ${showBadge ? `<span class="sidebar-badge" aria-label="${totalPending} pending">${totalPending}</span>` : ""}
+              ${
+                showBadge
+                  ? `<span class="sidebar-badge" aria-label="${totalPending} pending">${totalPending}</span>`
+                  : ""
+              }
             </a>
           </li>
         `;
@@ -185,9 +197,11 @@ function renderNavItem(item, activePage, totalPending, moderationIsActive) {
         >
           <span class="sidebar-nav-icon">${item.icon}</span>
           <span>${item.label}</span>
-          ${item.badge && totalPending > 0
-            ? `<span class="sidebar-badge" aria-label="${totalPending} pending">${totalPending}</span>`
-            : ""}
+          ${
+            item.badge && totalPending > 0
+              ? `<span class="sidebar-badge" aria-label="${totalPending} pending">${totalPending}</span>`
+              : ""
+          }
           <span class="sidebar-nav-chevron" aria-hidden="true">${chevronDown}</span>
         </button>
         <ul
@@ -201,7 +215,7 @@ function renderNavItem(item, activePage, totalPending, moderationIsActive) {
     `;
   }
 
-  // Regular item 
+  // ── Regular item ──────────────────────────────────────────────────────────
   return `
     <li>
       <a
@@ -211,15 +225,17 @@ function renderNavItem(item, activePage, totalPending, moderationIsActive) {
       >
         <span class="sidebar-nav-icon">${item.icon}</span>
         <span>${item.label}</span>
-        ${item.badge && totalPending > 0
-          ? `<span class="sidebar-badge" aria-label="${totalPending} pending">${totalPending}</span>`
-          : ""}
+        ${
+          item.badge && totalPending > 0
+            ? `<span class="sidebar-badge" aria-label="${totalPending} pending">${totalPending}</span>`
+            : ""
+        }
       </a>
     </li>
   `;
 }
 
-// Render topbar
+// ── Render topbar ─────────────────────────────────────────────────────────────
 
 export function renderAdminTopbar({ name = "Admin", email = "" } = {}) {
   const safeName  = escapeHtml(name  || "Admin");
@@ -254,7 +270,13 @@ export function renderAdminTopbar({ name = "Admin", email = "" } = {}) {
             </button>
           </div>
           <div class="topbar-user-menu-wrap">
-            <button class="topbar-profile-btn" id="topbar-profile-btn" type="button" aria-label="Open profile menu" aria-expanded="false">
+            <button
+              class="topbar-profile-btn"
+              id="topbar-profile-btn"
+              type="button"
+              aria-label="Open profile menu"
+              aria-expanded="false"
+            >
               ${icons.adminUser}
             </button>
             <div class="topbar-user-menu" id="topbar-user-menu" aria-hidden="true">
@@ -269,10 +291,10 @@ export function renderAdminTopbar({ name = "Admin", email = "" } = {}) {
   `;
 }
 
-// Init 
+// ── Init ──────────────────────────────────────────────────────────────────────
 
 export function initAdminNavbar() {
-  // Sidebar toggle (mobile)
+  // Mobile sidebar toggle
   const toggle  = document.getElementById("sidebar-toggle");
   const sidebar = document.getElementById("admin-sidebar");
   const overlay = document.getElementById("sidebar-overlay");
@@ -284,7 +306,6 @@ export function initAdminNavbar() {
       toggle.setAttribute("aria-expanded", "true");
       overlay.removeAttribute("aria-hidden");
     };
-
     const closeSidebar = () => {
       sidebar.classList.remove("open");
       overlay.classList.remove("visible");
@@ -296,7 +317,9 @@ export function initAdminNavbar() {
       sidebar.classList.contains("open") ? closeSidebar() : openSidebar()
     );
     overlay.addEventListener("click", closeSidebar);
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSidebar(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeSidebar();
+    });
   }
 
   // Moderation accordion
