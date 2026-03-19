@@ -10,8 +10,7 @@ body {
   width: 100%;
   max-width: 1300px;
   margin-inline: auto;
-  padding-inline: var(--space-8);
-  margin-top: var(--space-3);
+  padding: var(--space-10);
 }
 
 header {
