@@ -20,7 +20,7 @@ const suggestionSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'reviewed', 'rejected', 'implemented'],
+      enum: ['pending', 'approved', 'implemented', 'rejected'],
       default: 'pending',
     },
     reviewedBy: {

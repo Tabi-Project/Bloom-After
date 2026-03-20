@@ -41,6 +41,16 @@ const navGroups = [
             badge: true,
           },
           {
+            id: "moderation-ngos",
+            label: "NGOs",
+            href: "ngos-moderation.html",
+          },
+          {
+            id: "moderation-suggestions",
+            label: "Suggestions",
+            href: "suggestions-moderation.html",
+          },
+          {
             id: "moderation-clinics",
             label: "Clinics",
             href: "moderation-list.html?type=clinic",
@@ -100,6 +110,8 @@ export function renderAdminSidebar({
 
   const moderationChildIds = [
     "moderation-stories",
+    "moderation-ngos",
+    "moderation-suggestions",
     "moderation-clinics",
     "specialists-onboarding",
     "media-suggestions",

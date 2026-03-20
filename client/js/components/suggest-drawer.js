@@ -1,4 +1,6 @@
 
+import api from '../api.js';
+
 const SUGGESTION_TYPES = [
   { id: 'clinic',     label: 'Clinic recommendation' },
   { id: 'specialist', label: 'Specialist onboarding' },
@@ -294,20 +296,19 @@ success.style.display = 'none';
     formErr.hidden = true;
 
     try {
-      const res = await fetch('/api/v1/suggestions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, content, email: email || undefined }),
+      await api.post('/api/v1/suggestions', {
+        type,
+        content,
+        email: email || undefined,
       });
-
-      if (!res.ok) throw new Error('Request failed');
       showSuccess();
-    } catch (_) {
-      // Mock success on localhost so the full flow can be tested before the API is live
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        showSuccess();
-        return;
-      }
+    } catch (error) {
+      console.error('[SuggestDrawer] submit failed', {
+        message: error?.message,
+        status: error?.status,
+        data: error?.data,
+      });
+      formErr.textContent = error?.message || 'Something went wrong. Please try again.';
       formErr.hidden = false;
       submitBtn.disabled = false;
       submitBtn.textContent = 'Send suggestion';
