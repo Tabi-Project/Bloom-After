@@ -45,7 +45,9 @@ const DESTINATIONS = {
  */
 export function renderSubmissionEdit(item, type) {
   const id      = item._id || item.id;
-  const status  = item.status || 'pending';
+  const status  = String(item.status || 'pending').toLowerCase();
+  const isAccepted = ['accepted', 'approved'].includes(status);
+  const isRejected = status === 'rejected';
   const date    = item.submittedAt
     ? new Date(item.submittedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
     : '';
@@ -219,16 +221,23 @@ export function renderSubmissionEdit(item, type) {
 
         <!-- Actions -->
         <div class="story-edit-actions" id="mod-action-buttons">
-          ${status !== 'approved' ? `
+          ${!isAccepted && !isRejected ? `
             <button class="btn btn-primary mod-btn-approve" id="btn-approve" data-id="${escHtml(id)}" type="button">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
               Approve &amp; Publish
             </button>` : ''}
-          ${status !== 'rejected' ? `
+          ${!isAccepted && !isRejected ? `
             <button class="btn mod-btn-reject" id="btn-reject" data-id="${escHtml(id)}" type="button">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               Reject
             </button>` : ''}
+          ${isAccepted ? `
+            <button class="btn mod-btn-reject" id="btn-revoke" data-id="${escHtml(id)}" type="button">Revoke</button>
+            <button class="btn mod-btn-reject" id="btn-delete-post" data-id="${escHtml(id)}" type="button">Delete post</button>
+          ` : ''}
+          ${isRejected ? `
+            <button class="btn mod-btn-reject" id="btn-delete-post" data-id="${escHtml(id)}" type="button">Delete post</button>
+          ` : ''}
           <button class="btn mod-btn-save-note" id="btn-save-note" data-id="${escHtml(id)}" type="button">
             Save note
           </button>

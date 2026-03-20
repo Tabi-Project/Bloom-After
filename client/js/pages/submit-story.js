@@ -5,7 +5,6 @@ import Link from 'https://esm.sh/@tiptap/extension-link@2.11.5';
 import { richTextToPlainText, toRichTextHtml } from '../richText.js';
 
 function init() {
-  console.debug('[StorySubmit][UI] init submit-story page');
   // inject icons into elements that declare `data-icon`
   document.querySelectorAll('[data-icon]').forEach(el => {
     const name = el.dataset.icon;
@@ -324,7 +323,6 @@ function init() {
     // on submit: save pending story to sessionStorage and navigate to review
     form.addEventListener('submit', e => {
       e.preventDefault();
-      console.debug('[StorySubmit][UI] submit clicked');
       const fd = new FormData(form);
       const privacyValue = document.getElementById('privacy-value')?.value || 'named';
       const consent = !!form.querySelector('#consent')?.checked;
@@ -337,7 +335,6 @@ function init() {
       const storyText = richTextToPlainText(storyHtml);
 
       if (!storyText) {
-        console.debug('[StorySubmit][UI] blocked: empty story content');
         if (storyEditorRoot) storyEditorRoot.focus();
         return;
       }
@@ -367,16 +364,7 @@ function init() {
         savedAt: Date.now(),
       };
 
-      console.debug('[StorySubmit][UI] draft prepared', {
-        privacy: pending.privacy,
-        hasEmail: Boolean(pending.email),
-        tagsCount: pending.tags.length,
-        storyLength: pending.storyText.length,
-        hasImage: Boolean(pending.image),
-      });
-
       sessionStorage.setItem('pendingStory', JSON.stringify(pending));
-      console.debug('[StorySubmit][UI] draft saved to sessionStorage, redirecting to review');
       window.location.href = 'submit-review.html';
     });
   }

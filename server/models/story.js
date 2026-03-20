@@ -75,7 +75,7 @@ const storySchema = new mongoose.Schema(
     // Admin moderation workflow
     status: {
       type: String,
-      enum: ['pending', 'approved', 'rejected'],
+      enum: ['pending', 'approved', 'accepted', 'rejected', 'removed'],
       default: 'pending',
     },
     reviewedBy: {

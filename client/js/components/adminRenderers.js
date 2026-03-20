@@ -24,11 +24,11 @@ const fmtDate = (iso) => {
 // editPage    → individual review page (row Review buttons)
 
 const TYPE_CONFIG = {
-  story:      { label: "Story",      reviewBase: "stories-moderation.html",      badgeClass: "mod-type-story"      },
-  clinic:     { label: "Clinic",     reviewBase: "",      badgeClass: "mod-type-clinic"     },
-  specialist: { label: "Specialist", reviewBase: "",      badgeClass: "mod-type-specialist" },
-  media:      { label: "Media",      reviewBase: "",      badgeClass: "mod-type-media"      },
-  request:    { label: "Request",    reviewBase: "",      badgeClass: "mod-type-request"    },
+  story:      { label: "Story",      reviewBase: "stories-moderation.html",       editPage: "story-edit.html",      badgeClass: "mod-type-story"      },
+  clinic:     { label: "Clinic",     reviewBase: "moderation-list.html?type=clinic", editPage: "clinic-edit.html",     badgeClass: "mod-type-clinic"     },
+  specialist: { label: "Specialist", reviewBase: "moderation-list.html?type=specialist", editPage: "specialist-edit.html", badgeClass: "mod-type-specialist" },
+  media:      { label: "Media",      reviewBase: "moderation-list.html?type=media", editPage: "media-edit.html",      badgeClass: "mod-type-media"      },
+  request:    { label: "Request",    reviewBase: "moderation-list.html?type=request", editPage: "moderation-list.html?type=request", badgeClass: "mod-type-request"    },
 };
 
 function getTypeConfig(type = "") {
@@ -136,7 +136,8 @@ function renderModerationQueueRows(submissions) {
       const status = item.status || "pending";
 
       // Row Review button always goes to the type-specific edit page
-      const reviewUrl = `${cfg.editPage}?id=${escHtml(id)}`;
+      const reviewBase = cfg.editPage || cfg.reviewBase || "moderation-list.html";
+      const reviewUrl = `${reviewBase}${reviewBase.includes("?") ? "&" : "?"}id=${escHtml(id)}`;
 
       return `
         <tr class="stories-table-row">
@@ -184,7 +185,7 @@ export function renderModerationQueue(
 ) {
   const rowsHtml = loading
     ? renderModerationQueueSkeleton()
-    : renderModerationQueueRows(submissions);
+    : renderModerationQueueRows(submissions.slice(0, 4));
 
   const badgeHtml =
     totalPending > 0

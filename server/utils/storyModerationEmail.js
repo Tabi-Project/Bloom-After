@@ -37,6 +37,26 @@ const getEmailCopy = ({ status, rejectionMessage }) => {
     };
   }
 
+  if (status === 'removed') {
+    return {
+      title: 'Your story has been removed',
+      lead: 'Thank you again for sharing your journey with Bloom After.',
+      body: 'After a follow-up moderation review, your story has been removed from the public community library.',
+      ctaLabel: 'Submit Another Story',
+      ctaPath: '/client/pages/submit-story.html',
+    };
+  }
+
+  if (status === 'deleted') {
+    return {
+      title: 'Your story was permanently deleted',
+      lead: 'This is a confirmation that your story submission has been permanently deleted from Bloom After.',
+      body: 'If this was unexpected, please reply to this email and we can help clarify what happened.',
+      ctaLabel: 'Contact Support',
+      ctaPath: '/support',
+    };
+  }
+
   return {
     title: 'Update on your story submission',
     lead: 'Thank you for trusting Bloom After with your story.',
@@ -122,7 +142,11 @@ export const sendStoryModerationEmail = async ({
   const subject =
     status === 'approved'
       ? 'Your Bloom After story has been approved'
-      : 'Update on your Bloom After story submission';
+      : status === 'removed'
+        ? 'Your Bloom After story has been removed'
+        : status === 'deleted'
+          ? 'Your Bloom After story was permanently deleted'
+          : 'Update on your Bloom After story submission';
 
   await resend.emails.send({
     from: getFromAddress(),

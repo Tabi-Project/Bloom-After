@@ -32,7 +32,6 @@ const getEl = (id) => document.getElementById(id);
 // ── Boot 
 
 async function init() {
-  console.debug('[StoryModeration][List] init stories moderation page');
   const stored = (() => {
     try { return JSON.parse(sessionStorage.getItem(ADMIN_USER_KEY)) || {}; }
     catch { return {}; }
@@ -65,14 +64,11 @@ async function init() {
 
 async function fetchStories() {
   try {
-    console.debug('[StoryModeration][List] fetching admin stories');
     const res = await api.get("/api/v1/admin/stories");
     if (res?.data?.stories) {
-      console.debug('[StoryModeration][List] fetched stories', { count: res.data.stories.length });
       return res.data.stories;
     }
     if (Array.isArray(res?.data)) {
-      console.debug('[StoryModeration][List] fetched stories (array)', { count: res.data.length });
       return res.data;
     }
     return [];
@@ -287,12 +283,10 @@ async function handleListClick(e) {
 
   try {
     const nextStatus = action === "approve" ? "approved" : "rejected";
-    console.debug('[StoryModeration][List] quick action request', { id, nextStatus });
     await api.patch(`/api/v1/admin/stories/${id}`, { status: nextStatus });
     // Update local state
     const story = allStories.find((s) => (s._id || s.id) === id);
     if (story) story.status = nextStatus;
-    console.debug('[StoryModeration][List] quick action success', { id, nextStatus });
     applyFilters();
   } catch (err) {
     console.error('[StoryModeration][List] quick action failed', {
