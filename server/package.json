@@ -10,7 +10,8 @@
     "start": "node server.js",
     "seed:resources": "node scripts/seedResources.js",
     "seed:admin": "node scripts/seedAdmin.js",
-    "seed:clinics": "node scripts/seedClinics.js"
+    "seed:clinics": "node scripts/seedClinics.js",
+    "seed:ngos": "node scripts/seedNgos.js"
   },
   "repository": {
     "type": "git",

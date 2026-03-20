@@ -1,4 +1,4 @@
-import { fetchNGOs } from '../data/ngos.js';
+import { fetchNgos, submitNgo } from '../data/ngos-api.js';
 import { renderNavbar, initNavbar } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { icons } from '../components/icons.js';
@@ -8,8 +8,9 @@ const ITEMS_PER_PAGE = 6;
 let currentPage = 1;
 let activeFilter = "";
 let searchQuery = "";
-let allNGOs = [];
-let filteredNGOs = [];
+let currentTotalPages = 0;
+let requestSequence = 0;
+let inFlightController = null;
 
 const DOM = {
   grid: document.getElementById("ngo-grid"),
@@ -25,7 +26,8 @@ const DOM = {
   ngoForm: document.getElementById("ngo-submit-form"),
   formContainer: document.getElementById("modal-form-container"),
   successState: document.getElementById("modal-success-state"),
-  btnRetry: document.getElementById("btn-retry")
+  btnRetry: document.getElementById("btn-retry"),
+  submitBtn: document.querySelector("#ngo-submit-form button[type='submit']"),
 };
 
 async function init() {
@@ -38,51 +40,66 @@ async function init() {
 }
 
 async function loadInitialData() {
-  DOM.grid.innerHTML = '<div class="skeleton-card"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div></div>'.repeat(3);
-  
+  await loadNgos({ resetPage: true });
+}
+
+async function loadNgos({ resetPage = false, scrollToGrid = false } = {}) {
+  if (resetPage) currentPage = 1;
+  const requestId = ++requestSequence;
+
+  if (inFlightController) {
+    inFlightController.abort();
+  }
+
+  inFlightController = new AbortController();
+  showSkeletons();
+
   try {
-    allNGOs = await fetchNGOs();
-    applyFiltersAndRender({ resetPage: true });
+    const { data, pagination } = await fetchNgos(
+      {
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+        q: searchQuery,
+        focus: activeFilter,
+        status: 'approved',
+      },
+      { signal: inFlightController.signal },
+    );
+
+    if (requestId !== requestSequence) return;
+
+    currentPage = pagination?.currentPage || currentPage;
+    currentTotalPages = pagination?.totalPages || 0;
+    renderPage(data, { scrollToGrid });
   } catch (error) {
-    showError("We could not load the directory right now. Please try again.");
+    if (error?.name === 'AbortError') return;
+    if (requestId !== requestSequence) return;
+    showError(error?.message || 'We could not load the directory right now. Please try again.');
   }
 }
 
-function applyFiltersAndRender({ resetPage = false, scrollToGrid = false } = {}) {
-  if (resetPage) currentPage = 1;
-
-  filteredNGOs = allNGOs.filter(ngo => {
-    const matchesSearch = ngo.name.toLowerCase().includes(searchQuery) || 
-                          ngo.geographic_coverage.toLowerCase().includes(searchQuery) ||
-                          ngo.services.join(' ').toLowerCase().includes(searchQuery) ||
-                          ngo.mission.toLowerCase().includes(searchQuery) ||
-                          ngo.focus_areas.toLowerCase().includes(searchQuery);
-    
-    const matchesFilter = activeFilter === "" || ngo.focus_areas.toLowerCase().includes(activeFilter.toLowerCase());
-    
-    return matchesSearch && matchesFilter;
-  });
-
-  renderPage({ scrollToGrid });
+function showSkeletons() {
+  DOM.grid.innerHTML = '<div class="skeleton-card"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div></div>'.repeat(ITEMS_PER_PAGE);
+  DOM.grid.setAttribute('aria-busy', 'true');
+  DOM.emptyState.hidden = true;
+  DOM.errorState.hidden = true;
+  DOM.paginationWrap.innerHTML = '';
 }
 
-function renderPage({ scrollToGrid = false } = {}) {
+function renderPage(ngos, { scrollToGrid = false } = {}) {
+  DOM.grid.removeAttribute('aria-busy');
   DOM.emptyState.hidden = true;
   DOM.errorState.hidden = true;
 
-  if (filteredNGOs.length === 0) {
+  if (!ngos.length) {
     DOM.grid.innerHTML = "";
     DOM.emptyState.hidden = false;
     DOM.paginationWrap.innerHTML = "";
     return;
   }
 
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedItems = filteredNGOs.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  const totalPages = Math.ceil(filteredNGOs.length / ITEMS_PER_PAGE);
-
-  DOM.grid.innerHTML = paginatedItems.map(ngo => createNGOCard(ngo)).join("");
-  renderPagination(totalPages);
+  DOM.grid.innerHTML = ngos.map(ngo => createNGOCard(ngo)).join("");
+  renderPagination(currentTotalPages);
 
   if (scrollToGrid) {
     DOM.grid.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -90,14 +107,22 @@ function renderPage({ scrollToGrid = false } = {}) {
 }
 
 function createNGOCard(ngo) {
-  const servicesText = ngo.services.join(', ');
+  const servicesText = Array.isArray(ngo.services) && ngo.services.length
+    ? ngo.services.join(', ')
+    : 'Not specified';
+  const focusText = ngo.focus_areas || (Array.isArray(ngo.focus_tags) ? ngo.focus_tags.join(', ') : '') || 'General support';
+  const coverageText = ngo.geographic_coverage || 'Coverage not specified';
+  const phone = ngo.contact?.phone || '';
+  const email = ngo.contact?.email || '';
+  const website = ngo.website || '#';
+  const image = ngo.cover_image || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&q=80';
   
   return `
     <article class="ngo-card">
       <div class="ngo-card-image-wrapper">
-        <img src="${ngo.cover_image}" alt="Cover photo for ${ngo.name}" class="ngo-card-image" loading="lazy">
+        <img src="${image}" alt="Cover photo for ${ngo.name}" class="ngo-card-image" loading="lazy">
         <div class="ngo-card-badges">
-          <span class="badge-coverage">${ngo.geographic_coverage}</span>
+          <span class="badge-coverage">${coverageText}</span>
         </div>
       </div>
       
@@ -108,15 +133,15 @@ function createNGOCard(ngo) {
         <ul class="ngo-contact-list">
           <li class="ngo-contact-item">
             <span class="ngo-icon">${icons.phone}</span> 
-            <a href="tel:${ngo.contact.phone.replace(/\s+/g, '')}">${ngo.contact.phone}</a>
+            ${phone ? `<a href="tel:${phone.replace(/\s+/g, '')}">${phone}</a>` : '<span>Not available</span>'}
           </li>
           <li class="ngo-contact-item">
             <span class="ngo-icon">${icons.email}</span> 
-            <a href="mailto:${ngo.contact.email}">${ngo.contact.email}</a>
+            ${email ? `<a href="mailto:${email}">${email}</a>` : '<span>Not available</span>'}
           </li>
           <li class="ngo-contact-item">
             <span class="ngo-icon">${icons.link}</span> 
-            <a href="${ngo.website}" target="_blank" rel="noopener noreferrer">Visit Website</a>
+            ${website && website !== '#' ? `<a href="${website}" target="_blank" rel="noopener noreferrer">Visit Website</a>` : '<span>Not available</span>'}
           </li>
         </ul>
       </div>
@@ -124,7 +149,7 @@ function createNGOCard(ngo) {
       <div class="ngo-card-footer">
         <div class="ngo-stat">
           <span class="ngo-stat-label">Focus</span>
-          <span class="ngo-stat-value">${ngo.focus_areas}</span>
+          <span class="ngo-stat-value">${focusText}</span>
         </div>
         <div class="ngo-stat text-right">
           <span class="ngo-stat-label">Services</span>
@@ -182,9 +207,40 @@ function renderPagination(totalPages) {
 
 function showError(message) {
   DOM.grid.innerHTML = "";
+  DOM.grid.removeAttribute('aria-busy');
   DOM.emptyState.hidden = true;
   DOM.errorState.hidden = false;
   DOM.errorState.querySelector('.error-card-message').textContent = message;
+}
+
+function getOrCreateFormErrorNode() {
+  let errorNode = DOM.ngoForm.querySelector('#ngo-submit-error');
+  if (!errorNode) {
+    errorNode = document.createElement('p');
+    errorNode.id = 'ngo-submit-error';
+    errorNode.className = 'error-card-message';
+    errorNode.setAttribute('role', 'alert');
+    DOM.ngoForm.appendChild(errorNode);
+  }
+  return errorNode;
+}
+
+function setSubmitLoading(isLoading) {
+  if (!DOM.submitBtn) return;
+  DOM.submitBtn.disabled = isLoading;
+  DOM.submitBtn.textContent = isLoading ? 'Submitting...' : 'Submit for Review';
+}
+
+function clearFormError() {
+  const errorNode = DOM.ngoForm.querySelector('#ngo-submit-error');
+  if (errorNode) {
+    errorNode.textContent = '';
+  }
+}
+
+function showFormError(message) {
+  const errorNode = getOrCreateFormErrorNode();
+  errorNode.textContent = message;
 }
 
 function openModal() {
@@ -193,6 +249,7 @@ function openModal() {
   DOM.formContainer.hidden = false;
   DOM.successState.hidden = true;
   DOM.ngoForm.reset();
+  clearFormError();
 }
 
 function closeModal() {
@@ -202,7 +259,7 @@ function closeModal() {
 
 function bindEvents() {
   DOM.filterBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
       DOM.filterBtns.forEach(b => {
         b.classList.remove("active");
         b.setAttribute("aria-pressed", "false");
@@ -210,26 +267,26 @@ function bindEvents() {
       btn.classList.add("active");
       btn.setAttribute("aria-pressed", "true");
       activeFilter = btn.dataset.filter || "";
-      applyFiltersAndRender({ resetPage: true });
+      await loadNgos({ resetPage: true });
     });
   });
 
   let searchTimer;
   DOM.searchInput.addEventListener("input", () => {
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => {
-      searchQuery = DOM.searchInput.value.trim().toLowerCase();
-      applyFiltersAndRender({ resetPage: true });
+    searchTimer = setTimeout(async () => {
+      searchQuery = DOM.searchInput.value.trim();
+      await loadNgos({ resetPage: true });
     }, 350);
   });
 
-  DOM.paginationWrap.addEventListener("click", (event) => {
+  DOM.paginationWrap.addEventListener("click", async (event) => {
     const btn = event.target.closest("[data-page]");
     if (!btn || btn.disabled) return;
     const nextPage = Number(btn.dataset.page);
-    if (!nextPage) return;
+    if (!nextPage || nextPage < 1 || nextPage > currentTotalPages) return;
     currentPage = nextPage;
-    applyFiltersAndRender({ scrollToGrid: true });
+    await loadNgos({ scrollToGrid: true });
   });
 
   DOM.btnOpenModal.addEventListener("click", openModal);
@@ -239,21 +296,36 @@ function bindEvents() {
   });
 
   if (DOM.btnRetry) {
-    DOM.btnRetry.addEventListener("click", () => window.location.reload());
+    DOM.btnRetry.addEventListener("click", async () => {
+      await loadNgos();
+    });
   }
 
-  DOM.ngoForm.addEventListener("submit", (e) => {
+  DOM.ngoForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const btnSubmit = DOM.ngoForm.querySelector("button[type='submit']");
-    btnSubmit.textContent = "Submitting...";
-    btnSubmit.disabled = true;
 
-    setTimeout(() => {
+    clearFormError();
+    const nameInput = document.getElementById('ngo-name');
+    const linkInput = document.getElementById('ngo-link');
+    const name = nameInput?.value?.trim() || '';
+    const website = linkInput?.value?.trim() || '';
+
+    if (!name || !website) {
+      showFormError('Please enter the organisation name and website link.');
+      return;
+    }
+
+    setSubmitLoading(true);
+
+    try {
+      await submitNgo({ name, website });
       DOM.formContainer.hidden = true;
       DOM.successState.hidden = false;
-      btnSubmit.textContent = "Submit for Review";
-      btnSubmit.disabled = false;
-    }, 800);
+    } catch (error) {
+      showFormError(error?.message || 'Could not submit right now. Please try again.');
+    } finally {
+      setSubmitLoading(false);
+    }
   });
 }
 
