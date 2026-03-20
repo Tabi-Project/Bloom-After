@@ -174,12 +174,16 @@ export const submitNgo = async (req, res) => {
       return res.status(400).json({ status: 'error', error: 'Website or social link is required.' });
     }
 
+    let parsedUrl;
     try {
-      new URL(website);
+      parsedUrl = new URL(website);
     } catch {
       return res.status(400).json({ status: 'error', error: 'Provide a valid website URL.' });
     }
 
+    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+      return res.status(400).json({ status: 'error', error: 'Provide a valid website URL.' });
+    }
     const created = await NGO.create({
       name,
       website,
