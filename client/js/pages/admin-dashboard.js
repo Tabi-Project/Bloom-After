@@ -1,4 +1,8 @@
-
+/**
+ * admin-dashboard.js
+ * Fetches submissions across all content types (stories, clinics,
+ * specialists, media, requests) for the unified moderation queue.
+ */
 
 import {
   renderAdminSidebar,
@@ -23,6 +27,7 @@ import api from "../api.js";
 
 const ADMIN_USER_KEY = "adminUser";
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 const getStoredAdminUser = () => {
   try {
@@ -39,13 +44,37 @@ const formatNumber = (v) =>
   new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(v);
 
 const buildOverviewStats = ({ resources = {}, stories = {} } = {}) => [
-  { id: "total-resources-card",     label: "Total Resources",        value: formatNumber(resources.total     ?? 0), meta: "Library size",        muted: true },
-  { id: "published-resources-card", label: "Published Resources",    value: formatNumber(resources.published ?? 0), meta: "Live on Bloom After", muted: true },
-  { id: "draft-resources-card",     label: "Draft Resources",        value: formatNumber(resources.drafts    ?? 0), meta: "Needs review",        muted: true },
-  { id: "pending-stories-card",     label: "Items Pending Review",   value: formatNumber(stories.pending     ?? 0), meta: "Awaiting moderation", muted: true },
+  {
+    id:    "total-resources-card",
+    label: "Total Resources",
+    value: formatNumber(resources.total     ?? 0),
+    meta:  "Library size",
+    muted: true,
+  },
+  {
+    id:    "published-resources-card",
+    label: "Published Resources",
+    value: formatNumber(resources.published ?? 0),
+    meta:  "Live on Bloom After",
+    muted: true,
+  },
+  {
+    id:    "draft-resources-card",
+    label: "Draft Resources",
+    value: formatNumber(resources.drafts    ?? 0),
+    meta:  "Needs review",
+    muted: true,
+  },
+  {
+    id:    "pending-stories-card",
+    label: "Items Pending Review",
+    value: formatNumber(stories.pending     ?? 0),
+    meta:  "Awaiting moderation",
+    muted: true,
+  },
 ];
 
-// Data fetching
+// ── Data fetching ─────────────────────────────────────────────────────────────
 
 const fetchOverviewStats = async () => {
   try {
@@ -61,53 +90,120 @@ const fetchOverviewStats = async () => {
   }
 };
 
+/**
+ * fetchAllSubmissions
+ * Hits all five moderation endpoints in parallel.
+ * Tags each item with its `type` so the unified queue can
+ * colour-code and route Review buttons correctly.
+ * Falls back gracefully — if any individual endpoint 401/403s
+ * the whole page redirects to login; other errors are silenced
+ * so a missing endpoint doesn't break the whole queue.
+ */
 const fetchAllSubmissions = async () => {
+  // Helper: extract an array from any common API response shape
+  const extract = (res) => {
+    const d = res?.data;
+    if (Array.isArray(d))          return d;
+    if (Array.isArray(d?.items))   return d.items;
+    if (Array.isArray(d?.data))    return d.data;
+    if (Array.isArray(d?.stories)) return d.stories;
+    return [];
+  };
+
+  // Normalise a raw item into the shape the queue table expects
+  const normalise = (item, type) => {
+    const id = item._id || item.id;
+
+    // Build a display title that works for every content type
+    const title =
+      item.title ||
+      item.name  ||
+      (item.story
+        ? item.story.replace(/<[^>]+>/g, " ").trim().slice(0, 80)
+        : "") ||
+      item.story_text?.slice(0, 80) ||
+      "Untitled";
+
+    const submittedBy =
+      item.submittedBy ||
+      item.submitterName ||
+      (item.privacy === "named" && item.name ? item.name : null) ||
+      (type === "story" ? "Anonymous" : null);
+
+    return {
+      ...item,
+      id,
+      type,
+      title,
+      submittedBy,
+      submittedAt: item.submittedAt || item.createdAt,
+      status:      item.status || "pending",
+    };
+  };
+
   try {
-    const storiesRes = await api.get("/api/v1/admin/stories");
-    const stories = storiesRes?.data?.stories || [];
+    // Fire all five endpoints simultaneously
+    const [
+      storiesRes,
+      clinicsRes,
+      specialistsRes,
+      mediaRes,
+      requestsRes,
+    ] = await Promise.allSettled([
+      api.get("/api/v1/admin/stories"),
+      api.get("/api/v1/admin/clinics"),
+      api.get("/api/v1/admin/specialists"),
+      api.get("/api/v1/admin/media"),
+      api.get("/api/v1/admin/requests"),
+    ]);
 
-    if (!Array.isArray(stories)) return [];
+    // Check for auth failure on any request
+    for (const result of [storiesRes, clinicsRes, specialistsRes, mediaRes, requestsRes]) {
+      if (result.status === "rejected") {
+        const status = result.reason?.status;
+        if (status === 401 || status === 403) {
+          window.location.assign("/client/pages/admin-login.html");
+          return [];
+        }
+      }
+    }
 
-    return stories
-      .map((story) => ({
-        ...story,
-        type: "story",
-        title:
-          story.story_text?.slice(0, 80)
-          || story.story?.replace(/<[^>]+>/g, " ").trim().slice(0, 80)
-          || "Story submission",
-        submittedBy:
-          story.privacy === "named" && story.name
-            ? story.name
-            : "Anonymous",
-        submittedAt: story.createdAt || story.submittedAt,
-      }))
-      .sort(
-        (a, b) =>
-          new Date(b.submittedAt || b.createdAt || 0) -
-          new Date(a.submittedAt || a.createdAt || 0),
-      );
+    // Extract and tag each set
+    const stories     = storiesRes.status     === "fulfilled" ? extract(storiesRes.value).map((i)     => normalise(i, "story"))      : [];
+    const clinics     = clinicsRes.status     === "fulfilled" ? extract(clinicsRes.value).map((i)     => normalise(i, "clinic"))     : [];
+    const specialists = specialistsRes.status === "fulfilled" ? extract(specialistsRes.value).map((i) => normalise(i, "specialist")) : [];
+    const media       = mediaRes.status       === "fulfilled" ? extract(mediaRes.value).map((i)       => normalise(i, "media"))      : [];
+    const requests    = requestsRes.status    === "fulfilled" ? extract(requestsRes.value).map((i)    => normalise(i, "request"))    : [];
+
+    const all = [...stories, ...clinics, ...specialists, ...media, ...requests];
+
+    // Sort newest first
+    return all.sort(
+      (a, b) =>
+        new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0)
+    );
+
   } catch (err) {
+    // Catch-all for unexpected errors — don't break the dashboard
     if (err?.status === 401 || err?.status === 403) {
       window.location.assign("/client/pages/admin-login.html");
-      return [];
     }
     return [];
   }
 };
 
-// Auth 
+// ── Auth ──────────────────────────────────────────────────────────────────────
 
 const bindLogout = () => {
   document.querySelectorAll("[data-admin-logout]").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const orig = btn.textContent;
-      btn.disabled = true;
+      const orig    = btn.textContent;
+      btn.disabled  = true;
       btn.textContent = "Logging out...";
       try { await api.post("/api/v1/auth/logout"); } catch (_) {}
       finally {
         btn.textContent = orig;
-        btn.disabled = false;
+        btn.disabled    = false;
         sessionStorage.removeItem(ADMIN_USER_KEY);
         sessionStorage.removeItem("adminToken");
         window.location.assign("/client/pages/admin-login.html");
@@ -121,25 +217,42 @@ const initProfileMenu = () => {
   const menu   = document.getElementById("topbar-user-menu");
   if (!toggle || !menu) return;
 
-  const close = () => { menu.classList.remove("open"); menu.setAttribute("aria-hidden", "true");  toggle.setAttribute("aria-expanded", "false"); };
-  const open  = () => { menu.classList.add("open");    menu.setAttribute("aria-hidden", "false"); toggle.setAttribute("aria-expanded", "true"); };
+  const close = () => {
+    menu.classList.remove("open");
+    menu.setAttribute("aria-hidden", "true");
+    toggle.setAttribute("aria-expanded", "false");
+  };
+  const open = () => {
+    menu.classList.add("open");
+    menu.setAttribute("aria-hidden", "false");
+    toggle.setAttribute("aria-expanded", "true");
+  };
 
-  toggle.addEventListener("click", (e) => { e.stopPropagation(); menu.classList.contains("open") ? close() : open(); });
-  document.addEventListener("click", (e) => { if (menu.classList.contains("open") && !menu.contains(e.target) && !toggle.contains(e.target)) close(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+  toggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    menu.classList.contains("open") ? close() : open();
+  });
+  document.addEventListener("click", (e) => {
+    if (menu.classList.contains("open") && !menu.contains(e.target) && !toggle.contains(e.target)) {
+      close();
+    }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close();
+  });
 };
 
-// Init
+// ── Init ──────────────────────────────────────────────────────────────────────
 
 async function init() {
   const storedAdminUser = getStoredAdminUser();
 
-  // Shell — render queue in loading state immediately
+  // ── Render shell immediately with skeletons ──────────────────────────────
   document.getElementById("sidebar-root").innerHTML = renderAdminSidebar({
     ...adminConfig,
-    activePage: "overview",
+    activePage:   "overview",
     totalPending: 0,
-    currentRole: storedAdminUser?.isSuperAdmin ? "superadmin" : "moderator",
+    currentRole:  storedAdminUser?.isSuperAdmin ? "superadmin" : "moderator",
   });
 
   document.getElementById("topbar-root").innerHTML = renderAdminTopbar({
@@ -153,18 +266,18 @@ async function init() {
     name: storedAdminUser?.name,
   });
 
-  // Render with loading skeleton — no queue cards data needed
+  // Queue renders with loading skeleton while we fetch
   document.getElementById("queues-content-root").innerHTML =
     renderQueuesAndContent([], draftData, [], true);
 
-  document.getElementById("roles-root").innerHTML = renderRolesSection(rolesData);
-  document.getElementById("footer-root").innerHTML = renderFooter();
+  document.getElementById("roles-root").innerHTML   = renderRolesSection(rolesData);
+  document.getElementById("footer-root").innerHTML  = renderFooter();
 
   initAdminNavbar();
   bindLogout();
   initProfileMenu();
 
-  // Fetch everything in parallel
+  // ── Parallel data fetch ───────────────────────────────────────────────────
   const [{ authorized, stats }, submissions] = await Promise.all([
     fetchOverviewStats(),
     fetchAllSubmissions(),
@@ -172,21 +285,21 @@ async function init() {
 
   if (!authorized) return;
 
-  // Update overview with real stats
+  // Update overview stats
   document.getElementById("overview-root").innerHTML =
     renderOverviewSection(stats || statsData);
 
-  // Update sidebar pending badge
+  // Update sidebar pending badge with real total across all types
   const totalPending = submissions.filter((s) => s.status === "pending").length;
   document.getElementById("sidebar-root").innerHTML = renderAdminSidebar({
     ...adminConfig,
-    activePage: "overview",
+    activePage:   "overview",
     totalPending,
-    currentRole: storedAdminUser?.isSuperAdmin ? "superadmin" : "moderator",
+    currentRole:  storedAdminUser?.isSuperAdmin ? "superadmin" : "moderator",
   });
-  initAdminNavbar(); // re-bind after re-render
+  initAdminNavbar(); // re-bind after sidebar re-render
 
-  // Re-render queue with real data
+  // Render queue with real data
   document.getElementById("queues-content-root").innerHTML =
     renderQueuesAndContent([], draftData, submissions, false);
 }

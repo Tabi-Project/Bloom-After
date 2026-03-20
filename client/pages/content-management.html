@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Content Management — Bloom After Admin" />
+    <title>Content Management - Bloom Admin</title>
+    <link rel="icon" type="image/x-icon" href="../assets/logo/favicon.png" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layouts.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/admin-dashboard.css" />
+    <link rel="stylesheet" href="../css/content-management.css" />
+  </head>
+  <body>
+    <div class="admin-layout">
+
+      <div id="sidebar-root"></div>
+
+      <div class="admin-main">
+        <div id="topbar-root"></div>
+
+        <main class="dashboard-content" id="main-content">
+
+          <!-- Page header -->
+          <div class="cm-page-header">
+            <div>
+              <h1 class="cm-page-title">Content Management</h1>
+              <p class="cm-page-subtitle">Create, edit, and manage all platform content from one place.</p>
+            </div>
+            <!-- Global stats -->
+            <div class="cm-header-stats" id="cm-header-stats" aria-live="polite">
+              <div class="cm-stat-pill">
+                <span class="cm-stat-dot cm-dot-published"></span>
+                <span id="stat-published">—</span> published
+              </div>
+              <div class="cm-stat-pill">
+                <span class="cm-stat-dot cm-dot-draft"></span>
+                <span id="stat-draft">—</span> drafts
+              </div>
+              <div class="cm-stat-pill">
+                <span class="cm-stat-dot cm-dot-archived"></span>
+                <span id="stat-archived">—</span> archived
+              </div>
+            </div>
+          </div>
+
+          <!-- Destination cards -->
+          <section aria-labelledby="destinations-heading">
+            <h2 class="cm-section-title" id="destinations-heading">Destinations</h2>
+            <div class="cm-destination-grid" id="cm-destination-grid">
+              <!-- Injected by JS -->
+            </div>
+          </section>
+
+          <!-- Recent content table -->
+          <section aria-labelledby="recent-heading">
+            <div class="cm-section-header">
+              <h2 class="cm-section-title" id="recent-heading">All Content</h2>
+              <div class="cm-table-controls">
+                <!-- Search -->
+                <div class="cm-search-wrap">
+                  <svg class="cm-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input
+                    type="search"
+                    id="cm-search"
+                    class="cm-search-input"
+                    placeholder="Search content…"
+                    aria-label="Search all content"
+                    autocomplete="off"
+                  />
+                </div>
+                <!-- Status filter -->
+                <div class="cm-filter-tabs" role="group" aria-label="Filter by status">
+                  <button class="cm-filter-btn active" data-status="">All</button>
+                  <button class="cm-filter-btn" data-status="published">Published</button>
+                  <button class="cm-filter-btn" data-status="draft">Draft</button>
+                  <button class="cm-filter-btn" data-status="archived">Archived</button>
+                </div>
+                <!-- Type filter -->
+                <select class="cm-select" id="cm-type-filter" aria-label="Filter by content type">
+                  <option value="">All types</option>
+                  <option value="resource">Resource Hub</option>
+                  <option value="ngo">NGO Directory</option>
+                  <option value="intervention">Lifestyle & Medical</option>
+                  <option value="specialist">Specialist</option>
+                  <option value="clinic">Clinic</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="cm-table-wrap">
+              <table class="cm-table" aria-label="All content entries">
+                <thead>
+                  <tr class="cm-thead-row">
+                    <th class="cm-th cm-th-title">Title</th>
+                    <th class="cm-th">Type</th>
+                    <th class="cm-th">Status</th>
+                    <th class="cm-th cm-th-date">Updated</th>
+                    <th class="cm-th cm-th-actions">
+                      <span class="visually-hidden">Actions</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="cm-table-body" aria-live="polite">
+                  <!-- Injected by JS -->
+                </tbody>
+              </table>
+              <p id="cm-table-empty" class="cm-empty" hidden role="status"></p>
+            </div>
+
+            <!-- Pagination -->
+            <div id="cm-pagination" class="pagination-wrap" aria-live="polite"></div>
+          </section>
+
+        </main>
+      </div>
+
+    </div>
+
+    <!-- Delete confirmation modal -->
+    <div class="cm-modal-overlay" id="cm-delete-modal" hidden role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+      <div class="cm-modal">
+        <h3 class="cm-modal-title" id="delete-modal-title">Delete content?</h3>
+        <p class="cm-modal-body" id="cm-delete-modal-body">This action cannot be undone.</p>
+        <div class="cm-modal-actions">
+          <button class="btn cm-btn-cancel" id="cm-delete-cancel" type="button">Cancel</button>
+          <button class="btn cm-btn-delete" id="cm-delete-confirm" type="button">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="footer-root"></div>
+    <script type="module" src="../js/pages/content-management.js"></script>
+  </body>
+</html>

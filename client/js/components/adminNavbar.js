@@ -23,56 +23,56 @@ const navGroups = [
     label: "MENU",
     items: [
       {
-        id: "overview",
+        id:   "overview",
         icon: icons.adminOverview,
         label: "Overview",
         href: "admin-dashboard.html",
       },
       {
-        id: "moderation",
-        icon: icons.adminQueues,
+        id:    "moderation",
+        icon:  icons.adminQueues,
         label: "Moderation",
         badge: true,
         children: [
           {
-            id: "moderation-stories",
+            id:    "moderation-stories",
             label: "Stories",
-            href: "stories-moderation.html",
+            href:  "stories-moderation.html",
             badge: true,
           },
           {
-            id: "moderation-clinics",
+            id:    "moderation-clinics",
             label: "Clinics",
-            href: "moderation-list.html?type=clinic",
+            href:  "moderation-list.html?type=clinic",
           },
           {
-            id: "specialists-onboarding",
+            id:    "specialists-onboarding",
             label: "Specialists Onboarding",
-            href: "moderation-list.html?type=specialist",
+            href:  "moderation-list.html?type=specialist",
           },
           {
-            id: "media-suggestions",
+            id:    "media-suggestions",
             label: "Media Suggestions",
-            href: "moderation-list.html?type=media",
+            href:  "moderation-list.html?type=media",
           },
           {
-            id: "moderation-other",
+            id:    "moderation-other",
             label: "Other Requests",
-            href: "moderation-list.html?type=request",
+            href:  "moderation-list.html?type=request",
           },
         ],
       },
       {
-        id: "content-management",
-        icon: icons.adminContent,
+        id:    "content-management",
+        icon:  icons.adminContent,
         label: "Content Management",
-        href: "#content-section",
+        href:  "content-management.html",   // ← fixed: was #content-section
       },
       {
-        id: "user-access",
-        icon: icons.adminUserAccess,
+        id:    "user-access",
+        icon:  icons.adminUserAccess,
         label: "User Access",
-        href: "#roles-section",
+        href:  "#roles-section",
       },
     ],
   },
@@ -80,10 +80,10 @@ const navGroups = [
     label: "SYSTEM",
     items: [
       {
-        id: "settings",
-        icon: icons.adminSettings,
+        id:    "settings",
+        icon:  icons.adminSettings,
         label: "Settings",
-        href: "settings.html",
+        href:  "settings.html",
       },
     ],
   },
@@ -92,9 +92,9 @@ const navGroups = [
 // ── Render sidebar ────────────────────────────────────────────────────────────
 
 export function renderAdminSidebar({
-  activePage = "overview",
+  activePage   = "overview",
   totalPending = 0,
-  currentRole = "Admin",
+  currentRole  = "Admin",
 } = {}) {
   const logoSrc = "../assets/logo/favicon.png";
 
@@ -133,7 +133,7 @@ export function renderAdminSidebar({
         </a>
         <div class="sidebar-identity">
           <span class="sidebar-app-name">Bloom Admin</span>
-          <span class="sidebar-role-pill">${currentRole}</span>
+          <span class="sidebar-role-pill">${escapeHtml(currentRole)}</span>
         </div>
       </div>
 
@@ -156,16 +156,14 @@ export function renderAdminSidebar({
 function renderNavItem(item, activePage, totalPending, moderationIsActive) {
   const isActive = activePage === item.id;
 
-  // ── Accordion item ────────────────────────────────────────────────────────
+  // ── Accordion item (has children) ────────────────────────────────────────
   if (item.children) {
-    const isOpen = moderationIsActive;
+    const isOpen   = moderationIsActive;
     const subItems = item.children
       .map((child) => {
         const childActive = activePage === child.id;
         const showBadge =
-          child.badge &&
-          child.id === "moderation-stories" &&
-          totalPending > 0;
+          child.badge && child.id === "moderation-stories" && totalPending > 0;
         return `
           <li class="sidebar-subnav-item">
             <a
