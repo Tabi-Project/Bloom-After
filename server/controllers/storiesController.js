@@ -84,10 +84,19 @@ export const submitStory = async (req, res) => {
     const what_helped = normalizeWhatHelped(req.body?.what_helped || req.body?.tags);
     const consent = toBoolean(req.body?.consent);
     const imageData = getString(req.body?.image);
-    console.log("Started")
+
+    console.debug("[StorySubmission][Server] submit request received", {
+      privacy,
+      hasName: Boolean(name),
+      hasEmail: Boolean(email),
+      storyLength: story.length,
+      tagsCount: what_helped.length,
+      hasImage: Boolean(imageData),
+      consent,
+    });
 
     if (!story) {
-      console.log("NO STORY")
+      console.debug("[StorySubmission][Server] validation failed: missing story content");
       return res.status(400).json({
         status: "error",
         error: "Story content is required.",
@@ -95,6 +104,7 @@ export const submitStory = async (req, res) => {
     }
 
     if (!consent) {
+      console.debug("[StorySubmission][Server] validation failed: consent not provided");
       return res.status(400).json({
         status: "error",
         error: "Moderation consent is required.",
@@ -116,6 +126,11 @@ export const submitStory = async (req, res) => {
       location,
       consent,
       status: "pending",
+    });
+
+    console.debug("[StorySubmission][Server] story saved", {
+      storyId: created?._id?.toString?.() || null,
+      status: created?.status,
     });
 
     res.status(201).json({
@@ -261,12 +276,22 @@ export const updateAdminStory = async (req, res) => {
   try {
     const { id } = req.params;
 
+    console.debug("[StoryModeration][Server] moderation request received", {
+      id,
+      requestedStatus: req.body?.status,
+      hasModeratorNote: Boolean(getString(req.body?.moderatorNote)),
+      hasNotificationEmail: Boolean(getString(req.body?.notificationEmail)),
+      hasRejectionMessage: Boolean(getString(req.body?.rejectionMessage)),
+    });
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.debug("[StoryModeration][Server] invalid story id", { id });
       return res.status(404).json({ status: "error", error: "Story not found" });
     }
 
     const story = await Story.findById(id);
     if (!story) {
+      console.debug("[StoryModeration][Server] story not found", { id });
       return res.status(404).json({ status: "error", error: "Story not found" });
     }
 
@@ -317,6 +342,11 @@ export const updateAdminStory = async (req, res) => {
           skipped: Boolean(emailResult?.skipped),
           reason: emailResult?.reason || null,
         };
+        console.debug("[StoryModeration][Server] email notification result", {
+          id,
+          nextStatus,
+          emailNotification,
+        });
       } catch (emailError) {
         console.error("Story moderation email failed:", emailError);
         emailNotification = {
@@ -327,6 +357,13 @@ export const updateAdminStory = async (req, res) => {
         };
       }
     }
+
+    console.debug("[StoryModeration][Server] moderation update success", {
+      id,
+      finalStatus: story.status,
+      didStatusChange,
+      emailNotification,
+    });
 
     res.status(200).json({
       status: "success",
