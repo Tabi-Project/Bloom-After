@@ -11,6 +11,9 @@ import clinicsRouter from './routes/clinicsRouter.js';
 import storiesRouter from './routes/storiesRouter.js';
 import adminStoriesRouter from './routes/adminStoriesRouter.js';
 import ngosRouter from './routes/ngosRouter.js';
+import suggestionsRouter from './routes/suggestionsRouter.js';
+import adminSuggestionsRouter from './routes/adminSuggestionsRouter.js';
+import adminNgosRouter from './routes/adminNgosRouter.js';
 
 dotenv.config();
 
@@ -52,9 +55,12 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/resources', resourceRouter);
 app.use('/api/v1/admin/stats', adminStatsRouter);
 app.use('/api/v1/admin/stories', adminStoriesRouter);
+app.use('/api/v1/admin/suggestions', adminSuggestionsRouter);
+app.use('/api/v1/admin/ngos', adminNgosRouter);
 app.use('/api/v1/clinics', clinicsRouter);
 app.use('/api/v1/stories', storiesRouter);
 app.use('/api/v1/ngos', ngosRouter);
+app.use('/api/v1/suggestions', suggestionsRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World');

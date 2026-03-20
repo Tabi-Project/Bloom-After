@@ -66,7 +66,7 @@ const navGroups = [
         id:    "content-management",
         icon:  icons.adminContent,
         label: "Content Management",
-        href:  "content-management.html",   // ← fixed: was #content-section
+        href:  "content-management.html",  
       },
       {
         id:    "user-access",
@@ -89,7 +89,7 @@ const navGroups = [
   },
 ];
 
-// ── Render sidebar ────────────────────────────────────────────────────────────
+// Render sidebar 
 
 export function renderAdminSidebar({
   activePage   = "overview",
@@ -100,6 +100,8 @@ export function renderAdminSidebar({
 
   const moderationChildIds = [
     "moderation-stories",
+    "moderation-ngos",
+    "moderation-suggestions",
     "moderation-clinics",
     "specialists-onboarding",
     "media-suggestions",

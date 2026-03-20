@@ -1,8 +1,12 @@
 import mongoose from 'mongoose';
+import validator from 'validator';
 import NGO from '../models/ngo.js';
+import { sendNgoModerationEmail } from '../utils/ngoModerationEmail.js';
 
 const MAX_LIMIT = 24;
 const DEFAULT_LIMIT = 6;
+const ADMIN_MAX_LIMIT = 50;
+const ADMIN_DEFAULT_LIMIT = 20;
 
 const getString = (value, fallback = '') =>
   typeof value === 'string' && value.trim() ? value.trim() : fallback;
@@ -35,6 +39,12 @@ const toFocusArray = (value) => {
   }
 
   return [];
+};
+
+const parseAdminLimit = (value) => {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return ADMIN_DEFAULT_LIMIT;
+  return Math.min(parsed, ADMIN_MAX_LIMIT);
 };
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -208,6 +218,195 @@ export const submitNgo = async (req, res) => {
     });
   } catch (error) {
     console.error('Error submitting NGO:', error);
+    return res.status(500).json({ status: 'error', error: 'Server error' });
+  }
+};
+
+export const getAdminNgos = async (req, res) => {
+  try {
+    const page = parsePage(req.query.page);
+    const limit = parseAdminLimit(req.query.limit);
+    const skip = (page - 1) * limit;
+
+    const filter = {};
+    const status = getString(req.query?.status).toLowerCase();
+    if (['pending', 'approved', 'rejected'].includes(status)) {
+      filter.status = status;
+    }
+
+    const q = getString(req.query?.q);
+    if (q) {
+      const regex = new RegExp(escapeRegex(q), 'i');
+      filter.$or = [{ name: regex }, { mission: regex }, { website: regex }];
+    }
+
+    const [totalNgos, ngos] = await Promise.all([
+      NGO.countDocuments(filter),
+      NGO.find(filter)
+        .sort({ createdAt: -1, _id: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+    ]);
+
+    const totalPages = totalNgos > 0 ? Math.ceil(totalNgos / limit) : 0;
+
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        ngos: ngos.map(normalizeNgo),
+      },
+      pagination: {
+        totalNgos,
+        totalPages,
+        currentPage: page,
+        pageSize: limit,
+        hasNextPage: totalPages > 0 && page < totalPages,
+        hasPrevPage: page > 1 && totalPages > 0,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching admin NGOs:', error);
+    return res.status(500).json({ status: 'error', error: 'Server error' });
+  }
+};
+
+export const getAdminNgoById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ status: 'error', error: 'NGO not found' });
+    }
+
+    const ngo = await NGO.findById(id).lean();
+    if (!ngo) {
+      return res.status(404).json({ status: 'error', error: 'NGO not found' });
+    }
+
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        ngo: normalizeNgo(ngo),
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching admin NGO by ID:', error);
+    return res.status(500).json({ status: 'error', error: 'Server error' });
+  }
+};
+
+export const updateAdminNgo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ status: 'error', error: 'NGO not found' });
+    }
+
+    const ngo = await NGO.findById(id);
+    if (!ngo) {
+      return res.status(404).json({ status: 'error', error: 'NGO not found' });
+    }
+
+    const nextStatus = getString(req.body?.status).toLowerCase();
+    const mission = getString(req.body?.mission, ngo.mission || '');
+    const contactPhone = getString(req.body?.contact?.phone || req.body?.phone, ngo.contact?.phone || '');
+    const contactEmail = getString(req.body?.contact?.email || req.body?.email, ngo.contact?.email || '').toLowerCase();
+    const moderatorNote = getString(req.body?.moderatorNote, ngo.moderatorNote || '');
+    const rejectionMessage = getString(req.body?.rejectionMessage);
+    const notificationEmail = getString(req.body?.notificationEmail, contactEmail || '').toLowerCase();
+
+    if (nextStatus && !['pending', 'approved', 'rejected'].includes(nextStatus)) {
+      return res.status(400).json({ status: 'error', error: 'Invalid status value.' });
+    }
+
+    if (nextStatus === 'approved') {
+      if (!mission) {
+        return res.status(400).json({ status: 'error', error: 'Description is required before approval.' });
+      }
+
+      if (!contactPhone) {
+        return res.status(400).json({ status: 'error', error: 'Phone is required before approval.' });
+      }
+
+      if (!contactEmail) {
+        return res.status(400).json({ status: 'error', error: 'Email is required before approval.' });
+      }
+
+      if (!validator.isEmail(contactEmail)) {
+        return res.status(400).json({ status: 'error', error: 'Provide a valid email address.' });
+      }
+    }
+
+    if (contactEmail && !validator.isEmail(contactEmail)) {
+      return res.status(400).json({ status: 'error', error: 'Provide a valid email address.' });
+    }
+
+    ngo.mission = mission;
+    ngo.contact = {
+      ...(ngo.contact?.toObject ? ngo.contact.toObject() : ngo.contact || {}),
+      phone: contactPhone,
+      email: contactEmail,
+    };
+    ngo.moderatorNote = moderatorNote;
+
+    let emailNotification = {
+      attempted: false,
+      sent: false,
+      skipped: true,
+      reason: 'status-unchanged',
+    };
+
+    const previousStatus = getString(ngo.status, 'pending').toLowerCase();
+    const didStatusChange = nextStatus && nextStatus !== previousStatus;
+
+    if (didStatusChange) {
+      ngo.status = nextStatus;
+      ngo.reviewedBy = req.user?._id || null;
+    }
+
+    await ngo.save();
+
+    if (didStatusChange && ['approved', 'rejected'].includes(nextStatus)) {
+      emailNotification = {
+        attempted: true,
+        sent: false,
+        skipped: true,
+        reason: 'no-recipient',
+      };
+
+      try {
+        const result = await sendNgoModerationEmail({
+          to: notificationEmail,
+          ngoName: ngo.name,
+          status: nextStatus,
+          rejectionMessage,
+        });
+        emailNotification = {
+          attempted: true,
+          sent: Boolean(result?.sent),
+          skipped: Boolean(result?.skipped),
+          reason: result?.reason || null,
+        };
+      } catch (emailError) {
+        console.error('NGO moderation email failed:', emailError);
+        emailNotification = {
+          attempted: true,
+          sent: false,
+          skipped: false,
+          reason: 'send-failed',
+        };
+      }
+    }
+
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        ngo: normalizeNgo(ngo),
+        emailNotification,
+      },
+    });
+  } catch (error) {
+    console.error('Error updating admin NGO:', error);
     return res.status(500).json({ status: 'error', error: 'Server error' });
   }
 };
