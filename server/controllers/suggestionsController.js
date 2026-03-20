@@ -28,6 +28,8 @@ const normalizeSuggestion = (suggestion) => ({
   content: getString(suggestion.content),
   email: getString(suggestion.email),
   status: getString(suggestion.status, 'pending'),
+  reviewedBy: suggestion.reviewedBy ? String(suggestion.reviewedBy) : null,
+  moderatorNote: getString(suggestion.moderatorNote),
   createdAt: suggestion.createdAt || null,
   updatedAt: suggestion.updatedAt || null,
 });
