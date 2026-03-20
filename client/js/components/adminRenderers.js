@@ -136,7 +136,7 @@ function renderModerationQueueRows(submissions) {
     return `
       <tr>
         <td colspan="4" class="stories-table-empty">
-          No pending submissions. You're all caught up 🌿
+          No pending submissions. You're all caught up!
         </td>
       </tr>
     `;
