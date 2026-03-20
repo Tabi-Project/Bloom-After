@@ -78,6 +78,9 @@ function bindActions(item) {
     });
   }
 
+  document.getElementById('btn-revoke')?.addEventListener('click', () => confirmAction(item, 'removed'));
+  document.getElementById('btn-delete-post')?.addEventListener('click', () => confirmAction(item, 'deleted'));
+
   document.getElementById('btn-save-note')?.addEventListener('click', () => saveNote(id));
 }
 
@@ -89,13 +92,13 @@ async function confirmAction(item, status) {
   const dest    = document.getElementById('publish-destination')?.value || '';
   const feedback = document.getElementById('mod-action-feedback');
 
-  ['btn-approve', 'btn-reject'].forEach((bid) => { const b = document.getElementById(bid); if (b) b.disabled = true; });
+  ['btn-approve', 'btn-reject', 'btn-revoke', 'btn-delete-post'].forEach((bid) => { const b = document.getElementById(bid); if (b) b.disabled = true; });
 
   try {
     await api.patch(`${API_BASE}/${id}`, { status, moderatorNote: note, notificationEmail: email || undefined, rejectionMessage: status === 'rejected' ? message || undefined : undefined, publishDestination: status === 'approved' && dest ? dest : undefined });
 
     const badge = document.getElementById('submission-status-badge');
-    if (badge) { badge.textContent = status; badge.className = `mod-status-badge mod-status-${status}`; }
+    if (status !== 'deleted' && badge) { badge.textContent = status; badge.className = `mod-status-badge mod-status-${status}`; }
 
     document.getElementById('mod-action-buttons').innerHTML = `
       <p class="story-edit-already-actioned">
@@ -103,9 +106,17 @@ async function confirmAction(item, status) {
         <a href="${BACK_URL}" class="mod-back-inline">Back to list</a>
       </p>`;
 
-    showFeedback(feedback, status === 'approved' ? 'Approved and queued for publishing.' : 'Rejected. Submitter will be notified if email provided.', status === 'approved' ? 'success' : 'info');
+    const message = status === 'approved'
+      ? 'Approved and queued for publishing.'
+      : status === 'removed'
+      ? 'Submission revoked and marked as removed. Revoke email sent if configured.'
+      : status === 'deleted'
+      ? 'Submission permanently deleted. Permanent delete email sent if configured.'
+      : 'Rejected. Submitter will be notified if email provided.';
+
+    showFeedback(feedback, message, status === 'approved' ? 'success' : status === 'deleted' ? 'error' : 'info');
   } catch (_) {
-    ['btn-approve', 'btn-reject'].forEach((bid) => { const b = document.getElementById(bid); if (b) b.disabled = false; });
+    ['btn-approve', 'btn-reject', 'btn-revoke', 'btn-delete-post'].forEach((bid) => { const b = document.getElementById(bid); if (b) b.disabled = false; });
     showFeedback(feedback, 'Something went wrong. Please try again.', 'error');
   }
 }

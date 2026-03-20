@@ -66,6 +66,7 @@ const normalizeStory = (story) => {
     location: getString(story.location),
     consent: Boolean(story.consent),
     status: getString(story.status, "pending"),
+    moderatorNote: getString(story.moderatorNote),
     createdAt: story.createdAt || null,
     updatedAt: story.updatedAt || null,
     submittedAt: story.createdAt
@@ -85,18 +86,7 @@ export const submitStory = async (req, res) => {
     const consent = toBoolean(req.body?.consent);
     const imageData = getString(req.body?.image);
 
-    console.debug("[StorySubmission][Server] submit request received", {
-      privacy,
-      hasName: Boolean(name),
-      hasEmail: Boolean(email),
-      storyLength: story.length,
-      tagsCount: what_helped.length,
-      hasImage: Boolean(imageData),
-      consent,
-    });
-
     if (!story) {
-      console.debug("[StorySubmission][Server] validation failed: missing story content");
       return res.status(400).json({
         status: "error",
         error: "Story content is required.",
@@ -104,7 +94,6 @@ export const submitStory = async (req, res) => {
     }
 
     if (!consent) {
-      console.debug("[StorySubmission][Server] validation failed: consent not provided");
       return res.status(400).json({
         status: "error",
         error: "Moderation consent is required.",
@@ -128,10 +117,6 @@ export const submitStory = async (req, res) => {
       status: "pending",
     });
 
-    console.debug("[StorySubmission][Server] story saved", {
-      storyId: created?._id?.toString?.() || null,
-      status: created?.status,
-    });
 
     res.status(201).json({
       status: "success",
@@ -156,8 +141,12 @@ export const getAllStories = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const filter = {};
-    if (["pending", "approved", "rejected"].includes(status)) {
-      filter.status = status;
+    if (["pending", "approved", "accepted", "rejected", "removed"].includes(status)) {
+      if (status === "approved") {
+        filter.status = { $in: ["approved", "accepted"] };
+      } else {
+        filter.status = status;
+      }
     }
 
     const [totalStories, stories] = await Promise.all([
@@ -200,7 +189,7 @@ export const getStoryById = async (req, res) => {
 
     const story = await Story.collection.findOne({
       _id: new mongoose.Types.ObjectId(id),
-      status: "approved",
+      status: { $in: ["approved", "accepted"] },
     });
 
     if (!story) {
@@ -223,8 +212,12 @@ export const getAdminStories = async (req, res) => {
     const status = getString(req.query?.status, "");
 
     const filter = {};
-    if (["pending", "approved", "rejected"].includes(status)) {
-      filter.status = status;
+    if (["pending", "approved", "accepted", "rejected", "removed"].includes(status)) {
+      if (status === "approved") {
+        filter.status = { $in: ["approved", "accepted"] };
+      } else {
+        filter.status = status;
+      }
     }
 
     const stories = await Story.collection
@@ -276,34 +269,28 @@ export const updateAdminStory = async (req, res) => {
   try {
     const { id } = req.params;
 
-    console.debug("[StoryModeration][Server] moderation request received", {
-      id,
-      requestedStatus: req.body?.status,
-      hasModeratorNote: Boolean(getString(req.body?.moderatorNote)),
-      hasNotificationEmail: Boolean(getString(req.body?.notificationEmail)),
-      hasRejectionMessage: Boolean(getString(req.body?.rejectionMessage)),
-    });
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      console.debug("[StoryModeration][Server] invalid story id", { id });
       return res.status(404).json({ status: "error", error: "Story not found" });
     }
 
     const story = await Story.findById(id);
     if (!story) {
-      console.debug("[StoryModeration][Server] story not found", { id });
       return res.status(404).json({ status: "error", error: "Story not found" });
     }
 
-    const incomingStatus = getString(req.body?.status);
-    const nextStatus = ["pending", "approved", "rejected"].includes(incomingStatus)
-      ? incomingStatus
+    const incomingStatus = getString(req.body?.status).toLowerCase();
+    const normalizedIncomingStatus = incomingStatus === "accepted" ? "approved" : incomingStatus;
+    const nextStatus = ["pending", "approved", "rejected", "removed", "deleted"].includes(normalizedIncomingStatus)
+      ? normalizedIncomingStatus
       : "";
 
     const moderatorNote = getString(req.body?.moderatorNote, story.moderatorNote || "");
     const notificationEmail = getString(req.body?.notificationEmail, story.email || "");
     const rejectionMessage = getString(req.body?.rejectionMessage);
-    const didStatusChange = nextStatus && nextStatus !== story.status;
+    const currentStatus = getString(story.status, "pending").toLowerCase();
+    const normalizedCurrentStatus = currentStatus === "accepted" ? "approved" : currentStatus;
+    const didStatusChange = Boolean(nextStatus) && nextStatus !== normalizedCurrentStatus;
     let emailNotification = {
       attempted: false,
       sent: false,
@@ -313,7 +300,7 @@ export const updateAdminStory = async (req, res) => {
 
     story.moderatorNote = moderatorNote;
 
-    if (didStatusChange) {
+    if (didStatusChange && nextStatus !== "deleted") {
       story.status = nextStatus;
       story.reviewedAt = new Date();
       story.reviewedBy = req.user?._id || null;
@@ -321,7 +308,7 @@ export const updateAdminStory = async (req, res) => {
 
     await story.save();
 
-    if (didStatusChange && ["approved", "rejected"].includes(nextStatus)) {
+    if (didStatusChange && ["approved", "rejected", "removed", "deleted"].includes(nextStatus)) {
       emailNotification = {
         attempted: true,
         sent: false,
@@ -342,11 +329,7 @@ export const updateAdminStory = async (req, res) => {
           skipped: Boolean(emailResult?.skipped),
           reason: emailResult?.reason || null,
         };
-        console.debug("[StoryModeration][Server] email notification result", {
-          id,
-          nextStatus,
-          emailNotification,
-        });
+
       } catch (emailError) {
         console.error("Story moderation email failed:", emailError);
         emailNotification = {
@@ -358,12 +341,18 @@ export const updateAdminStory = async (req, res) => {
       }
     }
 
-    console.debug("[StoryModeration][Server] moderation update success", {
-      id,
-      finalStatus: story.status,
-      didStatusChange,
-      emailNotification,
-    });
+    if (didStatusChange && nextStatus === "deleted") {
+      await story.deleteOne();
+
+      return res.status(200).json({
+        status: "success",
+        data: {
+          deleted: true,
+          id,
+          emailNotification,
+        },
+      });
+    }
 
     res.status(200).json({
       status: "success",

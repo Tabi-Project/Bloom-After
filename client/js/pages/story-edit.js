@@ -19,10 +19,11 @@ import { toRichTextHtml } from "../richText.js";
 
 const ADMIN_USER_KEY = "adminUser";
 
+const isAcceptedStatus = (status) => ["accepted", "approved"].includes(String(status || "").toLowerCase());
+
 // ── Boot ───────────────────────────────────────────────────────────────────────
 
 async function init() {
-  console.debug('[StoryModeration][Detail] init story-edit page');
   const stored = (() => {
     try { return JSON.parse(sessionStorage.getItem(ADMIN_USER_KEY)) || {}; }
     catch { return {}; }
@@ -62,14 +63,11 @@ async function init() {
 
 async function fetchStory(id) {
   try {
-    console.debug('[StoryModeration][Detail] fetching story', { id });
     const res = await api.get(`/api/v1/admin/stories/${id}`);
     if (res?.data?.story) {
-      console.debug('[StoryModeration][Detail] fetch success', { id: res.data.story._id || id });
       return res.data.story;
     }
     if (res?.data) {
-      console.debug('[StoryModeration][Detail] fetch success (direct data)', { id });
       return res.data;
     }
   } catch (_) { /* fall through */ }
@@ -102,7 +100,10 @@ function renderStoryEdit(story) {
 
   const storyHtml = toRichTextHtml(story.story || "");
 
-  const statusClass = `mod-status-${escHtml(story.status || "pending")}`;
+  const statusValue = String(story.status || "pending").toLowerCase();
+  const isAccepted = isAcceptedStatus(statusValue);
+  const isRejected = statusValue === "rejected";
+  const statusClass = `mod-status-${escHtml(statusValue)}`;
 
   root.innerHTML = `
     <div class="story-edit-layout">
@@ -117,7 +118,7 @@ function renderStoryEdit(story) {
               ${date ? `<span>${date}</span>` : ""}
             </div>
           </div>
-          <span class="mod-status-badge ${statusClass}" id="story-status-badge">${escHtml(story.status || "pending")}</span>
+          <span class="mod-status-badge ${statusClass}" id="story-status-badge">${escHtml(statusValue)}</span>
         </div>
 
         ${story.image_url ? `
@@ -215,26 +216,33 @@ function renderStoryEdit(story) {
 
         <!-- CTA buttons -->
         <div class="story-edit-actions" id="mod-action-buttons">
-          ${story.status !== "approved" ? `
+          ${!isAccepted && !isRejected ? `
             <button class="btn btn-primary mod-btn-approve" id="btn-approve" data-id="${escHtml(id)}" type="button">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
               Approve &amp; Publish
             </button>
           ` : ""}
-          ${story.status !== "rejected" ? `
+          ${!isAccepted && !isRejected ? `
             <button class="btn mod-btn-reject" id="btn-reject" data-id="${escHtml(id)}" type="button">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               Reject
             </button>
+          ` : ""}
+          ${isAccepted ? `
+            <button class="btn mod-btn-reject" id="btn-revoke" data-id="${escHtml(id)}" type="button">Revoke</button>
+            <button class="btn mod-btn-reject" id="btn-delete-post" data-id="${escHtml(id)}" type="button">Delete post</button>
+          ` : ""}
+          ${isRejected ? `
+            <button class="btn mod-btn-reject" id="btn-delete-post" data-id="${escHtml(id)}" type="button">Delete post</button>
           ` : ""}
           <button class="btn mod-btn-save-note" id="btn-save-note" data-id="${escHtml(id)}" type="button">
             Save note
           </button>
         </div>
 
-        ${story.status !== "pending" ? `
+        ${statusValue !== "pending" ? `
           <p class="story-edit-already-actioned">
-            This story has already been <strong>${escHtml(story.status)}</strong>.
+            This story has already been <strong>${escHtml(statusValue)}</strong>.
             You can still update the moderator note.
           </p>
         ` : ""}
@@ -300,6 +308,16 @@ function bindActions(story) {
     btnApprove.addEventListener("click", () => confirmAction(story, "approved"));
   }
 
+  const btnRevoke = document.getElementById("btn-revoke");
+  if (btnRevoke) {
+    btnRevoke.addEventListener("click", () => confirmAction(story, "removed"));
+  }
+
+  const btnDeletePost = document.getElementById("btn-delete-post");
+  if (btnDeletePost) {
+    btnDeletePost.addEventListener("click", () => confirmAction(story, "deleted"));
+  }
+
   // Save note
   const btnNote = document.getElementById("btn-save-note");
   if (btnNote) {
@@ -315,17 +333,13 @@ async function confirmAction(story, status) {
   const feedback   = document.getElementById("mod-action-feedback");
   const btnApprove = document.getElementById("btn-approve");
   const btnReject  = document.getElementById("btn-reject");
+  const btnRevoke  = document.getElementById("btn-revoke");
+  const btnDeletePost = document.getElementById("btn-delete-post");
 
   // Disable buttons during request
-  [btnApprove, btnReject].forEach((b) => { if (b) b.disabled = true; });
+  [btnApprove, btnReject, btnRevoke, btnDeletePost].forEach((b) => { if (b) b.disabled = true; });
 
   try {
-    console.debug('[StoryModeration][Detail] moderation request', {
-      id,
-      status,
-      hasNotificationEmail: Boolean(email),
-      hasRejectionMessage: Boolean(message),
-    });
     const result = await api.patch(`/api/v1/admin/stories/${id}`, {
       status,
       moderatorNote: note,
@@ -334,17 +348,14 @@ async function confirmAction(story, status) {
     });
 
     const emailNotification = result?.data?.emailNotification;
-    console.debug('[StoryModeration][Detail] moderation success', {
-      id,
-      status,
-      emailNotification,
-    });
 
-    // Update badge
-    const badge = document.getElementById("story-status-badge");
-    if (badge) {
-      badge.textContent = status;
-      badge.className = `mod-status-badge mod-status-${status}`;
+    if (status !== "deleted") {
+      const badge = document.getElementById("story-status-badge");
+      if (badge) {
+        badge.textContent = status;
+        badge.className = `mod-status-badge mod-status-${status}`;
+      }
+      story.status = status;
     }
 
     // Hide action buttons (already actioned)
@@ -356,9 +367,14 @@ async function confirmAction(story, status) {
       </p>
     `;
 
-    const baseMessage = status === "approved"
-      ? "Story approved and published successfully."
-      : "Story rejected.";
+    const baseMessage =
+      status === "approved"
+        ? "Story approved and published successfully."
+        : status === "removed"
+          ? "Story revoked and marked as removed."
+          : status === "deleted"
+            ? "Story permanently deleted."
+            : "Story rejected.";
 
     const emailMessage = (() => {
       if (!emailNotification?.attempted) return "";
@@ -378,7 +394,7 @@ async function confirmAction(story, status) {
     showFeedback(
       feedback,
       `${baseMessage}${emailMessage}`,
-      status === "approved" ? "success" : "info",
+      status === "approved" ? "success" : status === "deleted" ? "error" : "info",
     );
 
   } catch (err) {
@@ -389,7 +405,7 @@ async function confirmAction(story, status) {
       statusCode: err?.status,
       data: err?.data,
     });
-    [btnApprove, btnReject].forEach((b) => { if (b) b.disabled = false; });
+    [btnApprove, btnReject, btnRevoke, btnDeletePost].forEach((b) => { if (b) b.disabled = false; });
     showFeedback(feedback, "Something went wrong. Please try again.", "error");
   }
 }
@@ -403,9 +419,7 @@ async function saveNote(story) {
   if (btn) { btn.disabled = true; btn.textContent = "Saving…"; }
 
   try {
-    console.debug('[StoryModeration][Detail] save note request', { id, noteLength: note.length });
     await api.patch(`/api/v1/admin/stories/${id}`, { moderatorNote: note });
-    console.debug('[StoryModeration][Detail] save note success', { id });
     showFeedback(feedback, "Note saved.", "success");
   } catch (err) {
     console.error('[StoryModeration][Detail] save note failed', {
