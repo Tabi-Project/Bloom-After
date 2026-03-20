@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const response = await api.post('/api/v1/stories', payload);
+        console.log(submitted)
         const submitted = response?.data || response?.story || null;
 
         pending.confirmedAt = Date.now();

@@ -84,8 +84,10 @@ export const submitStory = async (req, res) => {
     const what_helped = normalizeWhatHelped(req.body?.what_helped || req.body?.tags);
     const consent = toBoolean(req.body?.consent);
     const imageData = getString(req.body?.image);
+    console.log("Started")
 
     if (!story) {
+      console.log("NO STORY")
       return res.status(400).json({
         status: "error",
         error: "Story content is required.",
