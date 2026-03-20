@@ -36,3 +36,15 @@ export const reviewLimiter = rateLimit({
     });
   },
 });
+
+export const suggestionLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 15,
+  handler: (req, res) => {
+    res.status(429).json({
+      status: 'error',
+      error: 'Too many suggestion submissions. Please try again later.',
+      retryAfter: 10 * 60,
+    });
+  },
+});
