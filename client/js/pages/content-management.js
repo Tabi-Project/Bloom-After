@@ -42,26 +42,6 @@ const DESTINATIONS = [
     bgColor:  '#f0f9ff',
   },
   {
-    id:       'intervention',
-    label:    'Lifestyle & Medical',
-    desc:     'Evidence-based lifestyle changes and medical treatment information.',
-    icon:     `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>`,
-    newUrl:   'content-editor.html?type=intervention',
-    listUrl:  'content-management.html?filter=intervention',
-    color:    '#7e22ce',
-    bgColor:  '#fdf4ff',
-  },
-  {
-    id:       'specialist',
-    label:    'Specialist Directory',
-    desc:     'Perinatal psychiatrists, therapists and maternal health specialists.',
-    icon:     `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>`,
-    newUrl:   'content-editor.html?type=specialist',
-    listUrl:  'content-management.html?filter=specialist',
-    color:    '#c2410c',
-    bgColor:  '#fff7ed',
-  },
-  {
     id:       'clinic',
     label:    'Clinic Directory',
     desc:     'Verified healthcare providers offering postpartum mental health support.',
@@ -124,36 +104,37 @@ async function init() {
 // ── Data ───────────────────────────────────────────────────────────────────────
 
 async function fetchContent() {
-  try {
-    const res = await api.get('/api/v1/admin/content');
-    const data = res?.data?.items || res?.data || [];
-    if (Array.isArray(data) && data.length) return data;
-  } catch (_) { /* fall through */ }
+  const [resourcesRes, ngosRes, clinicsRes] = await Promise.all([
+    api.get('/api/v1/admin/resources'),
+    api.get('/api/v1/admin/ngos'),
+    api.get('/api/v1/admin/clinics'),
+  ]);
 
-  // Mock data
-  return generateMockContent();
-}
-
-function generateMockContent() {
-  const types    = ['resource', 'ngo', 'intervention', 'specialist', 'clinic'];
-  const statuses = ['published', 'draft', 'archived'];
-  const titles   = [
-    'Understanding Postpartum Depression', 'Recognising the Signs of PPD', 'Sleep Strategies for New Mothers',
-    'Grace Medical Centre Lagos', 'Safe Haven Clinic Abuja', 'Dr. Funmi Adeyemi — Perinatal Psychiatry',
-    'Cognitive Behavioural Therapy for PPD', 'Postpartum Support International Nigeria',
-    'Nutrition and Maternal Mental Health', 'Journalling for Recovery', 'What is IPT?',
-    'Bloom Foundation Lagos', 'Movement and Mood', 'Medication Overview for PPD',
-    'Community Wellness NGO Ibadan', 'Myth: PPD is just baby blues', 'Breastfeeding and Medication',
-  ];
-
-  return titles.map((title, i) => ({
-    id:        `mock-${i + 1}`,
-    title,
-    type:      types[i % types.length],
-    status:    statuses[i % statuses.length],
-    featured:  i < 2,
-    updatedAt: new Date(Date.now() - i * 86400000 * 2).toISOString(),
+  const resources = (resourcesRes?.data?.resources || []).map((item) => ({
+    id: item.id,
+    title: item.title,
+    type: 'resource',
+    status: normalizeStatus(item.status),
+    updatedAt: item.updatedAt || null,
   }));
+
+  const ngos = (ngosRes?.data?.ngos || []).map((item) => ({
+    id: item.id,
+    title: item.name,
+    type: 'ngo',
+    status: normalizeStatus(mapNgoStatusToContentStatus(item.status)),
+    updatedAt: item.updatedAt || null,
+  }));
+
+  const clinics = (clinicsRes?.data?.clinics || []).map((item) => ({
+    id: item.id,
+    title: item.name,
+    type: 'clinic',
+    status: normalizeStatus(item.status),
+    updatedAt: item.updatedAt || null,
+  }));
+
+  return [...resources, ...ngos, ...clinics];
 }
 
 // ── Destination cards ──────────────────────────────────────────────────────────
@@ -174,7 +155,7 @@ function renderDestinationCards() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             New
           </a>
-          <button class="cm-dest-import-btn" data-type="${d.id}" aria-label="Bulk import ${d.label}">
+          <button class="cm-dest-import-btn" data-type="${d.id}" aria-label="Bulk import ${d.label}" disabled title="Import coming soon">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             Import
           </button>
@@ -245,7 +226,6 @@ function renderTableRow(item) {
     <tr class="cm-table-row" data-id="${escHtml(id)}" data-status="${escHtml(item.status)}">
       <td class="cm-td cm-td-title">
         <div class="cm-td-title-wrap">
-          ${item.featured ? `<span class="cm-featured-star" title="Featured">★</span>` : ''}
           <span class="cm-entry-title">${escHtml(item.title || 'Untitled')}</span>
         </div>
       </td>
@@ -267,15 +247,6 @@ function renderTableRow(item) {
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
             </svg>
           </a>
-          <!-- Toggle featured -->
-          <button class="cm-action-icon ${item.featured ? 'cm-action-featured' : ''}"
-            data-action="feature" data-id="${escHtml(id)}"
-            title="${item.featured ? 'Unfeature' : 'Set as featured'}"
-            aria-label="${item.featured ? 'Remove from featured' : 'Set as featured'}">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="${item.featured ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-            </svg>
-          </button>
           <!-- Archive / publish toggle -->
           ${item.status !== 'archived' ? `
             <button class="cm-action-icon"
@@ -400,6 +371,8 @@ async function handleTableAction(e) {
   const btn = e.target.closest('[data-action]');
   if (!btn) return;
   const { action, id, title } = btn.dataset;
+  const item = allContent.find((entry) => (entry._id || entry.id) === id);
+  if (!item) return;
 
   if (action === 'delete') {
     openDeleteModal(id, title);
@@ -408,19 +381,11 @@ async function handleTableAction(e) {
 
   btn.disabled = true;
   const statusMap = { publish: 'published', archive: 'archived', restore: 'draft' };
-  const featureToggle = action === 'feature';
 
   try {
-    if (featureToggle) {
-      const item = allContent.find((c) => (c._id || c.id) === id);
-      if (item) {
-        await api.patch(`/api/v1/admin/content/${id}`, { featured: !item.featured });
-        item.featured = !item.featured;
-      }
-    } else if (statusMap[action]) {
-      await api.patch(`/api/v1/admin/content/${id}`, { status: statusMap[action] });
-      const item = allContent.find((c) => (c._id || c.id) === id);
-      if (item) item.status = statusMap[action];
+    if (statusMap[action]) {
+      await patchItemStatus(item, statusMap[action]);
+      item.status = statusMap[action];
     }
     renderStats();
     applyFilters();
@@ -434,7 +399,7 @@ async function handleTableAction(e) {
 function openDeleteModal(id, title) {
   pendingDeleteId = id;
   document.getElementById('cm-delete-modal-body').textContent =
-    `"${title}" will be permanently deleted. This cannot be undone.`;
+    `"${title}" will be archived. You can restore it later.`;
   const modal = document.getElementById('cm-delete-modal');
   modal.hidden = false;
   document.getElementById('cm-delete-confirm').focus();
@@ -450,9 +415,12 @@ async function confirmDelete() {
   const id = pendingDeleteId;
   closeDeleteModal();
 
+  const item = allContent.find((entry) => (entry._id || entry.id) === id);
+  if (!item) return;
+
   try {
-    await api.delete(`/api/v1/admin/content/${id}`);
-    allContent = allContent.filter((c) => (c._id || c.id) !== id);
+    await patchItemStatus(item, 'archived');
+    item.status = 'archived';
     renderStats();
     applyFilters();
   } catch (_) { /* silently fail */ }
@@ -461,23 +429,44 @@ async function confirmDelete() {
 // ── Bulk import ────────────────────────────────────────────────────────────────
 
 function triggerImport(type) {
-  const input = document.createElement('input');
-  input.type   = 'file';
-  input.accept = '.csv';
-  input.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('type', type);
-    try {
-      await api.post('/api/v1/admin/content/import', formData);
-      allContent = await fetchContent();
-      renderStats();
-      applyFilters();
-    } catch (_) { /* show user feedback if needed */ }
-  });
-  input.click();
+  window.alert(`Import for ${type} is temporarily unavailable.`);
+}
+
+async function patchItemStatus(item, nextStatus) {
+  const id = item._id || item.id;
+
+  if (item.type === 'resource') {
+    await api.patch(`/api/v1/admin/resources/${id}`, { status: nextStatus });
+    return;
+  }
+
+  if (item.type === 'clinic') {
+    await api.patch(`/api/v1/admin/clinics/${id}`, { status: nextStatus });
+    return;
+  }
+
+  if (item.type === 'ngo') {
+    await api.patch(`/api/v1/admin/ngos/${id}`, {
+      status: mapContentStatusToNgoStatus(nextStatus),
+    });
+  }
+}
+
+function normalizeStatus(value) {
+  if (value === 'published' || value === 'draft' || value === 'archived') return value;
+  return 'draft';
+}
+
+function mapNgoStatusToContentStatus(status) {
+  if (status === 'approved') return 'published';
+  if (status === 'rejected') return 'archived';
+  return 'draft';
+}
+
+function mapContentStatusToNgoStatus(status) {
+  if (status === 'published') return 'approved';
+  if (status === 'archived') return 'rejected';
+  return 'pending';
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────

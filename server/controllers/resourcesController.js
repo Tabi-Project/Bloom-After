@@ -54,6 +54,9 @@ const normalizeStructuredContent = (resource) => {
 
 const normalizeResource = (resource) => {
   const structuredContent = normalizeStructuredContent(resource);
+  const status = typeof resource.status === "string"
+    ? resource.status
+    : (resource.published ? "published" : "draft");
 
   return {
     id: String(resource._id),
@@ -65,7 +68,8 @@ const normalizeResource = (resource) => {
     date: normalizeDate(resource.date, resource.createdAt),
     read_time: getString(resource.read_time, getString(resource.readTime)),
     cta_label: getString(resource.cta_label, getString(resource.ctaLabel, "Read more")),
-    published: typeof resource.published === "boolean" ? resource.published : true,
+    published: status === "published",
+    status,
     ...(resource.file_url || resource.sourceUrl
       ? { file_url: getString(resource.file_url, getString(resource.sourceUrl)) }
       : {}),
@@ -76,7 +80,14 @@ const normalizeResource = (resource) => {
 const buildFilter = (query) => {
   const and = [];
   const published = toPublishedFilter(query.published);
-  and.push({ published });
+  if (published) {
+    and.push({
+      $or: [
+        { status: "published" },
+        { $and: [{ status: { $exists: false } }, { published: true }] },
+      ],
+    });
+  }
 
   const theme = getString(query.theme);
   if (theme) {
@@ -158,7 +169,10 @@ export const getResourceById = async (req, res) => {
 
     const resource = await Resource.collection.findOne({
       _id: new mongoose.Types.ObjectId(resourceId),
-      published: true,
+      $or: [
+        { status: "published" },
+        { $and: [{ status: { $exists: false } }, { published: true }] },
+      ],
     });
 
     if (!resource) {
@@ -169,5 +183,144 @@ export const getResourceById = async (req, res) => {
   } catch (error) {
     console.error("Error fetching resource:", error);
     res.status(500).json({ status: "error", error: "Server error" });
+  }
+};
+
+const parseAdminStatus = (value) => {
+  const status = getString(value).toLowerCase();
+  if (["draft", "published", "archived"].includes(status)) return status;
+  return "";
+};
+
+const toAdminResourcePayload = (body, existing = null) => {
+  const incomingStatus = parseAdminStatus(body?.status);
+  const status = incomingStatus || (existing?.status || (existing?.published ? "published" : "draft"));
+
+  return {
+    title: getString(body?.title, existing?.title || ""),
+    summary: getString(body?.summary, existing?.summary || ""),
+    content: getString(body?.content, existing?.content || ""),
+    theme: getString(body?.theme, existing?.theme || "general"),
+    contentType: getString(body?.contentType || body?.content_type, existing?.contentType || "article"),
+    imageUrl: getString(body?.imageUrl || body?.image_url, existing?.imageUrl || ""),
+    sourceUrl: getString(body?.sourceUrl || body?.source_url, existing?.sourceUrl || ""),
+    readTime: getString(body?.readTime || body?.read_time, existing?.readTime || ""),
+    ctaLabel: getString(body?.ctaLabel || body?.cta_label, existing?.ctaLabel || "Read more"),
+    status,
+    published: status === "published",
+  };
+};
+
+export const getAdminResources = async (req, res) => {
+  try {
+    const status = parseAdminStatus(req.query?.status);
+    const filter = status ? { status } : {};
+
+    const resources = await Resource.collection
+      .find(filter)
+      .sort({ createdAt: -1, _id: -1 })
+      .toArray();
+
+    return res.status(200).json({
+      status: "success",
+      data: {
+        resources: resources.map(normalizeResource),
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching admin resources:", error);
+    return res.status(500).json({ status: "error", error: "Server error" });
+  }
+};
+
+export const getAdminResourceById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ status: "error", error: "Resource not found" });
+    }
+
+    const resource = await Resource.findById(id).lean();
+    if (!resource) {
+      return res.status(404).json({ status: "error", error: "Resource not found" });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: {
+        resource: normalizeResource(resource),
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching admin resource by ID:", error);
+    return res.status(500).json({ status: "error", error: "Server error" });
+  }
+};
+
+export const createAdminResource = async (req, res) => {
+  try {
+    const payload = toAdminResourcePayload(req.body);
+
+    const requiredFields = ["title", "summary", "content", "theme", "contentType", "imageUrl", "sourceUrl", "readTime"];
+    const missingField = requiredFields.find((field) => !payload[field]);
+    if (missingField) {
+      return res.status(400).json({ status: "error", error: `Missing required field: ${missingField}` });
+    }
+
+    const created = await Resource.create({
+      ...payload,
+      reviewedBy: req.user?._id || null,
+    });
+
+    return res.status(201).json({
+      status: "success",
+      data: {
+        resource: normalizeResource(created),
+      },
+    });
+  } catch (error) {
+    console.error("Error creating admin resource:", error);
+    return res.status(500).json({ status: "error", error: "Server error" });
+  }
+};
+
+export const updateAdminResource = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ status: "error", error: "Resource not found" });
+    }
+
+    const resource = await Resource.findById(id);
+    if (!resource) {
+      return res.status(404).json({ status: "error", error: "Resource not found" });
+    }
+
+    const payload = toAdminResourcePayload(req.body, resource);
+
+    resource.title = payload.title;
+    resource.summary = payload.summary;
+    resource.content = payload.content;
+    resource.theme = payload.theme;
+    resource.contentType = payload.contentType;
+    resource.imageUrl = payload.imageUrl;
+    resource.sourceUrl = payload.sourceUrl;
+    resource.readTime = payload.readTime;
+    resource.ctaLabel = payload.ctaLabel;
+    resource.status = payload.status;
+    resource.published = payload.published;
+    resource.reviewedBy = req.user?._id || resource.reviewedBy;
+
+    await resource.save();
+
+    return res.status(200).json({
+      status: "success",
+      data: {
+        resource: normalizeResource(resource),
+      },
+    });
+  } catch (error) {
+    console.error("Error updating admin resource:", error);
+    return res.status(500).json({ status: "error", error: "Server error" });
   }
 };
