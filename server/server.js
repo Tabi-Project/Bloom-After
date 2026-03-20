@@ -10,6 +10,7 @@ import cors from 'cors';
 import clinicsRouter from './routes/clinicsRouter.js';
 import storiesRouter from './routes/storiesRouter.js';
 import adminStoriesRouter from './routes/adminStoriesRouter.js';
+import ngosRouter from './routes/ngosRouter.js';
 
 dotenv.config();
 
@@ -53,6 +54,7 @@ app.use('/api/v1/admin/stats', adminStatsRouter);
 app.use('/api/v1/admin/stories', adminStoriesRouter);
 app.use('/api/v1/clinics', clinicsRouter);
 app.use('/api/v1/stories', storiesRouter);
+app.use('/api/v1/ngos', ngosRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World');

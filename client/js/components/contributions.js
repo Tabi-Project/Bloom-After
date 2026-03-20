@@ -46,7 +46,7 @@ const teamMembers = [
     img: "../assets/teamImages/Chijioke-Potrait.png",
     contribution:
       "Developed the server-side logic and integrated the database for efficient data management.",
-    github: "https://github.com/halimayusuf",
+    github: "https://github.com/chijex5",
     linkedin: "https://www.linkedin.com/in/halimayusuf",
   },
   {
