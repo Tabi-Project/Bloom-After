@@ -413,6 +413,32 @@ function renderField(key, def, value = '') {
   const reqMark  = def.required ? `<span class="cm-required" aria-hidden="true">*</span>` : '';
   const hint     = def.hint ? `<p class="cm-field-hint">${def.hint}</p>` : '';
 
+  // Special handling for image field: allow URL or file upload with preview
+  if (key === 'image') {
+    return `
+      <div class="cm-field cm-field-image">
+        <label class="cm-field-label" for="${id}">${def.label}${reqMark}</label>
+        <div class="cm-image-row">
+          <input
+            type="url"
+            id="${id}"
+            name="${key}"
+            class="cm-field-input"
+            value="${escHtml(String(value || ''))}"
+            placeholder="${escHtml(def.placeholder || '')}"
+            ${required}
+          />
+          <button type="button" class="btn cm-btn-upload" id="${id}-upload">Upload</button>
+        </div>
+        <input type="file" id="${id}-file" accept="image/*" hidden />
+        <div class="cm-image-preview-wrap" id="${id}-preview-wrap" ${!value ? 'hidden' : ''}>
+          <img src="${escHtml(String(value || ''))}" id="${id}-preview" class="cm-image-preview" alt="" />
+          <button type="button" class="btn cm-btn-remove-image" id="${id}-remove">Remove</button>
+        </div>
+        ${hint}
+      </div>
+    `;
+  }
   if (def.type === 'textarea') {
     return `
       <div class="cm-field">
@@ -503,6 +529,44 @@ function bindEditorEvents() {
   window.addEventListener('beforeunload', (e) => {
     if (isDirty) { e.preventDefault(); e.returnValue = ''; }
   });
+
+  // Image upload handling (if image field is present)
+  const imageFileInput = document.getElementById('field-image-file');
+  const imageUrlInput = document.getElementById('field-image');
+  const imagePreviewWrap = document.getElementById('field-image-preview-wrap');
+  const imagePreview = document.getElementById('field-image-preview');
+  const imageUploadBtn = document.getElementById('field-image-upload');
+  const imageRemoveBtn = document.getElementById('field-image-remove');
+
+  if (imageUploadBtn && imageFileInput) {
+    imageUploadBtn.addEventListener('click', () => imageFileInput.click());
+  }
+
+  if (imageFileInput) {
+    imageFileInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file || !file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = String(reader.result || '');
+        if (imageUrlInput) imageUrlInput.value = dataUrl;
+        if (imagePreview) imagePreview.src = dataUrl;
+        if (imagePreviewWrap) imagePreviewWrap.hidden = false;
+        isDirty = true;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  if (imageRemoveBtn) {
+    imageRemoveBtn.addEventListener('click', () => {
+      if (imageUrlInput) imageUrlInput.value = '';
+      if (imagePreview) imagePreview.src = '';
+      if (imagePreviewWrap) imagePreviewWrap.hidden = true;
+      if (imageFileInput) imageFileInput.value = '';
+      isDirty = true;
+    });
+  }
 }
 
 function collectFormData() {
