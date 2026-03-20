@@ -2,6 +2,7 @@ import api from '../api.js';
 import { richTextToPlainText, toRichTextHtml } from '../richText.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.debug('[StorySubmit][Review] init submit-review page');
   const pendingJson = sessionStorage.getItem('pendingStory');
   if (!pendingJson) {
     window.location.href = 'submit-story.html';
@@ -70,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (confirmBtn) {
     confirmBtn.addEventListener('click', async () => {
+      console.debug('[StorySubmit][Review] submitting to backend');
       confirmBtn.disabled = true;
       confirmBtn.textContent = 'Submitting…';
 
@@ -88,8 +90,20 @@ document.addEventListener('DOMContentLoaded', () => {
           image: pending.image || '',
         };
 
+        console.debug('[StorySubmit][Review] payload summary', {
+          privacy: payload.privacy,
+          hasEmail: Boolean(payload.email),
+          tagsCount: payload.what_helped.length,
+          storyLength: richTextToPlainText(payload.story).length,
+          hasImage: Boolean(payload.image),
+        });
+
         const response = await api.post('/api/v1/stories', payload);
         const submitted = response?.data || response?.story || null;
+        console.debug('[StorySubmit][Review] submit success', {
+          storyId: submitted?._id || null,
+          status: submitted?.status || null,
+        });
 
         pending.confirmedAt = Date.now();
         pending.storyId = submitted?._id || null;
@@ -97,7 +111,12 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.setItem('submittedStory', JSON.stringify(pending));
         sessionStorage.removeItem('pendingStory');
         window.location.href = 'submit-success.html';
-      } catch (_) {
+      } catch (error) {
+        console.error('[StorySubmit][Review] submit failed', {
+          message: error?.message,
+          status: error?.status,
+          data: error?.data,
+        });
         confirmBtn.disabled = false;
         confirmBtn.innerHTML = `
           Submit for Moderation

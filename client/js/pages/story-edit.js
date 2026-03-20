@@ -22,6 +22,7 @@ const ADMIN_USER_KEY = "adminUser";
 // ── Boot ───────────────────────────────────────────────────────────────────────
 
 async function init() {
+  console.debug('[StoryModeration][Detail] init story-edit page');
   const stored = (() => {
     try { return JSON.parse(sessionStorage.getItem(ADMIN_USER_KEY)) || {}; }
     catch { return {}; }
@@ -61,9 +62,16 @@ async function init() {
 
 async function fetchStory(id) {
   try {
+    console.debug('[StoryModeration][Detail] fetching story', { id });
     const res = await api.get(`/api/v1/admin/stories/${id}`);
-    if (res?.data?.story) return res.data.story;
-    if (res?.data) return res.data;
+    if (res?.data?.story) {
+      console.debug('[StoryModeration][Detail] fetch success', { id: res.data.story._id || id });
+      return res.data.story;
+    }
+    if (res?.data) {
+      console.debug('[StoryModeration][Detail] fetch success (direct data)', { id });
+      return res.data;
+    }
   } catch (_) { /* fall through */ }
 
   // Mock fallback
@@ -312,6 +320,12 @@ async function confirmAction(story, status) {
   [btnApprove, btnReject].forEach((b) => { if (b) b.disabled = true; });
 
   try {
+    console.debug('[StoryModeration][Detail] moderation request', {
+      id,
+      status,
+      hasNotificationEmail: Boolean(email),
+      hasRejectionMessage: Boolean(message),
+    });
     const result = await api.patch(`/api/v1/admin/stories/${id}`, {
       status,
       moderatorNote: note,
@@ -320,6 +334,11 @@ async function confirmAction(story, status) {
     });
 
     const emailNotification = result?.data?.emailNotification;
+    console.debug('[StoryModeration][Detail] moderation success', {
+      id,
+      status,
+      emailNotification,
+    });
 
     // Update badge
     const badge = document.getElementById("story-status-badge");
@@ -363,6 +382,13 @@ async function confirmAction(story, status) {
     );
 
   } catch (err) {
+    console.error('[StoryModeration][Detail] moderation failed', {
+      id,
+      status,
+      message: err?.message,
+      statusCode: err?.status,
+      data: err?.data,
+    });
     [btnApprove, btnReject].forEach((b) => { if (b) b.disabled = false; });
     showFeedback(feedback, "Something went wrong. Please try again.", "error");
   }
@@ -377,9 +403,17 @@ async function saveNote(story) {
   if (btn) { btn.disabled = true; btn.textContent = "Saving…"; }
 
   try {
+    console.debug('[StoryModeration][Detail] save note request', { id, noteLength: note.length });
     await api.patch(`/api/v1/admin/stories/${id}`, { moderatorNote: note });
+    console.debug('[StoryModeration][Detail] save note success', { id });
     showFeedback(feedback, "Note saved.", "success");
-  } catch (_) {
+  } catch (err) {
+    console.error('[StoryModeration][Detail] save note failed', {
+      id,
+      message: err?.message,
+      status: err?.status,
+      data: err?.data,
+    });
     showFeedback(feedback, "Failed to save note.", "error");
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = "Save note"; }
