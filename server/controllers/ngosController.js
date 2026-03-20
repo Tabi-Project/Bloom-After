@@ -19,11 +19,6 @@ const parsePage = (value) => {
   return parsed;
 };
 
-const parseStatus = (value) => {
-  const status = getString(value, 'approved').toLowerCase();
-  return ['pending', 'approved', 'rejected'].includes(status) ? status : 'approved';
-};
-
 const toFocusArray = (value) => {
   if (Array.isArray(value)) {
     return value
@@ -65,8 +60,7 @@ const normalizeNgo = (ngo) => ({
 });
 
 const buildFilter = (query) => {
-  const status = parseStatus(query?.status);
-  const and = [{ status }];
+  const and = [{ status: 'approved' }];
 
   const coverageType = getString(query?.coverage_type).toLowerCase();
   if (coverageType && ['local', 'regional', 'national', 'international', 'other'].includes(coverageType)) {
