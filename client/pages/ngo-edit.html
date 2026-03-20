@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Review and moderate an NGO submission." />
+    <title>Review NGO - Bloom Admin</title>
+    <link rel="icon" type="image/x-icon" href="../assets/logo/favicon.png" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layouts.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/admin-dashboard.css" />
+    <link rel="stylesheet" href="../css/admin-moderation.css" />
+  </head>
+  <body>
+    <div class="admin-layout">
+      <div id="sidebar-root"></div>
+
+      <div class="admin-main">
+        <div id="topbar-root"></div>
+
+        <main class="dashboard-content" id="main-content">
+          <a href="ngos-moderation.html" class="mod-back-link" aria-label="Back to NGO moderation list">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <line x1="19" y1="12" x2="5" y2="12"/>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+            Back to NGOs
+          </a>
+
+          <div id="ngo-edit-root" aria-live="polite" aria-atomic="false"></div>
+
+          <div id="ngo-edit-error" class="mod-error-state" hidden role="alert">
+            <h2>Something went wrong</h2>
+            <p class="mod-error-message"></p>
+            <a href="ngos-moderation.html" class="btn btn-primary">Back to NGOs</a>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="footer-root"></div>
+    <script type="module" src="../js/pages/ngo-edit.js"></script>
+  </body>
+</html>

@@ -25,6 +25,8 @@ const fmtDate = (iso) => {
 
 const TYPE_CONFIG = {
   story:      { label: "Story",      reviewBase: "stories-moderation.html",       editPage: "story-edit.html",      badgeClass: "mod-type-story"      },
+  ngo:        { label: "NGO",        reviewBase: "ngos-moderation.html",          editPage: "ngo-edit.html", badgeClass: "mod-type-ngo"        },
+  suggestion: { label: "Suggestion", reviewBase: "suggestions-moderation.html",   editPage: "suggestions-moderation.html", badgeClass: "mod-type-suggestion" },
   clinic:     { label: "Clinic",     reviewBase: "moderation-list.html?type=clinic", editPage: "clinic-edit.html",     badgeClass: "mod-type-clinic"     },
   specialist: { label: "Specialist", reviewBase: "moderation-list.html?type=specialist", editPage: "specialist-edit.html", badgeClass: "mod-type-specialist" },
   media:      { label: "Media",      reviewBase: "moderation-list.html?type=media", editPage: "media-edit.html",      badgeClass: "mod-type-media"      },

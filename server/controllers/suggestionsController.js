@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
 import Suggestion from '../models/suggestion.js';
+import { sendSuggestionModerationEmail } from '../utils/suggestionModerationEmail.js';
 
 const ALLOWED_TYPES = new Set(['clinic', 'specialist', 'media', 'request']);
-const ALLOWED_STATUSES = new Set(['pending', 'reviewed', 'rejected', 'implemented']);
+const ALLOWED_STATUSES = new Set(['pending', 'approved', 'implemented', 'rejected']);
 const MAX_LIMIT = 50;
 const DEFAULT_LIMIT = 20;
 
@@ -169,12 +170,28 @@ export const updateAdminSuggestion = async (req, res) => {
 
     const nextStatus = getString(req.body?.status).toLowerCase();
     const moderatorNote = getString(req.body?.moderatorNote, suggestion.moderatorNote || '');
+    const rejectionMessage = getString(req.body?.rejectionMessage);
+    const notificationEmail = getString(req.body?.notificationEmail, suggestion.email || '').toLowerCase();
 
     if (nextStatus && !ALLOWED_STATUSES.has(nextStatus)) {
       return res.status(400).json({ status: 'error', error: 'Invalid status value.' });
     }
 
+    if (notificationEmail && !validator.isEmail(notificationEmail)) {
+      return res.status(400).json({ status: 'error', error: 'Please provide a valid notification email.' });
+    }
+
     suggestion.moderatorNote = moderatorNote;
+
+    const previousStatus = getString(suggestion.status, 'pending').toLowerCase();
+    const didStatusChange = Boolean(nextStatus) && nextStatus !== previousStatus;
+
+    let emailNotification = {
+      attempted: false,
+      sent: false,
+      skipped: true,
+      reason: 'status-unchanged',
+    };
 
     if (nextStatus) {
       suggestion.status = nextStatus;
@@ -183,10 +200,43 @@ export const updateAdminSuggestion = async (req, res) => {
 
     await suggestion.save();
 
+    if (didStatusChange && ['approved', 'implemented', 'rejected'].includes(nextStatus)) {
+      emailNotification = {
+        attempted: true,
+        sent: false,
+        skipped: true,
+        reason: 'no-recipient',
+      };
+
+      try {
+        const result = await sendSuggestionModerationEmail({
+          to: notificationEmail,
+          status: nextStatus,
+          type: suggestion.type,
+          rejectionMessage,
+        });
+        emailNotification = {
+          attempted: true,
+          sent: Boolean(result?.sent),
+          skipped: Boolean(result?.skipped),
+          reason: result?.reason || null,
+        };
+      } catch (emailError) {
+        console.error('Suggestion moderation email failed:', emailError);
+        emailNotification = {
+          attempted: true,
+          sent: false,
+          skipped: false,
+          reason: 'send-failed',
+        };
+      }
+    }
+
     return res.status(200).json({
       status: 'success',
       data: {
         suggestion: normalizeSuggestion(suggestion),
+        emailNotification,
       },
     });
   } catch (error) {

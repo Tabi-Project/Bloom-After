@@ -63,30 +63,53 @@ const fetchOverviewStats = async () => {
 
 const fetchAllSubmissions = async () => {
   try {
-    const storiesRes = await api.get("/api/v1/admin/stories");
-    const stories = storiesRes?.data?.stories || [];
+    const [storiesRes, ngosRes, suggestionsRes] = await Promise.all([
+      api.get("/api/v1/admin/stories"),
+      api.get("/api/v1/admin/ngos"),
+      api.get("/api/v1/admin/suggestions"),
+    ]);
 
-    if (!Array.isArray(stories)) return [];
+    const stories = Array.isArray(storiesRes?.data?.stories) ? storiesRes.data.stories : [];
+    const ngos = Array.isArray(ngosRes?.data?.ngos) ? ngosRes.data.ngos : [];
+    const suggestions = Array.isArray(suggestionsRes?.data?.suggestions)
+      ? suggestionsRes.data.suggestions
+      : [];
 
-    return stories
-      .map((story) => ({
-        ...story,
-        type: "story",
-        title:
-          story.story_text?.slice(0, 80)
-          || story.story?.replace(/<[^>]+>/g, " ").trim().slice(0, 80)
-          || "Story submission",
-        submittedBy:
-          story.privacy === "named" && story.name
-            ? story.name
-            : "Anonymous",
-        submittedAt: story.createdAt || story.submittedAt,
-      }))
-      .sort(
-        (a, b) =>
-          new Date(b.submittedAt || b.createdAt || 0) -
-          new Date(a.submittedAt || a.createdAt || 0),
-      );
+    const normalizedStories = stories.map((story) => ({
+      ...story,
+      type: "story",
+      title:
+        story.story_text?.slice(0, 80)
+        || story.story?.replace(/<[^>]+>/g, " ").trim().slice(0, 80)
+        || "Story submission",
+      submittedBy:
+        story.privacy === "named" && story.name
+          ? story.name
+          : "Anonymous",
+      submittedAt: story.createdAt || story.submittedAt,
+    }));
+
+    const normalizedNgos = ngos.map((ngo) => ({
+      ...ngo,
+      type: "ngo",
+      title: ngo.name || "NGO submission",
+      submittedBy: ngo.contact?.email || "Unknown",
+      submittedAt: ngo.createdAt,
+    }));
+
+    const normalizedSuggestions = suggestions.map((suggestion) => ({
+      ...suggestion,
+      type: "suggestion",
+      title: suggestion.content?.slice(0, 80) || "Suggestion submission",
+      submittedBy: suggestion.email || "Anonymous",
+      submittedAt: suggestion.createdAt,
+    }));
+
+    return [...normalizedStories, ...normalizedNgos, ...normalizedSuggestions].sort(
+      (a, b) =>
+        new Date(b.submittedAt || b.createdAt || 0) -
+        new Date(a.submittedAt || a.createdAt || 0),
+    );
   } catch (err) {
     if (err?.status === 401 || err?.status === 403) {
       window.location.assign("/client/pages/admin-login.html");
