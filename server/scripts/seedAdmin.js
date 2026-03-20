@@ -37,6 +37,8 @@ const seedAdmin = async () => {
   if (existing) {
     existing.name = name;
     existing.isSuperAdmin = isSuperAdmin;
+    existing.role = isSuperAdmin ? "superadmin" : "moderator";
+    existing.status = "active";
 
     if (resetPassword) {
       existing.password = password;
@@ -52,6 +54,8 @@ const seedAdmin = async () => {
     email,
     password,
     isSuperAdmin,
+    role: isSuperAdmin ? "superadmin" : "moderator",
+    status: "active",
   });
 
   await admin.save();
