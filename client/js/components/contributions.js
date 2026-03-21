@@ -42,7 +42,7 @@ const teamMembers = [
   {
     id: 5,
     name: "Chijioke Uzodinma",
-    role: "Backend Lead",
+    role: "Frontend Engineer",
     img: "../assets/teamImages/Chijioke-Potrait.png",
     contribution:
       "Developed the server-side logic and integrated the database for efficient data management.",
@@ -52,12 +52,12 @@ const teamMembers = [
   {
     id: 6,
     name: "Esther Adejola ",
-    role: "People Manager",
+    role: "Frontend Engineer",
     img: "../assets/teamImages/Esther-Portrait.png",
     contribution:
       "Managed team dynamics, facilitated communication, and ensured a positive work environment.",
-    github: "https://github.com/zainabbello",
-    linkedin: "https://www.linkedin.com/in/zainabbello",
+    github: "https://github.com/De-jola",
+    linkedin: "https://www.linkedin.com/in/esther-adejola",
   },
   {
     id: 7,

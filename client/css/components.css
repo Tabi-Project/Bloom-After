@@ -365,7 +365,7 @@
 .features-section {
   background-color: var(--color-brand-400);
   text-align: left;
-  padding-block: var(--space-16);
+  padding-block: var(--space-16) !important;
 }
 
 .features-heading {
@@ -923,6 +923,9 @@
   max-width: 560px;
   margin-inline: auto;
   margin-bottom: var(--space-10);
+}
+.ngo-section {
+  padding-block: var(--space-16);
 }
 
 /* Footer */
