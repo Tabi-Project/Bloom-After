@@ -2,7 +2,7 @@
  * content-editor.js
  * Adaptive content editor. Reads ?type= and optionally ?id= from URL.
  * Morphs the form fields based on content type.
- * Supports: resource | ngo | intervention | specialist | clinic
+ * Supports: resource | ngo | clinic
  */
 
 import {
@@ -24,31 +24,19 @@ const TYPE_CONFIG = {
     label:    'Resource Hub',
     backUrl:  'content-management.html?filter=resource',
     fields:   ['title', 'summary', 'content_type', 'theme', 'body', 'image', 'source_url', 'read_time', 'tags'],
-    apiBase:  '/api/v1/admin/content',
+    apiBase:  '/api/v1/admin/resources',
   },
   ngo: {
     label:    'NGO Directory',
     backUrl:  'content-management.html?filter=ngo',
     fields:   ['title', 'description', 'mission', 'services', 'coverage', 'website', 'email', 'phone', 'image'],
-    apiBase:  '/api/v1/admin/content',
-  },
-  intervention: {
-    label:    'Lifestyle & Medical',
-    backUrl:  'content-management.html?filter=intervention',
-    fields:   ['title', 'category', 'description', 'source_label', 'source_url', 'is_medical'],
-    apiBase:  '/api/v1/admin/content',
-  },
-  specialist: {
-    label:    'Specialist Directory',
-    backUrl:  'content-management.html?filter=specialist',
-    fields:   ['title', 'speciality', 'credentials', 'description', 'location', 'languages', 'fee_range', 'consultation_types', 'contact_email', 'contact_phone', 'image'],
-    apiBase:  '/api/v1/admin/content',
+    apiBase:  '/api/v1/admin/ngos',
   },
   clinic: {
     label:    'Clinic Directory',
     backUrl:  'content-management.html?filter=clinic',
     fields:   ['title', 'provider_type', 'description', 'services', 'city', 'state', 'address', 'opening_hours', 'fee_range', 'contact_email', 'contact_phone', 'website', 'image', 'accepting_new_patients'],
-    apiBase:  '/api/v1/admin/content',
+    apiBase:  '/api/v1/admin/clinics',
   },
 };
 
@@ -266,6 +254,7 @@ let contentType = '';
 let contentId   = null;
 let cfg         = null;
 let isDirty     = false;
+let isImageUploading = false;
 
 // ── Boot ───────────────────────────────────────────────────────────────────────
 
@@ -313,12 +302,10 @@ async function init() {
 // ── Data ───────────────────────────────────────────────────────────────────────
 
 async function fetchEntry(id) {
-  try {
-    const res = await api.get(`${cfg.apiBase}/${id}`);
-    return res?.data?.item || res?.data || null;
-  } catch (_) {
-    return { id, title: 'Mock Entry', type: contentType, status: 'draft', body: '', summary: '' };
-  }
+  const res = await api.get(`${cfg.apiBase}/${id}`);
+  const raw = res?.data?.resource || res?.data?.ngo || res?.data?.clinic || res?.data || null;
+  if (!raw) return null;
+  return toEditorFormData(raw);
 }
 
 // ── Render editor ──────────────────────────────────────────────────────────────
@@ -431,6 +418,10 @@ function renderField(key, def, value = '') {
           <button type="button" class="btn cm-btn-upload" id="${id}-upload">Upload</button>
         </div>
         <input type="file" id="${id}-file" accept="image/*" hidden />
+        <div class="cm-upload-status" id="${id}-upload-status" hidden>
+          <span class="cm-upload-spinner" aria-hidden="true"></span>
+          <span class="cm-upload-text">Uploading image…</span>
+        </div>
         <div class="cm-image-preview-wrap" id="${id}-preview-wrap" ${!value ? 'hidden' : ''}>
           <img src="${escHtml(String(value || ''))}" id="${id}-preview" class="cm-image-preview" alt="" />
           <button type="button" class="btn cm-btn-remove-image" id="${id}-remove">Remove</button>
@@ -537,24 +528,51 @@ function bindEditorEvents() {
   const imagePreview = document.getElementById('field-image-preview');
   const imageUploadBtn = document.getElementById('field-image-upload');
   const imageRemoveBtn = document.getElementById('field-image-remove');
+  const imageUploadStatus = document.getElementById('field-image-upload-status');
 
   if (imageUploadBtn && imageFileInput) {
     imageUploadBtn.addEventListener('click', () => imageFileInput.click());
   }
 
   if (imageFileInput) {
-    imageFileInput.addEventListener('change', (e) => {
+    imageFileInput.addEventListener('change', async (e) => {
       const file = e.target.files && e.target.files[0];
       if (!file || !file.type.startsWith('image/')) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = String(reader.result || '');
-        if (imageUrlInput) imageUrlInput.value = dataUrl;
-        if (imagePreview) imagePreview.src = dataUrl;
-        if (imagePreviewWrap) imagePreviewWrap.hidden = false;
+
+      const dataUrl = await readFileAsDataUrl(file);
+      if (!dataUrl) return;
+
+      if (imagePreview) imagePreview.src = dataUrl;
+      if (imagePreviewWrap) imagePreviewWrap.hidden = false;
+
+      setImageUploadState(true, imageUploadStatus);
+      try {
+        const res = await api.post('/api/v1/admin/upload/image', { image: dataUrl });
+        const uploadedUrl = res?.data?.image_url || '';
+        if (!uploadedUrl) {
+          throw new Error('Missing uploaded URL');
+        }
+        if (imageUrlInput) imageUrlInput.value = uploadedUrl;
+        if (imagePreview) imagePreview.src = uploadedUrl;
         isDirty = true;
-      };
-      reader.readAsDataURL(file);
+      } catch (_) {
+        showFeedback(document.getElementById('cm-save-feedback'), 'Image upload failed. Try again.', 'error');
+      } finally {
+        setImageUploadState(false, imageUploadStatus);
+      }
+    });
+  }
+
+  if (imageUrlInput) {
+    imageUrlInput.addEventListener('change', () => {
+      const value = imageUrlInput.value.trim();
+      if (!value) {
+        if (imagePreview) imagePreview.src = '';
+        if (imagePreviewWrap) imagePreviewWrap.hidden = true;
+        return;
+      }
+      if (imagePreview) imagePreview.src = value;
+      if (imagePreviewWrap) imagePreviewWrap.hidden = false;
     });
   }
 
@@ -567,6 +585,28 @@ function bindEditorEvents() {
       isDirty = true;
     });
   }
+}
+
+function setImageUploadState(uploading, uploadStatusEl) {
+  isImageUploading = uploading;
+
+  const saveBtn = document.getElementById('cm-btn-save');
+  if (saveBtn) {
+    saveBtn.disabled = uploading;
+  }
+
+  if (uploadStatusEl) {
+    uploadStatusEl.hidden = !uploading;
+  }
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ''));
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(file);
+  });
 }
 
 function collectFormData() {
@@ -592,10 +632,148 @@ function collectFormData() {
   return data;
 }
 
+function splitLines(value = '') {
+  return String(value)
+    .split('\n')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function toEditorFormData(raw) {
+  if (contentType === 'resource') {
+    return {
+      type: 'resource',
+      title: raw.title || '',
+      summary: raw.summary || '',
+      body: raw.content || raw.summary || '',
+      content_type: raw.content_type || raw.contentType || '',
+      theme: raw.theme || '',
+      image: raw.image_url || raw.imageUrl || '',
+      source_url: raw.source_url || raw.sourceUrl || '',
+      read_time: raw.read_time || raw.readTime || '',
+      status: normalizeStatus(raw.status || (raw.published ? 'published' : 'draft')),
+      featured: Boolean(raw.featured),
+      updatedAt: raw.updatedAt,
+    };
+  }
+
+  if (contentType === 'ngo') {
+    return {
+      type: 'ngo',
+      title: raw.name || '',
+      description: raw.mission || '',
+      mission: raw.mission || '',
+      services: Array.isArray(raw.services) ? raw.services.join('\n') : '',
+      coverage: raw.geographic_coverage || '',
+      website: raw.website || '',
+      email: raw.contact?.email || raw.email || '',
+      phone: raw.contact?.phone || raw.phone || '',
+      image: raw.cover_image || '',
+      status: mapNgoStatusToContentStatus(raw.status),
+      featured: false,
+      updatedAt: raw.updatedAt,
+    };
+  }
+
+  return {
+    type: 'clinic',
+    title: raw.name || '',
+    provider_type: raw.provider_type || '',
+    description: raw.description || '',
+    services: Array.isArray(raw.services) ? raw.services.join('\n') : '',
+    city: raw.city || '',
+    state: raw.state || '',
+    address: raw.contact?.address || raw.address || '',
+    opening_hours: raw.opening_hours || '',
+    fee_range: raw.fee_range || '',
+    contact_email: raw.contact?.email || '',
+    contact_phone: raw.contact?.phone || '',
+    website: raw.website || '',
+    image: raw.cover_image || '',
+    accepting_new_patients: Boolean(raw.accepting_new_patients),
+    status: normalizeStatus(raw.status || 'draft'),
+    featured: false,
+    updatedAt: raw.updatedAt,
+  };
+}
+
+function toApiPayload(data) {
+  if (contentType === 'resource') {
+    return {
+      title: data.title,
+      summary: data.summary,
+      content: data.body,
+      theme: data.theme,
+      content_type: data.content_type,
+      image_url: data.image,
+      source_url: data.source_url,
+      read_time: data.read_time,
+      status: normalizeStatus(data.status),
+      featured: Boolean(data.featured),
+    };
+  }
+
+  if (contentType === 'ngo') {
+    return {
+      name: data.title,
+      mission: data.mission || data.description,
+      services: splitLines(data.services),
+      geographic_coverage: data.coverage,
+      website: data.website,
+      email: data.email,
+      phone: data.phone,
+      cover_image: data.image,
+      status: mapContentStatusToNgoStatus(normalizeStatus(data.status)),
+    };
+  }
+
+  return {
+    name: data.title,
+    provider_type: data.provider_type,
+    description: data.description,
+    services: splitLines(data.services),
+    city: data.city,
+    state: data.state,
+    address: data.address,
+    opening_hours: data.opening_hours,
+    fee_range: data.fee_range,
+    email: data.contact_email,
+    phone: data.contact_phone,
+    website: data.website,
+    cover_image: data.image,
+    accepting_new_patients: Boolean(data.accepting_new_patients),
+    status: normalizeStatus(data.status),
+  };
+}
+
+function normalizeStatus(value) {
+  if (value === 'published' || value === 'draft' || value === 'archived') return value;
+  return 'draft';
+}
+
+function mapNgoStatusToContentStatus(value) {
+  if (value === 'approved') return 'published';
+  if (value === 'rejected') return 'archived';
+  return 'draft';
+}
+
+function mapContentStatusToNgoStatus(value) {
+  if (value === 'published') return 'approved';
+  if (value === 'archived') return 'rejected';
+  return 'pending';
+}
+
 async function saveEntry() {
   const btn      = document.getElementById('cm-btn-save');
   const feedback = document.getElementById('cm-save-feedback');
+
+  if (isImageUploading) {
+    showFeedback(feedback, 'Please wait for image upload to finish.', 'error');
+    return;
+  }
+
   const data     = collectFormData();
+  const payload  = toApiPayload(data);
 
   // Basic required field check
   const missing = cfg.fields.filter((key) => {
@@ -618,11 +796,11 @@ async function saveEntry() {
   try {
     let res;
     if (contentId) {
-      res = await api.patch(`${cfg.apiBase}/${contentId}`, data);
+      res = await api.patch(`${cfg.apiBase}/${contentId}`, payload);
     } else {
-      res = await api.post(cfg.apiBase, data);
+      res = await api.post(cfg.apiBase, payload);
       // Redirect to edit URL after creation
-      const newId = res?.data?.item?.id || res?.data?.id;
+      const newId = res?.data?.resource?.id || res?.data?.ngo?.id || res?.data?.clinic?.id || res?.data?.id;
       if (newId) {
         isDirty = false;
         window.location.replace(`content-editor.html?type=${contentType}&id=${newId}`);
@@ -713,8 +891,6 @@ function getDestColor() {
   const colorMap = {
     resource:     'var(--color-brand-400)',
     ngo:          '#0369a1',
-    intervention: '#7e22ce',
-    specialist:   '#c2410c',
     clinic:       '#15803d',
   };
   return colorMap[contentType] || 'var(--color-brand-400)';

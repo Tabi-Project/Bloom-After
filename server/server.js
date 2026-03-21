@@ -15,6 +15,9 @@ import suggestionsRouter from './routes/suggestionsRouter.js';
 import adminSuggestionsRouter from './routes/adminSuggestionsRouter.js';
 import adminNgosRouter from './routes/adminNgosRouter.js';
 import adminSettingsRouter from './routes/adminSettingsRouter.js';
+import adminResourcesRouter from './routes/adminResourcesRouter.js';
+import adminClinicsRouter from './routes/adminClinicsRouter.js';
+import adminUploadRouter from './routes/adminUploadRouter.js';
 
 dotenv.config();
 
@@ -59,6 +62,9 @@ app.use('/api/v1/admin/stories', adminStoriesRouter);
 app.use('/api/v1/admin/suggestions', adminSuggestionsRouter);
 app.use('/api/v1/admin/ngos', adminNgosRouter);
 app.use('/api/v1/admin/settings', adminSettingsRouter);
+app.use('/api/v1/admin/resources', adminResourcesRouter);
+app.use('/api/v1/admin/clinics', adminClinicsRouter);
+app.use('/api/v1/admin/upload', adminUploadRouter);
 app.use('/api/v1/clinics', clinicsRouter);
 app.use('/api/v1/stories', storiesRouter);
 app.use('/api/v1/ngos', ngosRouter);
