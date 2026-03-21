@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lifestyle & Medical Interventions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="icon" type="image/x-icon" href="../assets/logo/favicon.png" />
+<link rel="stylesheet" href="../css/base.css" />
+<link rel="stylesheet" href="../css/layouts.css" />
+<link rel="stylesheet" href="../css/lifestyle.css" />
+<link rel="stylesheet" href="../css/components.css" />
+<link rel="stylesheet" href="../css/suggest-drawer.css" />
+<script type="module" src="js/lifestyle.js" defer></script>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed-variant">
+
+ <div id="navbar-root"></div>
+
+<main class="pt-20 pb-24">
+
+  <!-- Disclaimer Banner -->
+  <div class="bg-secondary-container/50 border-b border-outline-variant/20 py-3 px-8">
+    <div class="max-w-7xl mx-auto flex items-center gap-3">
+      <p class="text-sm font-medium text-on-secondary-container">
+        This information is for educational purposes only. Always speak to a qualified healthcare professional before making changes to your treatment or lifestyle.
+      </p>
+    </div>
+  </div>
+
+  <!-- Header Section -->
+  <header class="max-w-7xl mx-auto px-8 py-16">
+    <div class="max-w-3xl">
+      <h1 class="text-5xl font-bold text-primary mb-6 tracking-tight">Lifestyle & Medical Interventions</h1>
+      <p class="text-lg text-on-surface-variant leading-relaxed mb-10">
+        A holistic approach to postpartum recovery combines supportive lifestyle adjustments with evidence-based clinical care. Explore strategies designed to nourish both mind and body.
+      </p>
+      <!-- Search and Filter Bar -->
+      <div class="flex flex-col md:flex-row gap-6 items-center">
+        <div class="relative w-full md:w-96">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+          <input class="w-full bg-surface-container-low border-none border-b-2 border-outline-variant focus:border-primary focus:ring-0 rounded-t-lg pl-12 pr-4 py-3 text-sm transition-all" placeholder="Search strategies or treatments..." type="text"/>
+        </div>
+        <div class="flex gap-2">
+          <button class="px-6 py-2 rounded-full bg-primary text-on-primary text-sm font-semibold filter-btn" data-filter="all">All</button>
+          <button class="px-6 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-medium hover:bg-surface-variant transition-colors filter-btn" data-filter="lifestyle">Lifestyle</button>
+          <button class="px-6 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-medium hover:bg-surface-variant transition-colors filter-btn" data-filter="medical">Medical</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cards Section -->
+  <section class="max-w-7xl mx-auto px-8 mb-24">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="cards-container">
+
+      <!-- Lifestyle Cards -->
+      <div class="card lifestyle bg-surface-container-lowest p-8 rounded-xl shadow flex flex-col h-full border">
+         <span class="material-symbols-outlined text-primary mb-4 text-3xl">bedtime</span>
+         <h3 class="text-xl font-bold mb-3">Sleep Strategies</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-6 flex-grow">
+          Prioritizing rest through "shifts" with a partner or using restorative nap techniques. Sleep deprivation is a key physiological trigger for mood disturbances.
+        </p>
+        <div class="pt-4 border-t border-outline-variant/10 flex items-center justify-between">
+          <span class="text-[10px] uppercase tracking-widest font-bold text-outline">Clinical Citation</span>
+          <span class="text-xs font-semibold text-primary">Harvard Health</span>
+        </div>
+      </div>
+
+      <div class="card lifestyle bg-surface-container-lowest p-8 rounded-xl shadow flex flex-col h-full border">
+        <span class="material-symbols-outlined text-primary mb-4 text-3xl">nutrition</span>
+        <h3 class="text-xl font-bold mb-3">Nutrition</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-6 flex-grow">
+          Focusing on anti-inflammatory whole foods, omega-3 fatty acids, and consistent hydration to support hormonal stabilization and energy levels.
+        </p>
+        <div class="pt-4 border-t border-outline-variant/10 flex items-center justify-between">
+          <span class="text-[10px] uppercase tracking-widest font-bold text-outline">Clinical Citation</span>
+          <span class="text-xs font-semibold text-primary">WHO</span>
+        </div>
+      </div>
+
+      <div class="card lifestyle bg-surface-container-lowest p-8 rounded-xl shadow flex flex-col h-full border">
+        <span class="material-symbols-outlined text-primary mb-4 text-3xl">self_improvement</span>
+        <h3 class="text-xl font-bold mb-3">Movement</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-6 flex-grow">
+          Gentle, consistent activity like walking or restorative yoga. Movement releases natural endorphins and helps regulate the nervous system after childbirth.
+        </p>
+        <div class="pt-4 border-t border-outline-variant/10 flex items-center justify-between">
+          <span class="text-[10px] uppercase tracking-widest font-bold text-outline">Clinical Citation</span>
+          <span class="text-xs font-semibold text-primary">Mayo Clinic</span>
+        </div>
+      </div>
+
+      <div class="card lifestyle bg-surface-container-lowest p-8 rounded-xl shadow flex flex-col h-full border">
+        <span class="material-symbols-outlined text-primary mb-4 text-3xl">groups</span>
+        <h3 class="text-xl font-bold mb-3">Social Connection</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-6 flex-grow">
+          Reducing isolation by engaging with peers who understand the transition to parenthood. Shared experience is a powerful buffer against depression.
+        </p>
+        <div class="pt-4 border-t border-outline-variant/10 flex items-center justify-between">
+          <span class="text-[10px] uppercase tracking-widest font-bold text-outline">Clinical Citation</span>
+          <span class="text-xs font-semibold text-primary">APA</span>
+        </div>
+      </div>
+
+      <div class="card lifestyle bg-surface-container-lowest p-8 rounded-xl shadow flex flex-col h-full border">
+        <span class="material-symbols-outlined text-primary mb-4 text-3xl">edit_note</span>
+        <h3 class="text-xl font-bold mb-3">Journalling</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-6 flex-grow">
+          Using expressive writing to process complex emotions and track mood patterns. It provides a private space for honest reflection without judgment.
+        </p>
+        <div class="pt-4 border-t border-outline-variant/10 flex items-center justify-between">
+          <span class="text-[10px] uppercase tracking-widest font-bold text-outline">Clinical Citation</span>
+          <span class="text-xs font-semibold text-primary">Cambridge Medicine</span>
+        </div>
+      </div>
+
+      <!-- Medical Cards -->
+      <div class="card medical bg-surface-container-lowest p-8 rounded-xl shadow flex flex-col h-full border">
+        <span class="material-symbols-outlined text-tertiary text-4xl mb-4">psychology</span>
+        <h3 class="text-xl font-bold mb-3">Therapy (CBT/IPT)</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-6 flex-grow">
+          Cognitive Behavioral Therapy (CBT) and Interpersonal Psychotherapy (IPT) are gold standards for postpartum care, restructuring negative thoughts and managing life transitions.
+        </p>
+        <div class="bg-surface-container-low p-4 rounded-lg flex gap-3 items-start">
+          <span class="material-symbols-outlined text-error text-xl shrink-0">warning</span>
+          <p class="text-xs font-medium text-on-surface-variant italic">Consult a doctor for personalized medical advice.</p>
+        </div>
+      </div>
+
+      <div class="card medical bg-surface-container-lowest p-8 rounded-xl shadow flex flex-col h-full border">
+        <span class="material-symbols-outlined text-tertiary text-4xl mb-4">medication</span>
+        <h3 class="text-xl font-bold mb-3">Medication Overview</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-6 flex-grow">
+          SSRIs and other pharmacological interventions can be vital for moderate to severe postpartum depression. Modern medications are increasingly safe and effective.
+        </p>
+        <div class="bg-surface-container-low p-4 rounded-lg flex gap-3 items-start">
+          <span class="material-symbols-outlined text-error text-xl shrink-0">warning</span>
+          <p class="text-xs font-medium text-on-surface-variant italic">Consult a doctor for personalized medical advice.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<div id="footer-container"></div>
+
+</body>
+</html>

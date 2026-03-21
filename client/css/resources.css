@@ -601,3 +601,55 @@
   .info-grid { grid-template-columns: repeat(2, 1fr); }
   .content-canvas { padding: var(--space-8) var(--space-5); }
 }
+
+
+ /* MEDIA PAGE LAYOUT */
+
+.media-layout {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* AUDIO PLAYER */
+
+.media-player-wrapper {
+  margin-bottom: 2rem;
+}
+
+.media-player {
+  width: 100%;
+  border-radius: 12px;
+}
+
+/* FALLBACK */
+
+.media-fallback {
+  padding: 2rem;
+  border-radius: 12px;
+  background: #f5f5f5;
+  text-align: center;
+  color: #777;
+}
+
+/* TEXT CONTENT */
+
+.media-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.media-paragraph {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #333;
+}
+
+/* EMPTY STATE */
+
+.content-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #999;
+}
