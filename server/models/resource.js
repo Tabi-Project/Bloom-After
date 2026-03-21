@@ -52,6 +52,11 @@ const resourceSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    status: {
+      type: String,
+      enum: ['draft', 'published', 'archived'],
+      default: 'draft',
+    },
     createdAt: {
       type: Date,
       default: Date.now,

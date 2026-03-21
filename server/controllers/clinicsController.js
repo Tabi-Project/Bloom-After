@@ -41,6 +41,7 @@ const normalizeClinic = (clinic, options = {}) => {
   const coords = clinic.location?.coordinates || [];
   const lng = coords[0];
   const lat = coords[1];
+  const status = typeof clinic.status === 'string' ? clinic.status : 'published';
 
   return {
     id: clinic._id.toString(),
@@ -62,6 +63,10 @@ const normalizeClinic = (clinic, options = {}) => {
     focus_areas: clinic.focus_areas || [],
     contact: clinic.contact || {},
     services: clinic.services || [],
+    description: clinic.description || '',
+    website: clinic.website || '',
+    cover_image: clinic.cover_image || '',
+    status,
     ...(distanceMeters !== undefined
       ? { distance: Math.round((distanceMeters / 1000) * 10) / 10 }
       : {}),
@@ -69,7 +74,9 @@ const normalizeClinic = (clinic, options = {}) => {
 };
 
 const buildFilter = (query) => {
-  const filter = {};
+  const filter = {
+    $or: [{ status: 'published' }, { status: { $exists: false } }],
+  };
   const provider = typeof query.provider_type === 'string' ? query.provider_type : '';
   const cost = typeof query.cost_type === 'string' ? query.cost_type : '';
   const consultation = typeof query.consultation_mode === 'string' ? query.consultation_mode : '';
@@ -211,7 +218,10 @@ export const getClinicById = async (req, res) => {
       return res.status(404).json({ status: 'error', error: 'Clinic not found' });
     }
 
-    const clinic = await Clinic.findById(id).lean();
+    const clinic = await Clinic.findOne({
+      _id: id,
+      $or: [{ status: 'published' }, { status: { $exists: false } }],
+    }).lean();
     if (!clinic) {
       return res.status(404).json({ status: 'error', error: 'Clinic not found' });
     }
@@ -419,5 +429,202 @@ export const rejectClinicReview = async (req, res) => {
   } catch (error) {
     console.error('Error rejecting clinic review:', error);
     res.status(500).json({ status: 'error', error: 'Server error' });
+  }
+};
+
+const parseAdminStatus = (value) => {
+  if (typeof value !== 'string') return '';
+  const normalized = value.trim().toLowerCase();
+  return ['draft', 'published', 'archived'].includes(normalized) ? normalized : '';
+};
+
+const normalizeProviderType = (value, fallback = 'clinic') => {
+  const normalized = typeof value === 'string' ? value.trim().toLowerCase() : fallback;
+  if (normalized === 'hospital') return 'clinic';
+  if (['clinic', 'therapist', 'psychiatrist', 'support_group'].includes(normalized)) return normalized;
+  return fallback;
+};
+
+const normalizeCostType = (value, fallback = 'private') => {
+  const normalized = typeof value === 'string' ? value.trim().toLowerCase() : fallback;
+  if (['free', 'subsidised', 'private'].includes(normalized)) return normalized;
+  return fallback;
+};
+
+const normalizeConsultationMode = (value, fallback = 'both') => {
+  const normalized = typeof value === 'string' ? value.trim().toLowerCase() : fallback;
+  if (['both', 'remote', 'in_person'].includes(normalized)) return normalized;
+  return fallback;
+};
+
+const toStringArray = (value, fallback = []) => {
+  if (Array.isArray(value)) {
+    return value
+      .filter((item) => typeof item === 'string')
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  if (typeof value === 'string') {
+    return value
+      .split(/\n|,/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return fallback;
+};
+
+const toBoolean = (value, fallback = false) => {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === 'true') return true;
+    if (normalized === 'false') return false;
+  }
+  return fallback;
+};
+
+const toAdminClinicPayload = (body, existing = null) => {
+  const incomingStatus = parseAdminStatus(body?.status);
+  const status = incomingStatus || existing?.status || 'draft';
+
+  const existingCoordinates = existing?.location?.coordinates;
+  const lat = toNumber(body?.lat);
+  const lng = toNumber(body?.lng);
+  const coordinates =
+    lat !== null && lng !== null
+      ? [lng, lat]
+      : Array.isArray(existingCoordinates) && existingCoordinates.length === 2
+        ? existingCoordinates
+        : [0, 0];
+
+  const existingContact = existing?.contact?.toObject ? existing.contact.toObject() : existing?.contact || {};
+
+  return {
+    name: typeof body?.name === 'string' && body.name.trim() ? body.name.trim() : (existing?.name || ''),
+    provider_type: normalizeProviderType(body?.provider_type, existing?.provider_type || 'clinic'),
+    city: typeof body?.city === 'string' && body.city.trim() ? body.city.trim() : (existing?.city || ''),
+    state: typeof body?.state === 'string' && body.state.trim() ? body.state.trim() : (existing?.state || ''),
+    location: {
+      type: 'Point',
+      coordinates,
+    },
+    fee_range: typeof body?.fee_range === 'string' ? body.fee_range.trim() : (existing?.fee_range || ''),
+    cost_type: normalizeCostType(body?.cost_type, existing?.cost_type || 'private'),
+    is_open_247: toBoolean(body?.is_open_247, existing?.is_open_247 || false),
+    opening_hours: typeof body?.opening_hours === 'string' ? body.opening_hours.trim() : (existing?.opening_hours || ''),
+    consultation_mode: normalizeConsultationMode(body?.consultation_mode, existing?.consultation_mode || 'both'),
+    accepting_new_patients: toBoolean(body?.accepting_new_patients, existing?.accepting_new_patients ?? true),
+    credentials: typeof body?.credentials === 'string' ? body.credentials.trim() : (existing?.credentials || ''),
+    languages: toStringArray(body?.languages, existing?.languages || []),
+    focus_areas: toStringArray(body?.focus_areas, existing?.focus_areas || []),
+    services: toStringArray(body?.services, existing?.services || []),
+    description: typeof body?.description === 'string' ? body.description.trim() : (existing?.description || ''),
+    website: typeof body?.website === 'string' ? body.website.trim() : (existing?.website || ''),
+    cover_image: typeof body?.cover_image === 'string' ? body.cover_image.trim() : (existing?.cover_image || ''),
+    contact: {
+      ...existingContact,
+      phone: typeof body?.phone === 'string' ? body.phone.trim() : (existingContact.phone || ''),
+      email: typeof body?.email === 'string' ? body.email.trim() : (existingContact.email || ''),
+      address: typeof body?.address === 'string' ? body.address.trim() : (existingContact.address || ''),
+    },
+    status,
+  };
+};
+
+export const getAdminClinics = async (req, res) => {
+  try {
+    const status = parseAdminStatus(req.query?.status);
+    const filter = status ? { status } : {};
+
+    const clinics = await Clinic.find(filter)
+      .sort({ createdAt: -1, _id: -1 })
+      .lean();
+
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        clinics: clinics.map((clinic) => normalizeClinic(clinic)),
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching admin clinics:', error);
+    return res.status(500).json({ status: 'error', error: 'Server error' });
+  }
+};
+
+export const getAdminClinicById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ status: 'error', error: 'Clinic not found' });
+    }
+
+    const clinic = await Clinic.findById(id).lean();
+    if (!clinic) {
+      return res.status(404).json({ status: 'error', error: 'Clinic not found' });
+    }
+
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        clinic: normalizeClinic(clinic),
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching admin clinic by ID:', error);
+    return res.status(500).json({ status: 'error', error: 'Server error' });
+  }
+};
+
+export const createAdminClinic = async (req, res) => {
+  try {
+    const payload = toAdminClinicPayload(req.body);
+
+    if (!payload.name || !payload.city || !payload.state) {
+      return res.status(400).json({ status: 'error', error: 'Name, city, and state are required.' });
+    }
+
+    const created = await Clinic.create(payload);
+
+    return res.status(201).json({
+      status: 'success',
+      data: {
+        clinic: normalizeClinic(created),
+      },
+    });
+  } catch (error) {
+    console.error('Error creating admin clinic:', error);
+    return res.status(500).json({ status: 'error', error: 'Server error' });
+  }
+};
+
+export const updateAdminClinic = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ status: 'error', error: 'Clinic not found' });
+    }
+
+    const clinic = await Clinic.findById(id);
+    if (!clinic) {
+      return res.status(404).json({ status: 'error', error: 'Clinic not found' });
+    }
+
+    const payload = toAdminClinicPayload(req.body, clinic);
+
+    Object.assign(clinic, payload);
+    await clinic.save();
+
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        clinic: normalizeClinic(clinic),
+      },
+    });
+  } catch (error) {
+    console.error('Error updating admin clinic:', error);
+    return res.status(500).json({ status: 'error', error: 'Server error' });
   }
 };
