@@ -1,10 +1,3 @@
-/**
- * content-editor.js
- * Adaptive content editor. Reads ?type= and optionally ?id= from URL.
- * Morphs the form fields based on content type.
- * Supports: resource | ngo | clinic
- */
-
 import {
   renderAdminSidebar,
   renderAdminTopbar,
@@ -13,11 +6,8 @@ import {
 import { renderFooter } from '../components/footer.js';
 import api from '../api.js';
 
-// ── Constants ──────────────────────────────────────────────────────────────────
-
 const ADMIN_USER_KEY = 'adminUser';
 
-// ── Type config ────────────────────────────────────────────────────────────────
 
 const TYPE_CONFIG = {
   resource: {
@@ -40,7 +30,6 @@ const TYPE_CONFIG = {
   },
 };
 
-// ── Field definitions ──────────────────────────────────────────────────────────
 
 const FIELD_DEFS = {
   title: {
@@ -247,7 +236,6 @@ const FIELD_DEFS = {
   },
 };
 
-// ── State ──────────────────────────────────────────────────────────────────────
 
 let formData    = {};
 let contentType = '';
@@ -256,7 +244,6 @@ let cfg         = null;
 let isDirty     = false;
 let isImageUploading = false;
 
-// ── Boot ───────────────────────────────────────────────────────────────────────
 
 async function init() {
   const stored = getStoredAdmin();
@@ -264,6 +251,15 @@ async function init() {
   contentType  = params.get('type') || 'resource';
   contentId    = params.get('id')   || null;
   cfg          = TYPE_CONFIG[contentType] || TYPE_CONFIG.resource;
+
+  const urlTitle = params.get('_title');
+if (urlTitle && !contentId) {
+  // New entry being started from dashboard — seed formData with the title
+  formData = { status: 'draft', type: contentType, title: urlTitle.trim() };
+} else if (urlTitle && contentId) {
+  // Existing draft — show title immediately, full data loads via fetchEntry
+  formData = { status: 'draft', type: contentType, title: urlTitle.trim() };
+}
 
   // Render chrome
   document.getElementById('sidebar-root').innerHTML = renderAdminSidebar({

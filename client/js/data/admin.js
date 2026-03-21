@@ -6,31 +6,31 @@ export const adminConfig = {
 
 export const statsData = [
   {
-    id: "total-resources-card",
+    id:    "total-resources-card",
     label: "Total Resources",
-    value: "0",
-    meta: "Library size",
+    value: "—",
+    meta:  "All content across every type",
     muted: true,
   },
   {
-    id: "published-resources-card",
-    label: "Published Resources",
-    value: "0",
-    meta: "Live on Bloom After",
+    id:    "published-resources-card",
+    label: "Published",
+    value: "—",
+    meta:  "Live on Bloom After",
     muted: true,
   },
   {
-    id: "draft-resources-card",
-    label: "Draft Resources",
-    value: "0",
-    meta: "Needs review",
+    id:    "draft-resources-card",
+    label: "Drafts",
+    value: "—",
+    meta:  "Unpublished — in progress",
     muted: true,
   },
   {
-    id: "pending-stories-card",
-    label: "Stories Pending Review",
-    value: "0",
-    meta: "Awaiting moderation",
+    id:    "pending-stories-card",
+    label: "Pending Moderation",
+    value: "—",
+    meta:  "Submissions awaiting review",
     muted: true,
   },
 ];
@@ -63,9 +63,10 @@ export const queuesData = [
 ];
 
 export const draftData = {
-  title: "Understanding postpartum warning signs",
-  description:
-    "Review title, refine summary text, update clinic references, and send for final approval.",
+  id:          "",                                 
+  type:        "resource",                            
+  title:       "Understanding postpartum warning signs",
+  description: "Review title, refine summary text, update clinic references, and send for final approval.",
 };
 
 export const rolesData = [
