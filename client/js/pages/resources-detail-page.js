@@ -95,6 +95,7 @@ function populateContent(resource) {
   
   contentRoot.innerHTML = html;
   contentRoot.removeAttribute("aria-busy");
+  initMediaPlayer();
 }
 
 /* Meta */
@@ -178,7 +179,8 @@ function initMediaPlayer() {
   const currentTimeEl = document.getElementById('current-time');
   const durationEl = document.getElementById('duration');
 
-  if (!audio || !playBtn) return;
+   // If any required element is missing, skip initializing the custom player.
+  if (!audio || !playBtn || !progress || !currentTimeEl || !durationEl) return;
 
   // Play / Pause
   playBtn.addEventListener('click', () => {
@@ -214,12 +216,4 @@ function initMediaPlayer() {
     const secs = Math.floor(time % 60).toString().padStart(2, '0');
     return `${mins}:${secs}`;
   }
-}
-
-function populateContent(resource) {
-  
-  contentRoot.innerHTML = html;
-  contentRoot.removeAttribute("aria-busy");
-
-  initMediaPlayer();
 }

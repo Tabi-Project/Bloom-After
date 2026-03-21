@@ -13,9 +13,11 @@
 </head>
 <body>
 
-   <div id="navbar-root"></div>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <main class="lifestyle-main">
+  <div id="navbar-root"></div>
+
+  <main id="main-content" class="lifestyle-main">
 
     <!-- Disclaimer Banner -->
   <div class="disclaimer-banner">
@@ -28,18 +30,24 @@
     <p>A holistic approach to postpartum recovery combining supportive lifestyle adjustments and evidence-based care.</p>
   </header>
 
-  <!-- Search & Filter -->
-  <div class="search-filter">
-    <div class="search-input">
-      <span class="material-symbols-outlined">search</span>
-      <input type="text" placeholder="Search strategies or treatments...">
-    </div>
-    <div class="filters">
-      <button class="all">All</button>
-      <button>Lifestyle</button>
-      <button>Medical</button>
-    </div>
+  <section class="lifestyle-search-bar container" role="search">
+  <!-- Search Input -->
+  <div class="search-input-wrapper">
+    <input 
+      type="search" 
+      id="lifestyle-search" 
+      placeholder="Search strategies or treatments..." 
+      aria-label="Search strategies or treatments"
+    >
   </div>
+
+  <!-- Filter Buttons -->
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="lifestyle">Lifestyle</button>
+    <button class="filter-btn" data-filter="medical">Medical</button>
+  </div>
+</section>
 
   <!-- Cards Section -->
   <section id="cards-container" class="cards-grid">
@@ -49,9 +57,6 @@
 
   <div id="footer-root"></div>
   
-  <script type="module" src="../js/components/icons.js"></script>
-  <script type="module" src="../js/components/navbar.js"></script>
-  <script type="module" src="../js/components/footer.js"></script>
   <script type="module" src="../js/data/lifestyle.js"></script>
 
 </body>
