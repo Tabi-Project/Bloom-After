@@ -17,7 +17,7 @@ const footerLinks = [
     items: [
       { text: 'Resources', href: 'resources.html' },
       { text: 'Find a Clinic', href: 'clinics.html' },
-      { text: 'Specialists', href: 'specialists.html' },
+      // { text: 'Specialists', href: 'specialists.html' },
       { text: 'Lifestyle Guides', href: 'lifestyle.html' },
     ],
   },
@@ -26,7 +26,7 @@ const footerLinks = [
     items: [
       { text: 'Stories', href: 'stories.html' },
       { text: 'Share Your Story', href: 'submit-story.html' },
-      { text: 'Podcasts & Media', href: 'media.html' },
+      // { text: 'Podcasts & Media', href: 'media.html' },
       { text: 'NGO Directory', href: 'ngos.html' },
     ],
   },
@@ -34,7 +34,7 @@ const footerLinks = [
     title: 'PROJECT',
     items: [
       { text: 'Our Team', href: 'index.html#team' },
-      { text: 'Privacy Policy', href: '#' },
+      // { text: 'Privacy Policy', href: '#' },
       { text: 'GitHub', href: 'https://github.com/Tabi-Project/Bloom-After.git' },
       { text: 'Contributing Guide', href: 'https://github.com/Tabi-Project/Bloom-After.git' },
     ],

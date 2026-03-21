@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../css/layouts.css" />
     <link rel="stylesheet" href="../css/components.css" />
     <link rel="stylesheet" href="../css/resources.css" />
+    <link rel="stylesheet" href="../css/suggest-drawer.css" />
   </head>
   <body>
 
@@ -35,8 +36,8 @@
       </section>
 
       <!-- Search & filters -->
-      <div class="resources-controls" role="search">
-        <div class="container resources-controls-inner">
+      <div class="page-controls" role="search">
+        <div class="container page-controls-inner">
 
           <div class="search-wrap">
             <span class="search-icon" aria-hidden="true">
@@ -55,24 +56,14 @@
           </div>
 
           <nav class="filter-tabs" aria-label="Filter resources by type">
-            <button
-              class="filter-btn active"
-              data-filter=""
-              aria-pressed="true"
-              aria-label="Show all resource types"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
+            <button class="filter-btn active" data-filter="" aria-pressed="true" aria-label="Show all focus areas">
               All
             </button>
             <button class="filter-btn" data-filter="article" aria-pressed="false">Articles</button>
             <button class="filter-btn" data-filter="infographic" aria-pressed="false">Infographics</button>
-            <button class="filter-btn" data-filter="audio" aria-pressed="false">Audio Summary</button>
-            <button class="filter-btn" data-filter="podcast" aria-pressed="false">Podcasts</button>
+            <button class="filter-btn" data-filter="media">Media</button>
             <button class="filter-btn" data-filter="myth-busting" aria-pressed="false">Myth-busting guides</button>
           </nav>
-
         </div>
       </div>
 
@@ -88,7 +79,7 @@
             aria-atomic="false"
           ></div>
 
-          <p id="resources-empty" class="resources-empty" hidden role="status">
+          <p id="resources-empty" class="empty-state" hidden role="status">
             <strong>No resources found.</strong><br />
             Try a different search term or filter.
           </p>
@@ -98,7 +89,7 @@
       </section>
 
       <!-- Crisis strip -->
-      <div id="crisis-root"></div>
+      <!-- <div id="crisis-root"></div> -->
 
     </main>
 
@@ -106,5 +97,9 @@
     <div id="footer-root"></div>
 
     <script type="module" src="../js/pages/resources-page.js"></script>
+    <script type="module">
+      import { initSuggestDrawer } from "../js/components/suggest-drawer.js";
+      initSuggestDrawer();
+    </script>
   </body>
 </html>

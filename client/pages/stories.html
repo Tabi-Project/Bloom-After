@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../css/components.css" />
     <link rel="stylesheet" href="../css/resources.css" />
     <link rel="stylesheet" href="../css/stories.css" />
+    <link rel="stylesheet" href="../css/suggest-drawer.css" />
   </head>
   <body>
 
@@ -37,8 +38,8 @@
       </section>
 
       <!-- Search & filters -->
-      <div class="resources-controls" role="search">
-        <div class="container resources-controls-inner">
+      <div class="page-controls" role="search">
+        <div class="container page-controls-inner">
 
           <div class="search-wrap">
             <span class="search-icon" aria-hidden="true">
@@ -99,7 +100,7 @@
             aria-atomic="false"
           ></div>
 
-          <p id="stories-empty" class="resources-empty" hidden role="status">
+          <p id="stories-empty" class="empty-state" hidden role="status">
             <strong>No stories found.</strong><br />
             Try a different search term or filter.
           </p>
@@ -114,5 +115,9 @@
     <div id="footer-root"></div>
 
     <script type="module" src="../js/pages/stories-page.js"></script>
+    <script type="module">
+      import { initSuggestDrawer } from "../js/components/suggest-drawer.js";
+      initSuggestDrawer();
+    </script>
   </body>
 </html>

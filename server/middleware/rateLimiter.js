@@ -36,3 +36,40 @@ export const reviewLimiter = rateLimit({
     });
   },
 });
+
+export const suggestionLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 15,
+  handler: (req, res) => {
+    res.status(429).json({
+      status: 'error',
+      error: 'Too many suggestion submissions. Please try again later.',
+      retryAfter: 10 * 60,
+    });
+  },
+});
+
+export const adminInviteLimiter = rateLimit({
+  windowMs: 30 * 60 * 1000,
+  max: 20,
+  handler: (req, res) => {
+    res.status(429).json({
+      status: 'error',
+      error: 'Too many admin invitations sent. Please try again later.',
+      retryAfter: 30 * 60,
+    });
+  },
+});
+
+export const inviteAcceptLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 10,
+  skipSuccessfulRequests: true,
+  handler: (req, res) => {
+    res.status(429).json({
+      status: 'error',
+      error: 'Too many invite activation attempts. Please wait and try again.',
+      retryAfter: 10 * 60,
+    });
+  },
+});

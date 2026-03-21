@@ -33,6 +33,13 @@ export const getCurrentUser = async (req, res, next) => {
   if (!user) {
     return res.status(401).json({ status: 'error', error: 'User not found' });
   }
+
+  if (user.status === 'pending') {
+    return res.status(403).json({
+      status: 'error',
+      error: 'Account setup is pending. Activate your invite first.',
+    });
+  }
   // Attach user to request
   req.user = user;
   next();

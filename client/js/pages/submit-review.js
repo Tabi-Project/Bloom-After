@@ -1,3 +1,6 @@
+import api from '../api.js';
+import { richTextToPlainText, toRichTextHtml } from '../richText.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   const pendingJson = sessionStorage.getItem('pendingStory');
   if (!pendingJson) {
@@ -28,7 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Story text
   const storyEl = document.getElementById('review-story');
-  if (storyEl) storyEl.textContent = pending.story || '';
+  if (storyEl) {
+    storyEl.innerHTML = toRichTextHtml(pending.story || '');
+  }
 
   // What helped tags
   const tagsWrap = document.getElementById('review-tags-wrap');
@@ -64,15 +69,47 @@ document.addEventListener('DOMContentLoaded', () => {
   const confirmBtn  = document.getElementById('confirm-btn');
 
   if (confirmBtn) {
-    confirmBtn.addEventListener('click', () => {
+    confirmBtn.addEventListener('click', async () => {
       confirmBtn.disabled = true;
       confirmBtn.textContent = 'Submitting…';
 
-      pending.confirmedAt = Date.now();
-      pending.storyId = null;
-      sessionStorage.setItem('submittedStory', JSON.stringify(pending));
-      sessionStorage.removeItem('pendingStory');
-      window.location.href = 'submit-success.html';
+      const submitError = document.getElementById('submit-error');
+      if (submitError) submitError.hidden = true;
+
+      try {
+        const payload = {
+          name: pending.name || '',
+          email: pending.email || '',
+          privacy: pending.privacy || 'named',
+          story: toRichTextHtml(pending.story || ''),
+          location: pending.location || '',
+          consent: !!pending.consent,
+          what_helped: Array.isArray(pending.tags) ? pending.tags : [],
+          image: pending.image || '',
+        };
+
+        const response = await api.post('/api/v1/stories', payload);
+        const submitted = response?.data || response?.story || null;
+        
+        pending.confirmedAt = Date.now();
+        pending.storyId = submitted?._id || null;
+        pending.storyText = richTextToPlainText(pending.story || '');
+        sessionStorage.setItem('submittedStory', JSON.stringify(pending));
+        sessionStorage.removeItem('pendingStory');
+        window.location.href = 'submit-success.html';
+      } catch (error) {
+        console.error('[StorySubmit][Review] submit failed', {
+          message: error?.message,
+          status: error?.status,
+          data: error?.data,
+        });
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = `
+          Submit for Moderation
+          <span class="material-symbols-outlined" aria-hidden="true">send</span>
+        `;
+        if (submitError) submitError.hidden = false;
+      }
     });
   }
 });

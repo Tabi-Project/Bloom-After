@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Moderate suggestions submissions for Bloom After." />
+    <title>Suggestions Moderation - Bloom Admin</title>
+    <link rel="icon" type="image/x-icon" href="../assets/logo/favicon.png" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layouts.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/admin-dashboard.css" />
+    <link rel="stylesheet" href="../css/admin-moderation.css" />
+  </head>
+  <body>
+    <div class="admin-layout">
+      <div id="sidebar-root"></div>
+
+      <div class="admin-main">
+        <div id="topbar-root"></div>
+
+        <main class="dashboard-content" id="main-content">
+          <div class="mod-page-header">
+            <div>
+              <h1 class="mod-page-title">Suggestions</h1>
+              <p class="mod-page-subtitle">Review, approve, and mark suggestions as implemented.</p>
+            </div>
+            <div id="mod-header-stats" class="mod-header-stats" aria-live="polite"></div>
+          </div>
+
+          <div class="mod-filters" role="tablist" aria-label="Filter suggestions by status">
+            <button class="mod-filter-tab active" role="tab" aria-selected="true" data-status="" aria-controls="suggestion-list">All</button>
+            <button class="mod-filter-tab" role="tab" aria-selected="false" data-status="pending" aria-controls="suggestion-list">Pending</button>
+            <button class="mod-filter-tab" role="tab" aria-selected="false" data-status="approved" aria-controls="suggestion-list">Approved</button>
+            <button class="mod-filter-tab" role="tab" aria-selected="false" data-status="implemented" aria-controls="suggestion-list">Implemented</button>
+            <button class="mod-filter-tab" role="tab" aria-selected="false" data-status="rejected" aria-controls="suggestion-list">Rejected</button>
+          </div>
+
+          <div class="mod-search-wrap">
+            <svg class="mod-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="search" id="mod-search" class="mod-search-input" placeholder="Search by category, email, or suggestion text..." aria-label="Search suggestions" autocomplete="off" />
+          </div>
+
+          <div id="suggestion-list" class="mod-submission-list" role="tabpanel" aria-live="polite" aria-atomic="false"></div>
+          <p id="suggestion-empty" class="mod-empty" hidden role="status"></p>
+          <div id="mod-pagination" class="pagination-wrap" aria-live="polite"></div>
+        </main>
+      </div>
+    </div>
+
+    <div id="footer-root"></div>
+    <script type="module" src="../js/pages/suggestions-moderation.js"></script>
+  </body>
+</html>

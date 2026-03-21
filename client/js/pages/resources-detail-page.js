@@ -1,5 +1,5 @@
 import { fetchResourceById } from "../data/resources-api.js";
-import { renderArticle, renderInfographic, renderMedia, renderMythBusting, renderPodcast } from "../components/renderers.js";
+import { renderArticle, renderInfographic, renderMedia, renderMythBusting } from "../components/renderers.js";
 import { renderRelatedResources } from "../components/relatedResources.js";
 import { renderCrisisStrip } from "../components/crisisStrip.js";
 import { renderNavbar, initNavbar } from "../components/navbar.js";
@@ -16,8 +16,7 @@ const errorState  = document.getElementById('error-state');
 const TYPE_LABELS = {
   'article':      'Article',
   'infographic':  'Infographic',
-  'audio':        'Audio Summary',
-  'podcast':      'Podcast',
+  'media':        'Media',
   'myth-busting': 'Myth-busting guide'
 };
 
@@ -82,11 +81,8 @@ function populateContent(resource) {
     case 'infographic':
       html = renderInfographic(resource);
       break;
-    case 'audio':
+    case 'media':
       html = renderMedia(resource);
-      break;
-    case 'podcast':
-      html = renderPodcast(resource);
       break;
     case 'myth-busting':
       html = renderMythBusting(resource);
@@ -99,6 +95,7 @@ function populateContent(resource) {
   
   contentRoot.innerHTML = html;
   contentRoot.removeAttribute("aria-busy");
+  initMediaPlayer();
 }
 
 /* Meta */
@@ -174,3 +171,49 @@ document.addEventListener('click', async (e) => {
     alert('Failed to copy. Please manually copy the URL from your browser.');
   }
 });
+
+function initMediaPlayer() {
+  const audio = document.getElementById('media-audio');
+  const playBtn = document.getElementById('play-btn');
+  const progress = document.getElementById('progress-bar');
+  const currentTimeEl = document.getElementById('current-time');
+  const durationEl = document.getElementById('duration');
+
+   // If any required element is missing, skip initializing the custom player.
+  if (!audio || !playBtn || !progress || !currentTimeEl || !durationEl) return;
+
+  // Play / Pause
+  playBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+      playBtn.textContent = '❚❚';
+    } else {
+      audio.pause();
+      playBtn.textContent = ':arrow_forward:';
+    }
+  });
+
+  // Update progress
+  audio.addEventListener('timeupdate', () => {
+    progress.value = (audio.currentTime / audio.duration) * 100 || 0;
+
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+  });
+
+  // Set duration
+  audio.addEventListener('loadedmetadata', () => {
+    durationEl.textContent = formatTime(audio.duration);
+  });
+
+  // Seek
+  progress.addEventListener('input', () => {
+    audio.currentTime = (progress.value / 100) * audio.duration;
+  });
+
+  function formatTime(time) {
+    if (!time) return "0:00";
+    const mins = Math.floor(time / 60);
+    const secs = Math.floor(time % 60).toString().padStart(2, '0');
+    return `${mins}:${secs}`;
+  }
+}

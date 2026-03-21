@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500&display=swap");
 
 :root {
   /* Brand scale Bloom After (Teal/Sage) */
@@ -52,7 +52,7 @@
   --focus-ring-color: var(--color-brand-400);
 
   /* Typography */
-  --font-body:    "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
   --font-heading: "Fraunces", Georgia, serif;
 
   /* Typography Scale */
@@ -67,6 +67,7 @@
   --font-size-5xl: 3rem;
 
   /* Spacing Scale */
+  --neg-space-1: -3rem;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -132,13 +133,18 @@ body {
   overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   color: var(--color-text);
   line-height: 1.2;
 }
 
-p{
+p {
   font-family: var(--font-body);
 }
 
@@ -148,7 +154,8 @@ a {
   transition: color 0.2s ease-out;
 }
 
-img, svg {
+img,
+svg {
   display: block;
   max-width: 100%;
 }
@@ -214,4 +221,3 @@ button {
 .gap-6 {
   gap: var(--space-6);
 }
-

@@ -10,7 +10,8 @@
     "start": "node server.js",
     "seed:resources": "node scripts/seedResources.js",
     "seed:admin": "node scripts/seedAdmin.js",
-    "seed:clinics": "node scripts/seedClinics.js"
+    "seed:clinics": "node scripts/seedClinics.js",
+    "seed:ngos": "node scripts/seedNgos.js"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.1.0",
     "mongoose": "^9.2.4",
+    "resend": "^4.8.0",
     "validator": "^13.15.26"
   },
   "devDependencies": {

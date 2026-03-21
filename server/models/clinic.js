@@ -99,6 +99,26 @@ const clinicSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    description: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    website: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    cover_image: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    status: {
+      type: String,
+      enum: ['draft', 'published', 'archived'],
+      default: 'published',
+    },
   },
   { timestamps: true },
 );

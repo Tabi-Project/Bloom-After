@@ -2,10 +2,11 @@ import { renderNavbar, initNavbar } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { createStoryCard, createSkeletonCard } from '../components/storyCard.js';
 import { icons } from '../components/icons.js';
-import { getMockStories } from '../data/stories.js';
+import api from '../api.js';
 
 const ITEMS_PER_PAGE = 9;
-const API_URL = '/api/v1/stories?status=approved';
+
+let hasLoadError = false;
 
 let allStories      = [];
 let filteredStories = [];
@@ -26,16 +27,15 @@ let filterBtns = [];
 
 async function fetchStories() {
   try {
-    const res = await fetch(API_URL);
-    if (!res.ok) throw new Error('Network response not ok');
-    const json = await res.json();
-    const data = json.data ?? [];
-    if (Array.isArray(data) && data.length > 0) return data;
-    // fallback to local mock stories during development
-    return await getMockStories();
-  } catch (err) {
-    // network or other error — use mock stories so UI stays functional
-    return await getMockStories();
+    const response = await api.get('/api/v1/stories', {
+      query: { status: 'approved', limit: 100 },
+    });
+    const data = response?.data ?? [];
+    hasLoadError = false;
+    return Array.isArray(data) ? data : [];
+  } catch (_) {
+    hasLoadError = true;
+    return [];
   }
 }
 
@@ -72,9 +72,10 @@ function showSkeletons() {
 function applyFilters() {
   filteredStories = allStories.filter(s => {
     const helped = s.what_helped ?? [];
+    const storyText = (s.story_text ?? s.story ?? '').replace(/<[^>]+>/g, ' ').toLowerCase();
     const matchesFilter = !activeFilter || helped.includes(activeFilter);
     const matchesSearch = !searchQuery ||
-      (s.story    ?? '').toLowerCase().includes(searchQuery) ||
+      storyText.includes(searchQuery) ||
       (s.name     ?? '').toLowerCase().includes(searchQuery) ||
       (s.location ?? '').toLowerCase().includes(searchQuery);
     return matchesFilter && matchesSearch;
@@ -102,6 +103,11 @@ function renderPage() {
   if (filteredStories.length === 0) {
     grid.innerHTML       = '';
     emptyState.hidden    = false;
+    if (hasLoadError) {
+      emptyState.innerHTML = '<strong>Unable to load stories right now.</strong><br />Please try again shortly.';
+    } else {
+      emptyState.innerHTML = '<strong>No stories found.</strong><br />Try a different search term or filter.';
+    }
     paginationWrap.innerHTML = '';
     return;
   }
