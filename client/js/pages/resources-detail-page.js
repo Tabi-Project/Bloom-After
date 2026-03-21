@@ -95,6 +95,7 @@ function populateContent(resource) {
   
   contentRoot.innerHTML = html;
   contentRoot.removeAttribute("aria-busy");
+  initMediaPlayer();
 }
 
 /* Meta */
@@ -170,3 +171,49 @@ document.addEventListener('click', async (e) => {
     alert('Failed to copy. Please manually copy the URL from your browser.');
   }
 });
+
+function initMediaPlayer() {
+  const audio = document.getElementById('media-audio');
+  const playBtn = document.getElementById('play-btn');
+  const progress = document.getElementById('progress-bar');
+  const currentTimeEl = document.getElementById('current-time');
+  const durationEl = document.getElementById('duration');
+
+   // If any required element is missing, skip initializing the custom player.
+  if (!audio || !playBtn || !progress || !currentTimeEl || !durationEl) return;
+
+  // Play / Pause
+  playBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+      playBtn.textContent = '❚❚';
+    } else {
+      audio.pause();
+      playBtn.textContent = ':arrow_forward:';
+    }
+  });
+
+  // Update progress
+  audio.addEventListener('timeupdate', () => {
+    progress.value = (audio.currentTime / audio.duration) * 100 || 0;
+
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+  });
+
+  // Set duration
+  audio.addEventListener('loadedmetadata', () => {
+    durationEl.textContent = formatTime(audio.duration);
+  });
+
+  // Seek
+  progress.addEventListener('input', () => {
+    audio.currentTime = (progress.value / 100) * audio.duration;
+  });
+
+  function formatTime(time) {
+    if (!time) return "0:00";
+    const mins = Math.floor(time / 60);
+    const secs = Math.floor(time % 60).toString().padStart(2, '0');
+    return `${mins}:${secs}`;
+  }
+}

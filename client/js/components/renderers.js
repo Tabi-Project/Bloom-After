@@ -144,12 +144,47 @@ export function renderMythBusting(resource) {
   `;
 }
 
+
+// Media renderer
 export function renderMedia(resource) {
+  if (!resource || !resource.structured_content) {
+    return `<p class="content-empty">Media unavailable.</p>`;
+  }
+
+  const { file_url, structured_content } = resource;
+
+  const paragraphs = structured_content.summary_paragraphs || [];
+
   return `
-    <div style="text-align: center; padding: var(--space-16) 0;">
-      <p class="content-paragraph" style="font-weight: 700; color: var(--color-primary);">
-        Coming soon: Audio & Podcast content
-      </p>
-    </div>
+    <article class="media-layout content-canvas">
+
+      <div class="media-player-wrapper">
+        ${
+          file_url
+            ? `
+          <audio controls class="media-player">
+            <source src="${file_url}" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+        `
+            : `
+          <div class="media-fallback">
+            <p>Audio not available.</p>
+          </div>
+        `
+        }
+      </div>
+
+      <div class="media-content">
+        ${paragraphs
+          .map(
+            (text) => `
+          <p class="media-paragraph">${text}</p>
+        `
+          )
+          .join('')}
+      </div>
+
+    </article>
   `;
 }
