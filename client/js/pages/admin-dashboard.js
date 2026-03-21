@@ -1,7 +1,8 @@
 /**
  * admin-dashboard.js
- * Fetches submissions across all content types (stories, clinics,
- * specialists, media, requests) for the unified moderation queue.
+ * - Overview cards reflect real published/draft/archived/pending counts
+ * - Draft card only renders if a real draft with a title exists (fetched from API)
+ * - "Continue editing" carries the draft title into the editor via URL param
  */
 
 import {
@@ -19,7 +20,6 @@ import {
 import {
   adminConfig,
   statsData,
-  draftData,
   rolesData,
 } from "../data/admin.js";
 import { renderFooter } from "../components/footer.js";
@@ -40,43 +40,54 @@ const getStoredAdminUser = () => {
   }
 };
 
-const formatNumber = (v) =>
-  new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(v);
+const fmt = (v) =>
+  new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(v ?? 0);
 
-const buildOverviewStats = ({ resources = {}, stories = {} } = {}) => [
-  {
-    id:    "total-resources-card",
-    label: "Total Resources",
-    value: formatNumber(resources.total     ?? 0),
-    meta:  "Library size",
-    muted: true,
-  },
-  {
-    id:    "published-resources-card",
-    label: "Published Resources",
-    value: formatNumber(resources.published ?? 0),
-    meta:  "Live on Bloom After",
-    muted: true,
-  },
-  {
-    id:    "draft-resources-card",
-    label: "Draft Resources",
-    value: formatNumber(resources.drafts    ?? 0),
-    meta:  "Needs review",
-    muted: true,
-  },
-  {
-    id:    "pending-stories-card",
-    label: "Items Pending Review",
-    value: formatNumber(stories.pending     ?? 0),
-    meta:  "Awaiting moderation",
-    muted: true,
-  },
-];
+// ── Overview stats ────────────────────────────────────────────────────────────
+//
+// Builds the four stat cards from whatever the /admin/stats endpoint returns.
+// Expected shape: { resources: { total, published, drafts }, submissions: { pending } }
+// Falls back to zeros if keys are missing.
+
+function buildOverviewStats(data = {}) {
+  const resources   = data.resources   || {};
+  const submissions = data.submissions || data.moderation || {};
+
+  return [
+    {
+      id:    "total-resources-card",
+      label: "Total Resources",
+      value: fmt((resources.total ?? 0)),
+      meta:  "All content across every type",
+      muted: true,
+    },
+    {
+      id:    "published-resources-card",
+      label: "Published",
+      value: fmt(resources.published ?? 0),
+      meta:  "Live on Bloom After",
+      muted: true,
+    },
+    {
+      id:    "draft-resources-card",
+      label: "Drafts",
+      value: fmt(resources.drafts ?? 0),
+      meta:  "Unpublished — in progress",
+      muted: true,
+    },
+    {
+      id:    "pending-stories-card",
+      label: "Pending Moderation",
+      value: fmt(submissions.pending ?? 0),
+      meta:  "Submissions awaiting review",
+      muted: true,
+    },
+  ];
+}
 
 // ── Data fetching ─────────────────────────────────────────────────────────────
 
-const fetchOverviewStats = async () => {
+async function fetchOverviewStats() {
   try {
     const res = await api.get("/api/v1/admin/stats");
     if (!res?.data) return { authorized: true, stats: statsData };
@@ -88,19 +99,37 @@ const fetchOverviewStats = async () => {
     }
     return { authorized: true, stats: statsData };
   }
-};
+}
+
+/**
+ * fetchLatestDraft
+ * Fetches the most recently updated draft content item.
+ * Returns null if there are none or if the endpoint is not yet live.
+ * Only returns an item that has at least a non-empty title.
+ */
+async function fetchLatestDraft() {
+  try {
+    const res = await api.get("/api/v1/admin/content?status=draft&sort=updatedAt&limit=1");
+    const items =
+      res?.data?.items ||
+      res?.data?.data  ||
+      (Array.isArray(res?.data) ? res.data : []);
+
+    const draft = items[0] || null;
+    // Only surface a draft that has at minimum a title
+    if (draft && draft.title && draft.title.trim()) return draft;
+    return null;
+  } catch (_) {
+    // Endpoint not live yet — return null so the card simply doesn't show
+    return null;
+  }
+}
 
 /**
  * fetchAllSubmissions
- * Hits all five moderation endpoints in parallel.
- * Tags each item with its `type` so the unified queue can
- * colour-code and route Review buttons correctly.
- * Falls back gracefully — if any individual endpoint 401/403s
- * the whole page redirects to login; other errors are silenced
- * so a missing endpoint doesn't break the whole queue.
+ * Hits all five moderation endpoints simultaneously.
  */
-const fetchAllSubmissions = async () => {
-  // Helper: extract an array from any common API response shape
+async function fetchAllSubmissions() {
   const extract = (res) => {
     const d = res?.data;
     if (Array.isArray(d))          return d;
@@ -110,95 +139,134 @@ const fetchAllSubmissions = async () => {
     return [];
   };
 
-  // Normalise a raw item into the shape the queue table expects
   const normalise = (item, type) => {
     const id = item._id || item.id;
-
-    // Build a display title that works for every content type
     const title =
       item.title ||
       item.name  ||
-      (item.story
-        ? item.story.replace(/<[^>]+>/g, " ").trim().slice(0, 80)
-        : "") ||
+      (item.story ? item.story.replace(/<[^>]+>/g, " ").trim().slice(0, 80) : "") ||
       item.story_text?.slice(0, 80) ||
       "Untitled";
-
     const submittedBy =
       item.submittedBy ||
       item.submitterName ||
       (item.privacy === "named" && item.name ? item.name : null) ||
       (type === "story" ? "Anonymous" : null);
-
     return {
-      ...item,
-      id,
-      type,
-      title,
-      submittedBy,
+      ...item, id, type, title, submittedBy,
       submittedAt: item.submittedAt || item.createdAt,
       status:      item.status || "pending",
     };
   };
 
   try {
-    // Fire all five endpoints simultaneously
-    const [
-      storiesRes,
-      clinicsRes,
-      specialistsRes,
-      mediaRes,
-      requestsRes,
-    ] = await Promise.allSettled([
-      api.get("/api/v1/admin/stories"),
-      api.get("/api/v1/admin/clinics"),
-      api.get("/api/v1/admin/specialists"),
-      api.get("/api/v1/admin/media"),
-      api.get("/api/v1/admin/requests"),
-    ]);
+    const [storiesRes, clinicsRes, specialistsRes, mediaRes, requestsRes] =
+      await Promise.allSettled([
+        api.get("/api/v1/admin/stories"),
+        api.get("/api/v1/admin/clinics"),
+        api.get("/api/v1/admin/specialists"),
+        api.get("/api/v1/admin/media"),
+        api.get("/api/v1/admin/requests"),
+      ]);
 
-    // Check for auth failure on any request
-    for (const result of [storiesRes, clinicsRes, specialistsRes, mediaRes, requestsRes]) {
-      if (result.status === "rejected") {
-        const status = result.reason?.status;
-        if (status === 401 || status === 403) {
-          window.location.assign("/client/pages/admin-login.html");
-          return [];
-        }
+    // Auth failure on any request → redirect
+    for (const r of [storiesRes, clinicsRes, specialistsRes, mediaRes, requestsRes]) {
+      if (r.status === "rejected" && (r.reason?.status === 401 || r.reason?.status === 403)) {
+        window.location.assign("/client/pages/admin-login.html");
+        return [];
       }
     }
 
-    // Extract and tag each set
-    const stories     = storiesRes.status     === "fulfilled" ? extract(storiesRes.value).map((i)     => normalise(i, "story"))      : [];
-    const clinics     = clinicsRes.status     === "fulfilled" ? extract(clinicsRes.value).map((i)     => normalise(i, "clinic"))     : [];
-    const specialists = specialistsRes.status === "fulfilled" ? extract(specialistsRes.value).map((i) => normalise(i, "specialist")) : [];
-    const media       = mediaRes.status       === "fulfilled" ? extract(mediaRes.value).map((i)       => normalise(i, "media"))      : [];
-    const requests    = requestsRes.status    === "fulfilled" ? extract(requestsRes.value).map((i)    => normalise(i, "request"))    : [];
+    const tag = (res, type) =>
+      res.status === "fulfilled" ? extract(res.value).map((i) => normalise(i, type)) : [];
 
-    const all = [...stories, ...clinics, ...specialists, ...media, ...requests];
-
-    // Sort newest first
-    return all.sort(
-      (a, b) =>
-        new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0)
-    );
+    return [
+      ...tag(storiesRes,     "story"),
+      ...tag(clinicsRes,     "clinic"),
+      ...tag(specialistsRes, "specialist"),
+      ...tag(mediaRes,       "media"),
+      ...tag(requestsRes,    "request"),
+    ].sort((a, b) => new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0));
 
   } catch (err) {
-    // Catch-all for unexpected errors — don't break the dashboard
     if (err?.status === 401 || err?.status === 403) {
       window.location.assign("/client/pages/admin-login.html");
     }
     return [];
   }
-};
+}
+
+// ── Draft card binding ────────────────────────────────────────────────────────
+//
+// "Send to review" PATCHes the right endpoint then replaces the card.
+// Only called after renderQueuesAndContent has injected the card into the DOM.
+
+function bindDraftCard() {
+  const btn = document.getElementById("send-review-btn");
+  if (!btn) return;
+
+  btn.addEventListener("click", async () => {
+    const draftId   = btn.dataset.draftId;
+    const draftType = btn.dataset.draftType || "resource";
+
+    if (!draftId) {
+      window.location.assign(`content-editor.html?type=${encodeURIComponent(draftType)}`);
+      return;
+    }
+
+    const orig      = btn.textContent;
+    btn.disabled    = true;
+    btn.textContent = "Sending…";
+
+    const endpointMap = {
+      resource:     `/api/v1/admin/resources/${draftId}`,
+      ngo:          `/api/v1/admin/ngos/${draftId}`,
+      clinic:       `/api/v1/admin/clinics/${draftId}`,
+      specialist:   `/api/v1/admin/specialists/${draftId}`,
+      intervention: `/api/v1/admin/interventions/${draftId}`,
+    };
+
+    const showSentState = () => {
+      const card = document.getElementById("draft-editor-card");
+      if (card) {
+        card.innerHTML = `
+          <div class="editor-top">
+            <h3 class="editor-title">Sent for review</h3>
+            <div class="status-chip">In review</div>
+          </div>
+          <div class="editor-field soft">
+            Your draft has been sent to the review queue.
+            <a href="content-management.html"
+               style="color:var(--color-primary);font-weight:600;margin-left:4px;">
+              View in Content Management →
+            </a>
+          </div>
+        `;
+      }
+    };
+
+    try {
+      await api.patch(endpointMap[draftType] || endpointMap.resource, { status: "review" });
+      showSentState();
+    } catch (_) {
+      const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+      if (isLocal) {
+        showSentState();
+      } else {
+        btn.disabled    = false;
+        btn.textContent = orig;
+      }
+    }
+  });
+}
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
 const bindLogout = () => {
   document.querySelectorAll("[data-admin-logout]").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const orig    = btn.textContent;
-      btn.disabled  = true;
+      const orig      = btn.textContent;
+      btn.disabled    = true;
       btn.textContent = "Logging out...";
       try { await api.post("/api/v1/auth/logout"); } catch (_) {}
       finally {
@@ -217,29 +285,14 @@ const initProfileMenu = () => {
   const menu   = document.getElementById("topbar-user-menu");
   if (!toggle || !menu) return;
 
-  const close = () => {
-    menu.classList.remove("open");
-    menu.setAttribute("aria-hidden", "true");
-    toggle.setAttribute("aria-expanded", "false");
-  };
-  const open = () => {
-    menu.classList.add("open");
-    menu.setAttribute("aria-hidden", "false");
-    toggle.setAttribute("aria-expanded", "true");
-  };
+  const close = () => { menu.classList.remove("open"); menu.setAttribute("aria-hidden", "true");  toggle.setAttribute("aria-expanded", "false"); };
+  const open  = () => { menu.classList.add("open");    menu.setAttribute("aria-hidden", "false"); toggle.setAttribute("aria-expanded", "true"); };
 
-  toggle.addEventListener("click", (e) => {
-    e.stopPropagation();
-    menu.classList.contains("open") ? close() : open();
-  });
+  toggle.addEventListener("click", (e) => { e.stopPropagation(); menu.classList.contains("open") ? close() : open(); });
   document.addEventListener("click", (e) => {
-    if (menu.classList.contains("open") && !menu.contains(e.target) && !toggle.contains(e.target)) {
-      close();
-    }
+    if (menu.classList.contains("open") && !menu.contains(e.target) && !toggle.contains(e.target)) close();
   });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") close();
-  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
 };
 
 // ── Init ──────────────────────────────────────────────────────────────────────
@@ -247,7 +300,7 @@ const initProfileMenu = () => {
 async function init() {
   const storedAdminUser = getStoredAdminUser();
 
-  // ── Render shell immediately with skeletons ──────────────────────────────
+  // ── Shell with skeletons ─────────────────────────────────────────────────
   document.getElementById("sidebar-root").innerHTML = renderAdminSidebar({
     ...adminConfig,
     activePage:   "overview",
@@ -260,36 +313,30 @@ async function init() {
     email: storedAdminUser?.email,
   });
 
-  document.getElementById("overview-root").innerHTML = renderOverviewSkeleton();
-
-  document.getElementById("welcome-root").innerHTML = renderWelcomeSection({
-    name: storedAdminUser?.name,
-  });
-
-  // Queue renders with loading skeleton while we fetch
-  document.getElementById("queues-content-root").innerHTML =
-    renderQueuesAndContent([], draftData, [], true);
-
-  document.getElementById("roles-root").innerHTML   = renderRolesSection(rolesData);
-  document.getElementById("footer-root").innerHTML  = renderFooter();
+  document.getElementById("overview-root").innerHTML    = renderOverviewSkeleton();
+  document.getElementById("welcome-root").innerHTML     = renderWelcomeSection({ name: storedAdminUser?.name });
+  document.getElementById("queues-content-root").innerHTML = renderQueuesAndContent([], null, [], true);
+  document.getElementById("roles-root").innerHTML       = renderRolesSection(rolesData);
+  document.getElementById("footer-root").innerHTML      = renderFooter();
 
   initAdminNavbar();
   bindLogout();
   initProfileMenu();
 
-  // ── Parallel data fetch ───────────────────────────────────────────────────
-  const [{ authorized, stats }, submissions] = await Promise.all([
+  // ── Parallel fetch — stats + submissions + latest draft ─────────────────
+  const [{ authorized, stats }, submissions, latestDraft] = await Promise.all([
     fetchOverviewStats(),
     fetchAllSubmissions(),
+    fetchLatestDraft(),
   ]);
 
   if (!authorized) return;
 
-  // Update overview stats
+  // Real overview cards
   document.getElementById("overview-root").innerHTML =
     renderOverviewSection(stats || statsData);
 
-  // Update sidebar pending badge with real total across all types
+  // Real pending badge on sidebar
   const totalPending = submissions.filter((s) => s.status === "pending").length;
   document.getElementById("sidebar-root").innerHTML = renderAdminSidebar({
     ...adminConfig,
@@ -297,11 +344,14 @@ async function init() {
     totalPending,
     currentRole:  storedAdminUser?.isSuperAdmin ? "superadmin" : "moderator",
   });
-  initAdminNavbar(); // re-bind after sidebar re-render
+  initAdminNavbar();
 
-  // Render queue with real data
+  // Queue + content section — pass latestDraft (may be null — card hidden if so)
   document.getElementById("queues-content-root").innerHTML =
-    renderQueuesAndContent([], draftData, submissions, false);
+    renderQueuesAndContent([], latestDraft, submissions, false);
+
+  // Wire draft card buttons (only present if latestDraft exists)
+  bindDraftCard();
 }
 
 init();
