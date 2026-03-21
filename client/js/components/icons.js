@@ -104,4 +104,14 @@ export const icons = {
   tip: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M10.588 21.413Q10 20.825 10 20h4q0 .825-.587 1.413T12 22t-1.412-.587M9 19q-.425 0-.712-.288T8 18t.288-.712T9 17h6q.425 0 .713.288T16 18t-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2t5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16z"/></svg>`,
   safe: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M4 22V8h3V6q0-2.075 1.463-3.537T12 1t3.538 1.463T17 6v2h3v14zm9.413-5.587Q14 15.825 14 15t-.587-1.412T12 13t-1.412.588T10 15t.588 1.413T12 17t1.413-.587M9 8h6V6q0-1.25-.875-2.125T12 3t-2.125.875T9 6z"/></svg>`,
   filter: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11 18q-.425 0-.712-.288T10 17t.288-.712T11 16h2q.425 0 .713.288T14 17t-.288.713T13 18zm-4-5q-.425 0-.712-.288T6 12t.288-.712T7 11h10q.425 0 .713.288T18 12t-.288.713T17 13zM4 8q-.425 0-.712-.288T3 7t.288-.712T4 6h16q.425 0 .713.288T21 7t-.288.713T20 8z"/></svg>`,
+
+  /* Lifestyle cards */
+  sleep: `<svg viewBox="0 0 24 24" fill="none" stroke="#3b9766" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9"/></svg>`,
+  nutrition: `<svg viewBox="0 0 24 24" fill="none" stroke="#3b9766" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>`,
+  movement: `<svg viewBox="0 0 24 24" fill="none" stroke="#3b9766" stroke-width="2"><path d="M4 12h16"/></svg>`,
+  social: `<svg viewBox="0 0 24 24" fill="none" stroke="#3b9766" stroke-width="2"><circle cx="12" cy="8" r="3"/><path d="M6 20c0-3 6-3 6-3s6 0 6 3"/></svg>`,
+  journalling: `<svg viewBox="0 0 24 24" fill="none" stroke="#3b9766" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/></svg>`,
+  therapy: `<svg viewBox="0 0 24 24" fill="none" stroke="#c13b3b" stroke-width="2"><path d="M12 2l7 20H5l7-20z"/></svg>`,
+  medication: `<svg viewBox="0 0 24 24" fill="none" stroke="#c13b3b" stroke-width="2"><rect x="6" y="4" width="12" height="16" rx="2"/></svg>`,
 };
+

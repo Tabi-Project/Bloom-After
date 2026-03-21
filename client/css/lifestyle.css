@@ -1,0 +1,103 @@
+/* Basic page layout */
+.lifestyle-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  color: #111;
+}
+
+/* Disclaimer Banner */
+.disclaimer-banner {
+  background: #f0f9f4;
+  color: #166534;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+/* Header */
+.lifestyle-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+.lifestyle-header p {
+  font-size: 1.125rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+/* Search & Filter */
+.search-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+#lifestyle-search {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+.filter-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+.filter-btn {
+  padding: 0.6rem 1rem;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  background: #e5e7eb;
+  color: #111;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.filter-btn.active, .filter-btn:hover {
+  background: #3b9766;
+  color: #fff;
+}
+
+/* Cards */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+.card {
+  background: #fefefe;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.card svg {
+  width: 48px;
+  height: 48px;
+}
+.card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.card p {
+  flex-grow: 1;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.citation {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #3b9766;
+}
+.warning {
+  font-size: 0.8rem;
+  color: #c13b3b;
+  font-style: italic;
+}
