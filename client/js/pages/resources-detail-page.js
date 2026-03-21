@@ -1,5 +1,5 @@
 import { fetchResourceById } from "../data/resources-api.js";
-import { renderArticle, renderInfographic, renderMedia, renderMythBusting, renderPodcast } from "../components/renderers.js";
+import { renderArticle, renderInfographic, renderMedia, renderMythBusting } from "../components/renderers.js";
 import { renderRelatedResources } from "../components/relatedResources.js";
 import { renderCrisisStrip } from "../components/crisisStrip.js";
 import { renderNavbar, initNavbar } from "../components/navbar.js";
