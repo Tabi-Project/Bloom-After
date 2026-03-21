@@ -55,7 +55,7 @@ const teamMembers = [
     role: "Frontend Engineer",
     img: "../assets/teamImages/Esther-Portrait.png",
     contribution:
-      "Managed team dynamics, facilitated communication, and ensured a positive work environment.",
+      "Implemented and refined frontend components, improved UI responsiveness, and enhanced overall user experience.",
     github: "https://github.com/De-jola",
     linkedin: "https://www.linkedin.com/in/esther-adejola",
   },
