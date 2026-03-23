@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A directory of NGOs, foundations, and community organisations offering support to women experiencing postpartum depression." />
+    <title>NGOs & Support Networks | Bloom After</title>
+    <link rel="icon" type="image/x-icon" href="../assets/logo/favicon.png" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layouts.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/ngos.css" />
+    <link rel="stylesheet" href="../css/suggest-drawer.css" />
+  </head>
+  <body>
+    <a href="#main-content" class="visually-hidden">Skip to main content</a>
+
+    <div id="navbar-root"></div>
+
+    <main id="main-content">
+      <section class="ngo-hero" aria-labelledby="ngo-hero-heading">
+        <div class="ngo-hero-overlay" aria-hidden="true"></div>
+        <div class="ngo-hero-content container">
+          <h1 class="ngo-hero-title" id="ngo-hero-heading">NGOs & Support Networks</h1>
+          <p class="ngo-hero-subtitle">
+            Find verified foundations, community organisations, and NGOs offering dedicated support, education, and financial assistance for postpartum mental health.
+          </p>
+        </div>
+      </section>
+
+      <div class="page-controls" role="search">
+        <div class="container page-controls-inner">
+          <div class="search-wrap">
+            <span class="search-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input type="search" id="search-input" class="search-input" placeholder="Search by name, state, or service..." aria-label="Search NGOs" autocomplete="off" />
+          </div>
+
+          <nav class="filter-tabs" aria-label="Filter NGOs by focus area">
+            <button class="filter-btn active" data-filter="" aria-pressed="true" aria-label="Show all focus areas">
+              All
+            </button>
+            <button class="filter-btn" data-filter="crisis intervention" aria-pressed="false">Crisis Support</button>
+            <button class="filter-btn" data-filter="financial aid" aria-pressed="false">Financial Aid</button>
+            <button class="filter-btn" data-filter="maternal welfare" aria-pressed="false">Maternal Welfare</button>
+            <button class="filter-btn" data-filter="education" aria-pressed="false">Education & Stigma</button>
+          </nav>
+        </div>
+      </div>
+
+      <section class="ngo-grid-section" aria-labelledby="ngo-list-label">
+        <div class="container">
+          <h2 class="visually-hidden" id="ngo-list-label">Organisations</h2>
+
+          <div id="ngo-grid" class="ngo-grid" aria-live="polite" aria-atomic="false"></div>
+
+          <p id="ngo-empty" class="empty-state" hidden role="status">
+            <strong>No organisations found.</strong><br />
+            Try a different search term or filter.
+          </p>
+
+          <div id="ngo-error" class="error-card" hidden role="alert">
+            <p class="error-card-message"></p>
+            <button class="error-btn" type="button" id="btn-retry">Try Again</button>
+          </div>
+
+          <div id="pagination" class="pagination-wrap" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="container">
+        <div class="ngo-submission-banner">
+          <h2>Know an organisation that should be here?</h2>
+          <p>Community members can submit NGOs, support groups, or foundations for review. Help us expand our reach and support more mothers.</p>
+          <button class="btn btn-primary" id="btn-open-modal">Submit an Organisation</button>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal-overlay" id="submission-modal" aria-hidden="true">
+      <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button class="modal-close" id="close-modal" aria-label="Close modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        
+        <div id="modal-form-container">
+          <h2 id="modal-title" class="modal-heading">Submit an Organisation</h2>
+          <p class="modal-description">
+            Thank you for helping us grow our support network. Please leave the organisation's details below, and our team will verify them before adding them to the directory.
+          </p>
+          <form id="ngo-submit-form" class="modal-form">
+            <div>
+              <label for="ngo-name" class="modal-label">Organisation Name</label>
+              <input type="text" id="ngo-name" class="modal-input" required>
+            </div>
+            <div>
+              <label for="ngo-link" class="modal-label">Website or Social Link</label>
+              <input type="url" id="ngo-link" class="modal-input" placeholder="https://" required>
+            </div>
+            <button type="submit" class="btn btn-primary modal-submit-btn">Submit for Review</button>
+          </form>
+        </div>
+
+        <div id="modal-success-state" class="modal-success-wrapper" hidden>
+          <h3 class="modal-success-heading">Thank You!</h3>
+          <p class="modal-success-text">Your submission has been securely sent to our team. We will review the organisation shortly.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="footer-root"></div>
+
+    <script type="module" src="../js/pages/ngos.js"></script>
+    <script type="module">
+      import { initSuggestDrawer } from "../js/components/suggest-drawer.js";
+      initSuggestDrawer();
+    </script>
+  </body>
+</html>

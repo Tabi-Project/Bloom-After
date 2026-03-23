@@ -18,9 +18,9 @@ const getFromAddress = () =>
 const buildFooterLinks = () => {
   const base = getBaseUrl();
   return [
-    { label: 'Stories', href: `${base}/client/pages/stories.html` },
-    { label: 'Resources', href: `${base}/client/pages/resources.html` },
-    { label: 'Clinics', href: `${base}/client/pages/clinics.html` },
+    { label: 'Stories', href: `${base}/stories` },
+    { label: 'Resources', href: `${base}/resources` },
+    { label: 'Clinics', href: `${base}/clinics` },
     { label: 'Community Guidelines', href: `${base}/community-guidelines` },
     { label: 'Support', href: `${base}/support` },
   ];
@@ -33,7 +33,7 @@ const getEmailCopy = ({ status, rejectionMessage }) => {
       lead: 'Thank you for sharing your journey with Bloom After.',
       body: 'After review, we have approved your story and published it in the community library.',
       ctaLabel: 'View Stories',
-      ctaPath: '/client/pages/stories.html',
+      ctaPath: '/stories',
     };
   }
 
@@ -43,7 +43,7 @@ const getEmailCopy = ({ status, rejectionMessage }) => {
       lead: 'Thank you again for sharing your journey with Bloom After.',
       body: 'After a follow-up moderation review, your story has been removed from the public community library.',
       ctaLabel: 'Submit Another Story',
-      ctaPath: '/client/pages/submit-story.html',
+      ctaPath: '/stories/editor',
     };
   }
 
@@ -65,7 +65,7 @@ const getEmailCopy = ({ status, rejectionMessage }) => {
         ? rejectionMessage.trim()
         : 'After review, we are unable to publish your submission at this time.',
     ctaLabel: 'Read Submission Tips',
-    ctaPath: '/client/pages/submit-story.html',
+    ctaPath: '/stories/editor',
   };
 };
 

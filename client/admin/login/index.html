@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Admin login for Bloom After content moderation and platform management."
+    />
+    <title>Admin Login | Bloom After</title>
+    <link rel="icon" type="image/x-icon" href="../../assets/logo/favicon.png" />
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link rel="stylesheet" href="../../css/layouts.css" />
+    <link rel="stylesheet" href="../../css/components.css" />
+    <link rel="stylesheet" href="../../css/admin-login.css" />
+  </head>
+  <body class="admin-login-page">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header class="admin-login-header" role="banner">
+      <a class="admin-brand-link" href="/" aria-label="Bloom After home">
+        <img
+          src="../assets/logo/favicon.png"
+          alt=""
+          width="32"
+          height="32"
+          aria-hidden="true"
+        />
+        <span>Bloom After</span>
+      </a>
+    </header>
+
+    <main id="main-content" class="admin-login-main">
+      <section class="admin-login-shell container" aria-labelledby="admin-login-title">
+        <article class="admin-login-card">
+          <header class="admin-login-copy">
+            <h1 id="admin-login-title">Admin sign in</h1>
+          </header>
+
+          <form id="admin-login-form" class="admin-login-form" method="post" action="#">
+            <div class="field-group">
+              <label for="admin-email">Admin email</label>
+              <input
+                id="admin-email"
+                name="email"
+                type="email"
+                autocomplete="username"
+                required
+                aria-describedby="email-help email-error"
+              />
+              <p id="email-error" class="field-error" aria-live="polite"></p>
+            </div>
+
+            <div class="field-group">
+              <label for="admin-password">Password</label>
+              <div class="password-input-wrap">
+                <input
+                  id="admin-password"
+                  name="password"
+                  type="password"
+                  autocomplete="current-password"
+                  minlength="8"
+                  required
+                  aria-describedby="password-help password-error"
+                />
+                <button
+                  id="password-toggle"
+                  type="button"
+                  class="password-toggle"
+                  aria-controls="admin-password"
+                  aria-pressed="false"
+                  aria-label="Show password"
+                >
+                  <svg
+                    class="toggle-icon icon-eye"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path
+                      d="M2 12S5.75 5.5 12 5.5S22 12 22 12s-3.75 6.5-10 6.5S2 12 2 12Z"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8" />
+                  </svg>
+                  <svg
+                    class="toggle-icon icon-eye-off"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path
+                      d="M3 3l18 18"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M9.9 9.9A3 3 0 0 1 14.1 14.1"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M5.18 7.58C3.27 9.44 2 12 2 12s3.75 6.5 10 6.5c2.42 0 4.48-.78 6.15-1.86"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M10.2 5.68A9.6 9.6 0 0 1 12 5.5C18.25 5.5 22 12 22 12a15.6 15.6 0 0 1-2.18 3.1"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  <span class="visually-hidden password-toggle-text">Show password</span>
+                </button>
+              </div>
+              <p id="password-help" class="field-help">Password must be at least 8 characters.</p>
+              <p id="password-error" class="field-error" aria-live="polite"></p>
+            </div>
+
+            <div class="form-row">
+              <div class="checkbox-wrap">
+                <input id="remember-device" name="rememberDevice" type="checkbox" />
+                <label for="remember-device">Remember me</label>
+              </div>
+            </div>
+
+            <button id="submit-button" class="btn btn-primary login-submit" type="submit">
+              <span class="submit-label">Sign in</span>
+            </button>
+
+            <div
+              id="form-status"
+              class="form-status"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            ></div>
+          </form>
+        </article>
+      </section>
+    </main>
+
+    <script type="module" src="../../js/admin-login.js"></script>
+  </body>
+</html>

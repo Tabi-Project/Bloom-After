@@ -40,7 +40,7 @@ const fetchPendingCount = async () => {
     ).length;
   } catch (err) {
     if (err?.status === 401 || err?.status === 403) {
-      window.location.assign("/client/pages/admin-login.html");
+      window.location.assign("/admin/login");
       return 0;
     }
     return 0;
@@ -53,7 +53,7 @@ const fetchSettings = async () => {
     return response?.data || settingsData;
   } catch (error) {
     if (error?.status === 401 || error?.status === 403) {
-      window.location.assign('/client/pages/admin-login.html');
+      window.location.assign('/admin/login');
       return null;
     }
     return settingsData;
@@ -74,7 +74,7 @@ const bindLogout = () => {
         btn.disabled = false;
         sessionStorage.removeItem(ADMIN_USER_KEY);
         sessionStorage.removeItem("adminToken");
-        window.location.assign("/client/pages/admin-login.html");
+        window.location.assign("/admin/login");
       }
     });
   });

@@ -16,9 +16,9 @@ const getBaseUrl = () =>
 const buildFooterLinks = () => {
   const base = getBaseUrl();
   return [
-    { label: 'NGOs', href: `${base}/client/pages/ngos.html` },
-    { label: 'Stories', href: `${base}/client/pages/stories.html` },
-    { label: 'Resources', href: `${base}/client/pages/resources.html` },
+    { label: 'NGOs', href: `${base}/ngos` },
+    { label: 'Stories', href: `${base}/stories` },
+    { label: 'Resources', href: `${base}/resources` },
     { label: 'Support', href: `${base}/support` },
   ];
 };
@@ -31,7 +31,7 @@ const getCopy = ({ status, rejectionMessage }) => {
       lead: 'Great news from the Bloom After moderation team.',
       body: 'Your organisation submission has been approved and is now visible in our NGO directory.',
       ctaLabel: 'View NGO Directory',
-      ctaPath: '/client/pages/ngos.html',
+      ctaPath: '/ngos',
     };
   }
 
@@ -44,7 +44,7 @@ const getCopy = ({ status, rejectionMessage }) => {
         ? rejectionMessage.trim()
         : 'After review, we are unable to approve the submission at this time.',
     ctaLabel: 'Submit Again',
-    ctaPath: '/client/pages/ngos.html',
+    ctaPath: '/ngos',
   };
 };
 

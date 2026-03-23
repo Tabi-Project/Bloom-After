@@ -94,7 +94,7 @@ async function fetchOverviewStats() {
     return { authorized: true, stats: buildOverviewStats(res.data) };
   } catch (err) {
     if (err?.status === 401 || err?.status === 403) {
-      window.location.assign("/client/pages/admin-login.html");
+      window.location.assign("/admin/login");
       return { authorized: false, stats: null };
     }
     return { authorized: true, stats: statsData };
@@ -172,7 +172,7 @@ async function fetchAllSubmissions() {
     // Auth failure on any request → redirect
     for (const r of [storiesRes, clinicsRes, specialistsRes, mediaRes, requestsRes]) {
       if (r.status === "rejected" && (r.reason?.status === 401 || r.reason?.status === 403)) {
-        window.location.assign("/client/pages/admin-login.html");
+        window.location.assign("/admin/login");
         return [];
       }
     }
@@ -190,7 +190,7 @@ async function fetchAllSubmissions() {
 
   } catch (err) {
     if (err?.status === 401 || err?.status === 403) {
-      window.location.assign("/client/pages/admin-login.html");
+      window.location.assign("/admin/login");
     }
     return [];
   }
@@ -210,7 +210,7 @@ function bindDraftCard() {
     const draftType = btn.dataset.draftType || "resource";
 
     if (!draftId) {
-      window.location.assign(`content-editor.html?type=${encodeURIComponent(draftType)}`);
+      window.location.assign(`editor?type=${encodeURIComponent(draftType)}`);
       return;
     }
 
@@ -236,7 +236,7 @@ function bindDraftCard() {
           </div>
           <div class="editor-field soft">
             Your draft has been sent to the review queue.
-            <a href="content-management.html"
+            <a href="/admin/content-manager"
                style="color:var(--color-primary);font-weight:600;margin-left:4px;">
               View in Content Management →
             </a>
@@ -274,7 +274,7 @@ const bindLogout = () => {
         btn.disabled    = false;
         sessionStorage.removeItem(ADMIN_USER_KEY);
         sessionStorage.removeItem("adminToken");
-        window.location.assign("/client/pages/admin-login.html");
+        window.location.assign("/admin/login");
       }
     });
   });

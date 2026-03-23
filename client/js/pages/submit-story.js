@@ -365,7 +365,7 @@ function init() {
       };
 
       sessionStorage.setItem('pendingStory', JSON.stringify(pending));
-      window.location.href = 'submit-review.html';
+      window.location.href = '/stories/review';
     });
   }
 }

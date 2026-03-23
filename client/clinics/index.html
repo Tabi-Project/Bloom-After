@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Find local clinics, hospitals, and NGOs offering postpartum mental health care.">
+    <title>Clinic Finder - Bloom After</title>
+    <link rel="icon" type="image/x-icon" href="../assets/logo/favicon.png" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layouts.css" />
+    <link rel="stylesheet" href="../css/clinics.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/suggest-drawer.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  </head>
+  <body class="clinics-page">
+    <a href="#main-content" class="visually-hidden">Skip to main content</a>
+    
+    <div id="navbar-root"></div>
+
+    <section class="directory-hero" aria-labelledby="hero-title">
+      <div class="hero-overlay" aria-hidden="true"></div>
+      <div class="container">
+        <div class="hero-text-box">
+          <h1 id="hero-title" class="hero-title">Find support near you</h1>
+          <p class="hero-subtitle">Verified clinics and specialists ready to support you through your postpartum journey.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="directory-search-bar container" role="search">
+      <div class="search-input-wrapper">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="clinic-search" placeholder="Search by city, state, or area..." aria-label="Search clinics">
+      </div>
+      <button id="btn-location" class="btn-location">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span id="btn-location-text">Use my current location</span>
+      </button>
+    </section>
+
+    <main id="main-content" class="directory-main container">
+      
+      <aside class="directory-sidebar" id="filter-sidebar">
+        <div class="sidebar-header mobile-only">
+          <h2>Filters</h2>
+          <button id="close-filters" class="btn-close" aria-label="Close filters">✕</button>
+        </div>
+        
+        <h2 class="filter-heading">FILTERS</h2>
+        
+        <fieldset class="filter-group">
+          <legend class="filter-group-title">PROVIDER TYPE</legend>
+          <label class="custom-radio"><input type="radio" name="provider_type" value="all" checked><span class="radio-mark"></span>All types</label>
+          <label class="custom-radio"><input type="radio" name="provider_type" value="clinic"><span class="radio-mark"></span>Clinic / Hospital</label>
+          <label class="custom-radio"><input type="radio" name="provider_type" value="therapist"><span class="radio-mark"></span>Therapist</label>
+          <label class="custom-radio"><input type="radio" name="provider_type" value="psychiatrist"><span class="radio-mark"></span>Psychiatrist</label>
+          <label class="custom-radio"><input type="radio" name="provider_type" value="support_group"><span class="radio-mark"></span>Support Group</label>
+        </fieldset>
+
+        <fieldset class="filter-group">
+          <legend class="filter-group-title">COST</legend>
+          <label class="custom-checkbox"><input type="checkbox" data-filter-group="cost" value="free_subsidised"><span class="checkmark"></span>Free / Subsidised</label>
+          <label class="custom-checkbox"><input type="checkbox" data-filter-group="cost" value="private"><span class="checkmark"></span>Private (all fees)</label>
+        </fieldset>
+
+        <fieldset class="filter-group">
+          <legend class="filter-group-title">FOCUS AREA</legend>
+          <label class="custom-checkbox"><input type="checkbox" data-filter-group="focus" value="perinatal_anxiety"><span class="checkmark"></span>Perinatal / Pregnancy Anxiety</label>
+          <label class="custom-checkbox"><input type="checkbox" data-filter-group="focus" value="pregnancy_loss"><span class="checkmark"></span>Pregnancy & Infant Loss</label>
+          <label class="custom-checkbox"><input type="checkbox" data-filter-group="focus" value="birth_trauma"><span class="checkmark"></span>Birth Trauma</label>
+          <label class="custom-checkbox"><input type="checkbox" data-filter-group="focus" value="relationship_support"><span class="checkmark"></span>Relationship & Family Support</label>
+          <label class="custom-checkbox"><input type="checkbox" data-filter-group="focus" value="psychiatric_medication"><span class="checkmark"></span>Psychiatric Medication</label>
+        </fieldset>
+
+        <fieldset class="filter-group">
+          <legend class="filter-group-title">CONSULTATION MODE</legend>
+          <label class="custom-radio"><input type="radio" name="consultation_mode" value="all" checked><span class="radio-mark"></span>Both</label>
+          <label class="custom-radio"><input type="radio" name="consultation_mode" value="remote"><span class="radio-mark"></span>Remote only</label>
+          <label class="custom-radio"><input type="radio" name="consultation_mode" value="in_person"><span class="radio-mark"></span>In-person only</label>
+        </fieldset>
+      </aside>
+
+      <section class="directory-content" aria-live="polite">
+        <div class="content-controls">
+          <div class="results-count" id="results-count">Loading providers...</div>
+          
+          <div class="view-toggles" role="group" aria-label="View toggle">
+            <button class="view-toggle-btn active" id="toggle-list">List View</button>
+            <button class="view-toggle-btn" id="toggle-map">Map View</button>
+          </div>
+          
+          <button id="mobile-filter-btn" class="btn-outline mobile-only">Filters</button>
+        </div>
+
+        <div class="view-container">
+          <div class="clinics-list-view active-view">
+            <div id="clinics-list" class="clinics-list-inner"></div>
+            <div class="load-more-container">
+              <button id="btn-load-more" class="btn-outline" hidden>Load More</button>
+            </div>
+          </div>
+
+          <div id="clinics-map" class="clinics-map-view">
+            <div id="leaflet-map" class="actual-map"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="panel-backdrop" id="panel-backdrop" aria-hidden="true"></div>
+    <aside id="clinic-details-panel" class="slide-over-panel" aria-hidden="true" role="dialog" aria-labelledby="slide-panel-title">
+      <div class="panel-header">
+        <button id="close-panel" class="btn-close" aria-label="Close details panel">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div id="panel-content" class="panel-content"></div>
+    </aside>
+
+    <div id="footer-root"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script type="module" src="../js/pages/clinics-page.js"></script>
+    <script type="module">
+      import { initSuggestDrawer } from "../js/components/suggest-drawer.js";
+      initSuggestDrawer();
+    </script>
+  </body>
+</html>
