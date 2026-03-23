@@ -16,9 +16,9 @@ const getBaseUrl = () =>
 const buildFooterLinks = () => {
   const base = getBaseUrl();
   return [
-    { label: 'Stories', href: `${base}/client/pages/stories.html` },
-    { label: 'Resources', href: `${base}/client/pages/resources.html` },
-    { label: 'Clinics', href: `${base}/client/pages/clinics.html` },
+    { label: 'Stories', href: `${base}/stories` },
+    { label: 'Resources', href: `${base}/resources` },
+    { label: 'Clinics', href: `${base}/clinics` },
     { label: 'Support', href: `${base}/support` },
   ];
 };
@@ -40,7 +40,7 @@ const getCopy = ({ status, rejectionMessage }) => {
       lead: 'Thank you for helping Bloom After grow.',
       body: 'Our moderation team has reviewed your suggestion and approved it for implementation.',
       ctaLabel: 'Explore Bloom After',
-      ctaPath: '/client/pages/index.html',
+      ctaPath: '/client/pages//',
     };
   }
 
@@ -51,7 +51,7 @@ const getCopy = ({ status, rejectionMessage }) => {
       lead: 'Great news from the Bloom After team.',
       body: 'Your approved suggestion has now been implemented and is live on the platform.',
       ctaLabel: 'View Platform',
-      ctaPath: '/client/pages/index.html',
+      ctaPath: '/client/pages//',
     };
   }
 
@@ -64,7 +64,7 @@ const getCopy = ({ status, rejectionMessage }) => {
         ? rejectionMessage.trim()
         : 'After review, we are unable to move forward with this suggestion right now.',
     ctaLabel: 'Send Another Suggestion',
-    ctaPath: '/client/pages/index.html',
+    ctaPath: '/client/pages//',
   };
 };
 

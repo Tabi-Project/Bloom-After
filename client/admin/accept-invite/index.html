@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Activate Admin Account | Bloom After</title>
+    <link rel="icon" type="image/x-icon" href="../../assets/logo/favicon.png" />
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link rel="stylesheet" href="../../css/layouts.css" />
+    <link rel="stylesheet" href="../../css/components.css" />
+    <link rel="stylesheet" href="../../css/admin-login.css" />
+  </head>
+  <body class="admin-login-page">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header class="admin-login-header" role="banner">
+      <a class="admin-brand-link" href="/" aria-label="Bloom After home">
+        <img src="../assets/logo/favicon.png" alt="" width="32" height="32" aria-hidden="true" />
+        <span>Bloom After</span>
+      </a>
+    </header>
+
+    <main id="main-content" class="admin-login-main">
+      <section class="admin-login-shell container" aria-labelledby="activate-title">
+        <article class="admin-login-card">
+          <header class="admin-login-copy">
+            <h1 id="activate-title">Activate admin account</h1>
+            <p class="admin-login-lead">Set your full name and password to finish onboarding.</p>
+          </header>
+
+          <form id="accept-invite-form" class="admin-login-form" method="post" action="#">
+            <div class="field-group">
+              <label for="invite-email">Invited email</label>
+              <input id="invite-email" name="email" type="email" readonly />
+            </div>
+
+            <div class="field-group">
+              <label for="invite-role">Assigned role</label>
+              <input id="invite-role" name="role" type="text" readonly />
+            </div>
+
+            <div class="field-group">
+              <label for="invite-name">Full name</label>
+              <input id="invite-name" name="name" type="text" required minlength="2" />
+              <p id="name-error" class="field-error" aria-live="polite"></p>
+            </div>
+
+            <div class="field-group">
+              <label for="invite-password">Password</label>
+              <input id="invite-password" name="password" type="password" required minlength="8" />
+              <p id="password-error" class="field-error" aria-live="polite"></p>
+            </div>
+
+            <div class="field-group">
+              <label for="invite-confirm-password">Confirm password</label>
+              <input
+                id="invite-confirm-password"
+                name="confirmPassword"
+                type="password"
+                required
+                minlength="8"
+              />
+              <p id="confirm-password-error" class="field-error" aria-live="polite"></p>
+            </div>
+
+            <button id="accept-submit-button" class="btn btn-primary login-submit" type="submit">
+              <span class="submit-label">Activate account</span>
+            </button>
+
+            <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
+          </form>
+        </article>
+      </section>
+    </main>
+
+    <script type="module" src="../../js/admin-accept-invite.js"></script>
+  </body>
+</html>

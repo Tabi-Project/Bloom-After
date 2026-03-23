@@ -1,8 +1,12 @@
+function resolveTeamImage(fileName) {
+  return new URL(`../../assets/teamImages/${fileName}`, import.meta.url).href;
+}
+
 const teamMembers = [
   {
     id: 1,
     name: "Nanji Lakan",
-    img: "../assets/teamImages/Nanji-Portrait.jpg",
+    img: resolveTeamImage("Nanji-Portrait.jpg"),
     role: "Project/Product Lead",
     contribution: "Manage Project Priorities, Documentation and Direction",
     github: "https://github.com/Shaelle11",
@@ -12,7 +16,7 @@ const teamMembers = [
   {
     id: 2,
     name: "Grace Olabode",
-    img: "../assets/teamImages/Grace Portrait.png",
+    img: resolveTeamImage("Grace Portrait.png"),
     role: "Engineering Lead",
     contribution:
       "Led the development of the application's architecture and implemented key features to ensure a robust and scalable solution.",
@@ -23,7 +27,7 @@ const teamMembers = [
     id: 3,
     name: "Prisca Onyemaechi",
     role: "Lead Maintainer",
-    img: "../assets/teamImages/Prisca-Portrait.png",
+    img: resolveTeamImage("Prisca-Portrait.png"),
     contribution:
       "Ensured the codebase is well-maintained, organized, and adheres to best practices for long-term sustainability.",
     github: "https://github.com/chiomaeze",
@@ -33,7 +37,7 @@ const teamMembers = [
     id: 4,
     name: "Genevieve Agugua",
     role: "Design Lead",
-    img: "../assets/teamImages/Genevieve-Potrait.png",
+    img: resolveTeamImage("Genevieve-Potrait.png"),
     contribution:
       "Led the design efforts, creating visually appealing and user-friendly interfaces for the application.",
     github: "https://github.com/seyiadetola",
@@ -43,17 +47,17 @@ const teamMembers = [
     id: 5,
     name: "Chijioke Uzodinma",
     role: "Frontend Engineer",
-    img: "../assets/teamImages/Chijioke-Potrait.png",
+    img: resolveTeamImage("Chijioke-Potrait.png"),
     contribution:
       "Developed the server-side logic and integrated the database for efficient data management.",
     github: "https://github.com/chijex5",
-    linkedin: "https://www.linkedin.com/in/halimayusuf",
+    linkedin: "https://www.linkedin.com/in/chijioke-uzodinma-34389b267",
   },
   {
     id: 6,
     name: "Esther Adejola ",
     role: "Frontend Engineer",
-    img: "../assets/teamImages/Esther-Portrait.png",
+    img: resolveTeamImage("Esther-Portrait.png"),
     contribution:
       "Implemented and refined frontend components, improved UI responsiveness, and enhanced overall user experience.",
     github: "https://github.com/De-jola",
@@ -63,7 +67,7 @@ const teamMembers = [
     id: 7,
     name: "Christine Mwangi ",
     role: "Frontend Engineer",
-    img: "../assets/teamImages/Christine-Potrait.jpeg",
+    img: resolveTeamImage("Christine-Potrait.jpeg"),
     contribution:
       "Worked on Footer and contributed to the development of the frontend components and user interface.",
     github: "https://github.com/zainabbello",
@@ -73,7 +77,7 @@ const teamMembers = [
     id: 8,
     name: "Amarachi Uvere",
     role: "Backend Engineer",
-    img: "../assets/teamImages/amarachiprofilepicture.png",
+    img: resolveTeamImage("amarachiprofilepicture.png"),
     contribution:
       "Developed and maintained the backend systems and APIs for the application.",
     github: "https://github.com/bisialade",
@@ -85,6 +89,16 @@ function initCarousel() {
   if (window.innerWidth > 768) return;
 
   const track = document.getElementById("contributions-container");
+  if (!track) return;
+
+  let viewport = track.parentElement;
+  if (!viewport.classList.contains("team-carousel-viewport")) {
+    viewport = document.createElement("div");
+    viewport.className = "team-carousel-viewport";
+    track.parentNode.insertBefore(viewport, track);
+    viewport.appendChild(track);
+  }
+
   const cards = Array.from(track.children);
   const total = cards.length;
   if (total === 0) return;
@@ -94,13 +108,11 @@ function initCarousel() {
   let autoPlayTimer;
 
   track.style.display = "flex";
-  track.style.gap = "var(--space-4)";
+  track.style.gap = "0";
   track.style.transition = "transform 0.4s ease";
 
-  const cardWidth = cards[0].offsetWidth;
-
   cards.forEach((card, i) => {
-    card.style.minWidth = 96 + "%";
+    card.style.minWidth = "100%";
     card.style.flexShrink = "0";
     card.classList.add("carousel-card");
     if (i === 0) card.classList.add("active");
@@ -118,11 +130,12 @@ function initCarousel() {
     dotsContainer.appendChild(dot);
   });
 
-  track.parentElement.insertAdjacentElement("afterend", dotsContainer);
+  viewport.insertAdjacentElement("afterend", dotsContainer);
 
   function goTo(index) {
     current = ((index % total) + total) % total;
-    track.style.transform = `translateX(-${current * 100}%)`;
+    const slideWidth = viewport.clientWidth;
+    track.style.transform = `translateX(-${current * slideWidth}px)`;
 
     cards.forEach((card, i) => {
       card.classList.toggle("active", i === current);
@@ -132,6 +145,12 @@ function initCarousel() {
       dot.classList.toggle("active", i === current);
     });
   }
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth <= 768) goTo(current);
+  });
+
+  goTo(0);
 
   function startAutoPlay() {
     autoPlayTimer = setInterval(() => goTo(current + 1), 3500);

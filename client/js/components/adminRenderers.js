@@ -35,13 +35,13 @@ const fmtLastActive = (value) => {
 // ── Type config ───────────────────────────────────────────────────────────────
 
 const TYPE_CONFIG = {
-  story:      { label: "Story",      reviewBase: "stories-moderation.html",              editPage: "story-edit.html",                   badgeClass: "mod-type-story"      },
-  ngo:        { label: "NGO",        reviewBase: "ngos-moderation.html",                 editPage: "ngo-edit.html",                     badgeClass: "mod-type-ngo"        },
-  suggestion: { label: "Suggestion", reviewBase: "suggestions-moderation.html",          editPage: "suggestions-moderation.html",       badgeClass: "mod-type-suggestion" },
-  clinic:     { label: "Clinic",     reviewBase: "moderation-list.html?type=clinic",     editPage: "clinic-edit.html",                  badgeClass: "mod-type-clinic"     },
-  specialist: { label: "Specialist", reviewBase: "moderation-list.html?type=specialist", editPage: "specialist-edit.html",              badgeClass: "mod-type-specialist" },
-  media:      { label: "Media",      reviewBase: "moderation-list.html?type=media",      editPage: "media-edit.html",                   badgeClass: "mod-type-media"      },
-  request:    { label: "Request",    reviewBase: "moderation-list.html?type=request",    editPage: "moderation-list.html?type=request", badgeClass: "mod-type-request"    },
+  story:      { label: "Story",      reviewBase: "/admin/moderation/stories",            editPage: "/admin/story/edit",                 badgeClass: "mod-type-story"      },
+  ngo:        { label: "NGO",        reviewBase: "/admin/moderation/ngos",               editPage: "/admin/ngos/edit",                  badgeClass: "mod-type-ngo"        },
+  suggestion: { label: "Suggestion", reviewBase: "/admin/moderation/suggestions",        editPage: "/admin/moderation/suggestions",     badgeClass: "mod-type-suggestion" },
+  clinic:     { label: "Clinic",     reviewBase: "/admin/moderation?type=clinic",        editPage: "/admin/clinic/edit",                badgeClass: "mod-type-clinic"     },
+  specialist: { label: "Specialist", reviewBase: "/admin/moderation?type=specialist",    editPage: "/admin/specialist/edit",            badgeClass: "mod-type-specialist" },
+  media:      { label: "Media",      reviewBase: "/admin/moderation?type=media",         editPage: "/admin/media/edit",                 badgeClass: "mod-type-media"      },
+  request:    { label: "Request",    reviewBase: "/admin/moderation?type=request",       editPage: "/admin/moderation?type=request",    badgeClass: "mod-type-request"    },
 };
 
 function getTypeConfig(type = "") {
@@ -136,7 +136,7 @@ function renderModerationQueueRows(submissions) {
       "Untitled";
     const date    = fmtDate(item.submittedAt || item.createdAt);
     const status  = item.status || "pending";
-    const base    = cfg.editPage || cfg.reviewBase || "moderation-list.html";
+    const base    = cfg.editPage || cfg.reviewBase || "/admin/moderation";
     const reviewUrl = `${base}${base.includes("?") ? "&" : "?"}id=${escHtml(id)}`;
 
     return `
@@ -196,7 +196,7 @@ export function renderModerationQueue(submissions = [], totalPending = 0, loadin
         <h3 class="dash-stories-widget-title">
           Moderation Queue ${badgeHtml}
         </h3>
-        <a href="stories-moderation.html" class="dash-stories-view-all">View All →</a>
+        <a href="/admin/moderation/stories" class="dash-stories-view-all">View All →</a>
       </div>
       <div class="stories-table-wrap">
         <table class="stories-table" aria-label="Recent moderation submissions">
@@ -268,7 +268,7 @@ export function renderQueuesAndContent(
       // Pass the title so the editor can pre-fill before the full entry loads
       _title: draftTitle,
     });
-    const editorUrl = `content-editor.html?${editorParams.toString()}`;
+    const editorUrl = `editor?${editorParams.toString()}`;
 
     const updatedLabel = draft.updatedAt
       ? `Last saved ${fmtDate(draft.updatedAt)}`
@@ -325,35 +325,35 @@ export function renderQueuesAndContent(
           ${renderActionRow(
             icons.contentCreate,
             "Create Resource Article",
-            "content-editor.html?type=resource",
+            "editor?type=resource",
             "create-resource-action",
           )}
 
           ${renderActionRow(
             icons.contentDirectory,
             "Manage All Content",
-            "content-management.html",
+            "/admin/content-manager",
             "update-directory-action",
           )}
 
           ${renderActionRow(
             icons.contentFeatured,
             "Update Featured Content",
-            "content-management.html?filter=published",
+            "/admin/content-manager?filter=published",
             "featured-content-action",
           )}
 
           ${renderActionRow(
             icons.adminContent || icons.contentCreate,
             "NGO Directory",
-            "content-management.html?filter=ngo",
+            "/admin/content-manager?filter=ngo",
             "ngo-directory-action",
           )}
 
           ${renderActionRow(
             icons.queueClinic || icons.contentCreate,
             "Clinic Directory",
-            "content-management.html?filter=clinic",
+            "/admin/content-manager?filter=clinic",
             "clinic-directory-action",
           )}
 

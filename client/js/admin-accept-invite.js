@@ -122,7 +122,7 @@ form.addEventListener('submit', async (event) => {
 
     setStatus(response?.message || 'Account activated successfully.', 'is-success');
     setTimeout(() => {
-      window.location.assign('/client/pages/settings.html');
+      window.location.assign('/admin/settings');
     }, 900);
   } catch (error) {
     setStatus(error?.message || 'Could not activate account.', 'is-error');

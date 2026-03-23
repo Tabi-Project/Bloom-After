@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <title>Resource - Bloom After</title>
+    <link rel="icon" type="image/x-icon" href="../../assets/logo/favicon.png" />
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link rel="stylesheet" href="../../css/layouts.css" />
+    <link rel="stylesheet" href="../../css/components.css" />
+    <link rel="stylesheet" href="../../css/resources.css" />
+    <link rel="stylesheet" href="../../css/suggest-drawer.css" />
+  </head>
+  <body>
+
+    <a href="#main-content" class="visually-hidden">Skip to main content</a>
+
+    <div id="navbar-root"></div>
+
+    <main id="main-content">
+
+      <div class="container">
+        <!-- <a href="/resources" class="back-link" aria-label="Back to Resource Hub">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Back
+        </a> -->
+      </div>
+
+      <!-- Hero banner -->
+      <header
+        id="resource-hero"
+        class="resource-hero"
+        aria-busy="true"
+        aria-label="Resource header"
+      ></header>
+
+      <!-- Main content  -->
+      <!-- <div class="container resource-content-wrap">
+        <div id="resource-content" aria-busy="true" aria-live="polite"></div>
+      </div> -->
+      <article id="resource-content" class="resource-content-wrap container"></article>
+
+      <!-- Error state  -->
+      <div id="error-state" class="container error-state" hidden role="alert" aria-live="assertive">
+        <h2>Something went wrong</h2>
+        <p class="error-message"></p>
+        <a href="/resources" class="btn btn-primary">Back to Resources</a>
+      </div>
+
+      <!-- Crisis strip -->
+      <div id="crisis-root"></div>
+
+      <!-- Related resources -->
+      <div class="container">
+        <div id="related-root" aria-live="polite"></div>
+      </div>
+
+    </main>
+
+    <div id="footer-root"></div>
+
+    <script type="module" src="../../js/pages/resources-detail-page.js"></script>
+  </body>
+</html>

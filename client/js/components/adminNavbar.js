@@ -26,7 +26,7 @@ const navGroups = [
         id:   "overview",
         icon: icons.adminOverview,
         label: "Overview",
-        href: "admin-dashboard.html",
+        href: "/admin",
       },
       {
         id:    "moderation",
@@ -37,28 +37,28 @@ const navGroups = [
           {
             id:    "moderation-stories",
             label: "Stories",
-            href:  "stories-moderation.html",
+            href:  "/admin/moderation/stories",
             badge: true,
           },
           {
             id:    "moderation-clinics",
             label: "Clinics",
-            href:  "moderation-list.html?type=clinic",
+            href:  "/admin/moderation?type=clinic",
           },
           {
             id:    "specialists-onboarding",
             label: "Specialists Onboarding",
-            href:  "moderation-list.html?type=specialist",
+            href:  "/admin/moderation?type=specialist",
           },
           {
             id:    "media-suggestions",
             label: "Media Suggestions",
-            href:  "moderation-list.html?type=media",
+            href:  "/admin/moderation?type=media",
           },
           {
             id:    "moderation-other",
             label: "Other Requests",
-            href:  "moderation-list.html?type=request",
+            href:  "/admin/moderation?type=request",
           },
         ],
       },
@@ -66,7 +66,7 @@ const navGroups = [
         id:    "content-management",
         icon:  icons.adminContent,
         label: "Content Management",
-        href:  "content-management.html",  
+        href:  "/admin/content-manager",  
       },
       {
         id:    "user-access",
@@ -83,7 +83,7 @@ const navGroups = [
         id:    "settings",
         icon:  icons.adminSettings,
         label: "Settings",
-        href:  "settings.html",
+        href:  "/admin/settings",
       },
     ],
   },
@@ -130,7 +130,7 @@ export function renderAdminSidebar({
   return `
     <aside class="admin-sidebar" id="admin-sidebar" aria-label="Admin navigation">
       <div class="sidebar-header">
-        <a href="admin-dashboard.html" class="sidebar-logo-link" aria-label="Bloom Admin home">
+        <a href="/admin" class="sidebar-logo-link" aria-label="Bloom Admin home">
           <img src="${logoSrc}" alt="Bloom After logo" class="sidebar-logo-img" />
         </a>
         <div class="sidebar-identity">
@@ -144,7 +144,7 @@ export function renderAdminSidebar({
       </nav>
 
       <div class="sidebar-footer">
-        <a href="index.html" class="sidebar-logout">
+        <a href="/logout" class="sidebar-logout">
           <span class="sidebar-nav-icon">${icons.adminLogout}</span>
           <span>Logout</span>
         </a>

@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (submitAnotherBtn) {
     submitAnotherBtn.addEventListener('click', () => {
       sessionStorage.removeItem('submittedStory');
-      window.location.href = 'submit-story.html';
+      window.location.href = '/stories/editor';
     });
   }
 });
