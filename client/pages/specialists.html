@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Specialists | Bloom After</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layouts.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/specialists.css">
+    
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="container flex justify-between items-center">
+            <div class="logo">
+                <a href="index.html" class="text-inverse" style="font-family: var(--font-heading); font-weight: 700; font-size: var(--font-size-xl);">Bloom After</a>
+            </div>
+            <ul class="nav-links flex gap-8" style="list-style: none;">
+                <li><a href="index.html" class="text-inverse">Home</a></li>
+                <li><a href="resources.html" class="text-inverse">Resources</a></li>
+                <li><a href="clinics.html" class="text-inverse">Clinics</a></li>
+                <li><a href="specialists.html" style="color: var(--color-nav-active); font-weight: 600;">Specialists</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="nav-spacer"></div>
+
+    <main>
+        <section class="hero-directory">
+            <div class="container content-centered">
+                <h1 class="text-inverse">Find Professional Care</h1>
+                <p class="text-inverse-muted" style="max-width: 600px; margin-inline: auto;">
+                    Search our directory of verified psychiatrists, psychologists, and maternal health counselors across Nigeria.
+                </p>
+            </div>
+        </section>
+
+        <section class="filter-section container">
+            <div class="filter-card">
+                <form id="specialist-filters" class="filter-grid">
+                    <div class="filter-group">
+                        <label for="specialty-select">Specialization</label>
+                        <select id="specialty-select" class="form-select" style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+                            <option value="all">All Specialties</option>
+                            <option value="psychologist">Psychologist</option>
+                            <option value="psychiatrist">Psychiatrist</option>
+                            <option value="counselor">Counselor</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="location-select">Location (State)</label>
+                        <select id="location-select" class="form-select" style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+                            <option value="all">All Locations</option>
+                            <option value="lagos">Lagos</option>
+                            <option value="abuja">Abuja</option>
+                            <option value="rivers">Rivers</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="btn-search">Search Directory</button>
+                </form>
+            </div>
+        </section>
+
+        <section class="container results-container">
+            <div id="specialist-grid" class="grid-3">
+                <div class="text-center" style="grid-column: 1 / -1; padding: var(--space-12);">
+                    <p class="text-muted">Loading specialists...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+    <div class="container">
+        <div class="footer-content">
+            <div>
+                <div class="footer-logo">Bloom After</div>
+                <p class="footer-tagline">Compassionate support for postpartum recovery.</p>
+            </div>
+            <ul class="flex gap-8" style="list-style: none;">
+                <li><a href="index.html" class="text-inverse-muted">Home</a></li>
+                <li><a href="resources.html" class="text-inverse-muted">Resources</a></li>
+                <li><a href="about.html" class="text-inverse-muted">About</a></li>
+            </ul>
+        </div>
+        <div class="copyright">
+            &copy; 2026 Bloom After. All rights reserved.
+        </div>
+    </div>
+</footer>
+    <script src="../js/pages/specialistsPage.js"></script>
+</body>
+</html>

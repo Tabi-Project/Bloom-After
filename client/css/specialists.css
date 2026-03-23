@@ -1,0 +1,224 @@
+body {
+    padding-top: var(--nav-height) !important; 
+    background-color: var(--color-bg);
+    margin: 0;
+}
+
+.nav-links {
+    display: flex !important;
+    gap: 2.5rem !important; /* This creates the space between Home, Resources, etc. */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    white-space: nowrap; /* Prevents words from breaking into two lines */
+}
+
+.main-header {
+    background-color: var(--color-nav-bg);
+    height: var(--nav-height);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+}
+
+
+/* 2. Hero Section - The "Evergreen" Header */
+.hero-directory {
+    background-color: var(--color-brand-900);
+    padding-top: 80px; 
+    padding-bottom: 140px; 
+    text-align: center;
+    color: var(--color-white);
+}
+
+.hero-directory h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin: 0 0 var(--space-4) 0;
+    color: var(--color-white) !important;
+}
+
+.hero-directory p {
+    color: var(--color-brand-100);
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: var(--font-size-lg);
+}
+
+/* 3. The Overlapping Filter Card */
+.filter-section {
+    position: relative;
+    z-index: 100;
+    margin-top: -80px; 
+}
+
+.filter-card {
+    background: var(--color-surface);
+    padding: var(--space-10); 
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 20px 40px rgba(0, 38, 38, 0.2);
+    max-width: 1000px;
+    margin-inline: auto;
+}
+.filter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: var(--space-8);
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.filter-group label {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    margin-bottom: var(--space-2);
+    color: var(--color-brand-900);
+}
+
+/* 4. Inputs & Search Button */
+.custom-select {
+    height: 54px;
+    padding: 0 15px;
+    border: 1px solid var(--color-brand-200);
+    border-radius: var(--radius-md);
+    background-color: var(--color-white);
+    font-size: var(--font-size-base);
+}
+
+.btn-search {
+    height: 54px;
+    background-color: var(--color-brand-400);
+    color: white;
+    padding: 0 40px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-search:hover {
+    background-color: var(--color-brand-900);
+    transform: translateY(-2px);
+}
+
+/* 5. Results Section */
+.results-section {
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
+}
+
+/* 6. Specialist Card Refinements */
+.specialist-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: var(--color-surface);
+}
+
+.specialist-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* --- FOOTER FIX: To match the Main Page --- */
+.main-footer {
+    background-color: var(--color-brand-950);
+    color: var(--color-white);
+    padding: var(--space-12) 0 var(--space-8) 0;
+    margin-top: var(--space-16);
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-logo {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: var(--font-size-xl);
+    color: var(--color-white);
+    margin-bottom: var(--space-2);
+}
+
+.footer-tagline {
+    color: var(--color-brand-100);
+    font-size: var(--font-size-sm);
+    opacity: 0.8;
+}
+
+.copyright {
+    color: var(--color-brand-200);
+    font-size: var(--font-size-xs);
+    margin-top: var(--space-10);
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: var(--space-6);
+}
+
+/* --- GRID FIX: For the Cards --- */
+#specialist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-8);
+    margin-top: var(--space-12);
+}
+
+/* Make the cards look like the "Bloom After" components */
+.specialist-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    transition: transform 0.2s ease;
+}
+
+.specialist-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-brand-400);
+}
+
+
+
+/* 7. Responsive Adjustments */
+@media (max-width: 1024px) {
+    .filter-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .btn-search {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+    }
+    .btn-search {
+        grid-column: span 1;
+        width: 100%;
+    }
+    .hero-directory {
+        padding-top: 60px;
+    }
+    .filter-section {
+        margin-top: -30px;
+    }
+}
+
+
+
+
