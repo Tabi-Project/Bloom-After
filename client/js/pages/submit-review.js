@@ -4,12 +4,12 @@ import { richTextToPlainText, toRichTextHtml } from '../richText.js';
 document.addEventListener('DOMContentLoaded', () => {
   const pendingJson = sessionStorage.getItem('pendingStory');
   if (!pendingJson) {
-    window.location.href = 'submit-story.html';
+    window.location.href = '/stories/editor'; // Redirect to submission page if no pending story found
     return;
   }
 
   let pending;
-  try { pending = JSON.parse(pendingJson); } catch (e) { window.location.href = 'submit-story.html'; return; }
+  try { pending = JSON.parse(pendingJson); } catch (e) { window.location.href = '/stories/editor'; return; }
 
   const displayName = pending.privacy === 'anonymous' ? 'Anonymous' : (pending.name || 'Shared story');
   const date = pending.savedAt
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Navigation
   const editBtn = document.getElementById('edit-btn');
-  if (editBtn) editBtn.addEventListener('click', () => { window.location.href = 'submit-story.html'; });
+  if (editBtn) editBtn.addEventListener('click', () => { window.location.href = '/stories/editor'; });
 
   const confirmBtn  = document.getElementById('confirm-btn');
 
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pending.storyText = richTextToPlainText(pending.story || '');
         sessionStorage.setItem('submittedStory', JSON.stringify(pending));
         sessionStorage.removeItem('pendingStory');
-        window.location.href = 'submit-success.html';
+        window.location.href = '/stories/success'; // Redirect to success page after submission
       } catch (error) {
         console.error('[StorySubmit][Review] submit failed', {
           message: error?.message,

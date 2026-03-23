@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Content Editor — Bloom After Admin" />
+    <title>Content Editor - Bloom Admin</title>
+    <link rel="icon" type="image/x-icon" href="../../../assets/logo/favicon.png" />
+    <link rel="stylesheet" href="../../../css/base.css" />
+    <link rel="stylesheet" href="../../../css/layouts.css" />
+    <link rel="stylesheet" href="../../../css/components.css" />
+    <link rel="stylesheet" href="../../../css/admin-dashboard.css" />
+    <link rel="stylesheet" href="../../../css/content-management.css" />
+  </head>
+  <body>
+    <div class="admin-layout">
+
+      <div id="sidebar-root"></div>
+
+      <div class="admin-main">
+        <div id="topbar-root"></div>
+
+        <main class="dashboard-content" id="main-content">
+
+          <!-- Back nav + breadcrumb -->
+          <div class="cm-editor-nav">
+            <a href="content-management" class="mod-back-link" id="cm-back-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
+              </svg>
+              Content Management
+            </a>
+            <span class="cm-breadcrumb-sep" aria-hidden="true">/</span>
+            <span class="cm-breadcrumb-current" id="cm-breadcrumb-current">New Entry</span>
+          </div>
+
+          <!-- Editor root — injected by JS -->
+          <div id="cm-editor-root" aria-live="polite"></div>
+
+          <!-- Error state -->
+          <div id="cm-editor-error" class="mod-error-state" hidden role="alert">
+            <h2>Something went wrong</h2>
+            <p class="mod-error-message"></p>
+            <a href="/" class="btn btn-primary">Back to Content</a>
+          </div>
+
+        </main>
+      </div>
+
+    </div>
+
+    <!-- Preview drawer -->
+    <div class="cm-preview-overlay" id="cm-preview-overlay" hidden aria-hidden="true"></div>
+    <aside class="cm-preview-drawer" id="cm-preview-drawer" hidden role="dialog" aria-modal="true" aria-label="Content preview">
+      <div class="cm-preview-header">
+        <h3 class="cm-preview-title">Preview</h3>
+        <button class="cm-preview-close" id="cm-preview-close" type="button" aria-label="Close preview">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="cm-preview-body" id="cm-preview-body"></div>
+    </aside>
+
+    <div id="footer-root"></div>
+    <script type="module" src="../../../js/components/content-editor.js"></script>
+  </body>
+</html>

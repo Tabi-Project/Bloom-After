@@ -51,7 +51,7 @@ async function fetchSuggestions() {
     return res?.data?.suggestions || [];
   } catch (err) {
     if (err?.status === 401 || err?.status === 403) {
-      window.location.assign('/client/pages/admin-login.html');
+      window.location.assign('/admin/login');
       return null;
     }
     return [];
@@ -264,7 +264,7 @@ function bindLogout() {
       } catch (_) {}
       sessionStorage.removeItem(ADMIN_USER_KEY);
       sessionStorage.removeItem('adminToken');
-      window.location.assign('/client/pages/admin-login.html');
+      window.location.assign('/admin/login');
     });
   });
 }

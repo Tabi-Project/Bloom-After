@@ -363,7 +363,7 @@ async function confirmAction(story, status) {
     if (actionBtns) actionBtns.innerHTML = `
       <p class="story-edit-already-actioned">
         Story has been <strong>${status}</strong>.
-        <a href="stories-moderation.html" class="mod-back-inline">Back to list</a>
+        <a href="/admin/moderation/stories" class="mod-back-inline">Back to list</a>
       </p>
     `;
 
@@ -482,7 +482,7 @@ function bindLogout() {
       try { await api.post("/api/v1/auth/logout"); } catch (_) {}
       sessionStorage.removeItem(ADMIN_USER_KEY);
       sessionStorage.removeItem("adminToken");
-      window.location.assign("/client/pages/admin-login.html");
+      window.location.assign("/admin/login");
     });
   });
 }

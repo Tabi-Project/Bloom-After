@@ -68,7 +68,7 @@ export const sendAdminInviteEmail = async ({ to, role, inviteToken, invitedByNam
     return { sent: false, skipped: true, reason: 'service-unconfigured' };
   }
 
-  const activationLink = `${getBaseUrl()}/client/pages/admin-accept-invite.html?token=${encodeURIComponent(inviteToken)}`;
+  const activationLink = `${getBaseUrl()}/accept-invite?token=${encodeURIComponent(inviteToken)}`;
 
   try {
     const response = await resend.emails.send({

@@ -12,19 +12,19 @@ const ADMIN_USER_KEY = 'adminUser';
 const TYPE_CONFIG = {
   resource: {
     label:    'Resource Hub',
-    backUrl:  'content-management.html?filter=resource',
+    backUrl:  '/admin/content-manager?filter=resource',
     fields:   ['title', 'summary', 'content_type', 'theme', 'body', 'image', 'source_url', 'read_time', 'tags'],
     apiBase:  '/api/v1/admin/resources',
   },
   ngo: {
     label:    'NGO Directory',
-    backUrl:  'content-management.html?filter=ngo',
+    backUrl:  '/admin/content-manager?filter=ngo',
     fields:   ['title', 'description', 'mission', 'services', 'coverage', 'website', 'email', 'phone', 'image'],
     apiBase:  '/api/v1/admin/ngos',
   },
   clinic: {
     label:    'Clinic Directory',
-    backUrl:  'content-management.html?filter=clinic',
+    backUrl:  '/admin/content-manager?filter=clinic',
     fields:   ['title', 'provider_type', 'description', 'services', 'city', 'state', 'address', 'opening_hours', 'fee_range', 'contact_email', 'contact_phone', 'website', 'image', 'accepting_new_patients'],
     apiBase:  '/api/v1/admin/clinics',
   },
@@ -799,7 +799,7 @@ async function saveEntry() {
       const newId = res?.data?.resource?.id || res?.data?.ngo?.id || res?.data?.clinic?.id || res?.data?.id;
       if (newId) {
         isDirty = false;
-        window.location.replace(`content-editor.html?type=${contentType}&id=${newId}`);
+        window.location.replace(`editor?type=${contentType}&id=${newId}`);
         return;
       }
     }
@@ -918,7 +918,7 @@ function bindLogout() {
       btn.disabled = true;
       try { await api.post('/api/v1/auth/logout'); } catch (_) {}
       sessionStorage.removeItem(ADMIN_USER_KEY);
-      window.location.assign('/client/pages/admin-login.html');
+      window.location.assign('/admin/login');
     });
   });
 }

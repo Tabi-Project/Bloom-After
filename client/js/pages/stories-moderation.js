@@ -79,7 +79,7 @@ async function fetchStories() {
       data: err?.data,
     });
     if (err?.status === 401 || err?.status === 403) {
-      window.location.assign("/client/pages/admin-login.html");
+      window.location.assign("/admin/login");
       return null;
     }
     return [];
@@ -176,7 +176,7 @@ function renderStoryRow(story) {
         <p class="mod-row-excerpt">${escHtml(excerpt)}</p>
       </div>
       <div class="mod-row-actions">
-        <a href="story-edit.html?id=${escHtml(id)}" class="mod-action-btn mod-action-review" aria-label="Review story by ${escHtml(name)}">
+        <a href="/admin/story/edit?id=${escHtml(id)}" class="mod-action-btn mod-action-review" aria-label="Review story by ${escHtml(name)}">
           Review
         </a>
         ${story.status === "pending" ? `
@@ -297,7 +297,7 @@ async function handleListClick(e) {
       data: err?.data,
     });
     if (err?.status === 401 || err?.status === 403) {
-      window.location.assign("/client/pages/admin-login.html");
+      window.location.assign("/admin/login");
       return;
     }
     btn.disabled = false;
@@ -312,7 +312,7 @@ function bindLogout() {
       try { await api.post("/api/v1/auth/logout"); } catch (_) {}
       sessionStorage.removeItem(ADMIN_USER_KEY);
       sessionStorage.removeItem("adminToken");
-      window.location.assign("/client/pages/admin-login.html");
+      window.location.assign("/admin/login");
     });
   });
 }

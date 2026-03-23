@@ -39,7 +39,7 @@ export function createResourceCard(resource) {
 
   const icon        = CONTENT_TYPE_ICONS[content_type] || CONTENT_TYPE_ICONS['article'];
   const typeLabel   = CONTENT_TYPE_LABELS[content_type] || content_type;
-  const href        = `resource-detail.html?id=${encodeURIComponent(id)}`;
+  const href        = `/resources/detail?id=${encodeURIComponent(id)}`;
   const themeClass  = `badge-theme-${theme.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
   return `

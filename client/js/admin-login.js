@@ -148,7 +148,7 @@ form.addEventListener("submit", async (event) => {
     }
 
     setTimeout(() => {
-      window.location.assign("/client/pages/admin-dashboard.html");
+      window.location.assign("/admin");
     }, 800);
   } catch (error) {
     const message =

@@ -51,7 +51,7 @@ async function fetchNgos() {
     return res?.data?.ngos || [];
   } catch (err) {
     if (err?.status === 401 || err?.status === 403) {
-      window.location.assign('/client/pages/admin-login.html');
+      window.location.assign('/admin/login');
       return null;
     }
     return [];
@@ -141,7 +141,7 @@ function renderNgoCard(item) {
         </div>
       </div>
       <div class="mod-row-actions">
-        <a href="ngo-edit.html?id=${escHtml(id)}" class="mod-action-btn mod-action-review">Review</a>
+        <a href="/admin/ngos/edit?id=${escHtml(id)}" class="mod-action-btn mod-action-review">Review</a>
       </div>
     </article>
   `;
@@ -241,7 +241,7 @@ function bindLogout() {
       } catch (_) {}
       sessionStorage.removeItem(ADMIN_USER_KEY);
       sessionStorage.removeItem('adminToken');
-      window.location.assign('/client/pages/admin-login.html');
+      window.location.assign('/admin/login');
     });
   });
 }
