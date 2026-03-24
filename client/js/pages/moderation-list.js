@@ -15,7 +15,7 @@ const TYPE_CONFIG = {
     singular:      'Clinic',
     subtitle:      'Review and moderate clinic recommendations submitted by the community.',
     activePageId:  'moderation-clinics',
-    editPage:      'clinic-edit.html',
+    editPage:      '/admin/clinic/edit',
     apiEndpoint:   '/api/v1/admin/clinics',
     hasImage:      true,
     hasLink:       true,
@@ -26,7 +26,7 @@ const TYPE_CONFIG = {
     singular:      'Specialist',
     subtitle:      'Review specialists submitted for listing on the platform.',
     activePageId:  'specialists-onboarding',
-    editPage:      'specialist-edit.html',
+    editPage:      '/admin/specialist/edit',
     apiEndpoint:   '/api/v1/admin/specialists',
     hasImage:      true,
     hasLink:       false,
@@ -37,7 +37,7 @@ const TYPE_CONFIG = {
     singular:      'Media',
     subtitle:      'Review podcasts, articles, and media resources suggested by the community.',
     activePageId:  'media-suggestions',
-    editPage:      'media-edit.html',
+    editPage:      '/admin/media/edit',
     apiEndpoint:   '/api/v1/admin/media',
     hasImage:      true,
     hasLink:       true,
@@ -48,7 +48,7 @@ const TYPE_CONFIG = {
     singular:      'Request',
     subtitle:      'Review partnership requests, resource submissions, and other enquiries.',
     activePageId:  'moderation-other',
-    editPage:      'request-edit.html',
+    editPage:      '/admin/moderation?type=request',
     apiEndpoint:   '/api/v1/admin/requests',
     hasImage:      false,
     hasLink:       false,
@@ -366,7 +366,7 @@ function bindLogout() {
       try { await api.post('/api/v1/auth/logout'); } catch (_) {}
       sessionStorage.removeItem(ADMIN_USER_KEY);
       sessionStorage.removeItem('adminToken');
-      window.location.assign('/client/pages/admin-login.html');
+      window.location.assign('/admin/login');
     });
   });
 }

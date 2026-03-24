@@ -11,7 +11,7 @@ import api from '../api.js';
 const ADMIN_USER_KEY = 'adminUser';
 const TYPE           = 'clinic';
 const API_BASE       = '/api/v1/admin/clinics';
-const BACK_URL       = 'moderation-list.html?type=clinic';
+const BACK_URL       = '/admin/moderation?type=clinic';
 
 async function init() {
   const stored = (() => { try { return JSON.parse(sessionStorage.getItem(ADMIN_USER_KEY)) || {}; } catch { return {}; } })();
@@ -156,7 +156,7 @@ function bindLogout() {
       btn.disabled = true;
       try { await api.post('/api/v1/auth/logout'); } catch (_) {}
       sessionStorage.removeItem(ADMIN_USER_KEY);
-      window.location.assign('/client/pages/admin-login.html');
+      window.location.assign('/admin/login');
     });
   });
 }

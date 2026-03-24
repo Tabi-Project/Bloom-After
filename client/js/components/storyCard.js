@@ -20,7 +20,7 @@ export function createStoryCard(story) {
   const excerpt = plainText && plainText.length > 130 ? plainText.slice(0, 130).trim() + '…' : plainText;
   const img     = image_url || FALLBACK_IMAGE;
   const tags    = what_helped.slice(0, 3);
-  const href    = `story-detail.html?id=${_id}`;
+  const href    = `/stories/detail?id=${_id}`;
 
   return `
     <article class="resource-card story-card" data-id="${_id}">

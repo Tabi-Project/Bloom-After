@@ -10,3 +10,4 @@ client/dist
 *.env
 *.cache
 *.tmp
+.vercel

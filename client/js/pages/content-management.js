@@ -26,8 +26,8 @@ const DESTINATIONS = [
     label:    'Resource Hub',
     desc:     'Articles, infographics, audio summaries, podcasts, myth-busting guides.',
     icon:     `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
-    newUrl:   'content-editor.html?type=resource',
-    listUrl:  'content-management.html?filter=resource',
+    newUrl:   'editor?type=resource',
+    listUrl:  '/admin/content-manager?filter=resource',
     color:    'var(--color-brand-400)',
     bgColor:  'var(--color-brand-50)',
   },
@@ -36,8 +36,8 @@ const DESTINATIONS = [
     label:    'NGO Directory',
     desc:     'NGOs and support organisations providing maternal health services.',
     icon:     `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
-    newUrl:   'content-editor.html?type=ngo',
-    listUrl:  'content-management.html?filter=ngo',
+    newUrl:   'editor?type=ngo',
+    listUrl:  '/admin/content-manager?filter=ngo',
     color:    '#0369a1',
     bgColor:  '#f0f9ff',
   },
@@ -46,8 +46,8 @@ const DESTINATIONS = [
     label:    'Clinic Directory',
     desc:     'Verified healthcare providers offering postpartum mental health support.',
     icon:     `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
-    newUrl:   'content-editor.html?type=clinic',
-    listUrl:  'content-management.html?filter=clinic',
+    newUrl:   'editor?type=clinic',
+    listUrl:  '/admin/content-manager?filter=clinic',
     color:    '#15803d',
     bgColor:  '#f0fdf4',
   },
@@ -220,7 +220,7 @@ function renderTableRow(item) {
     ? new Date(item.updatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
     : '';
   const statusCls = `cm-status-${escHtml(item.status)}`;
-  const editUrl  = `content-editor.html?type=${escHtml(item.type)}&id=${escHtml(id)}`;
+  const editUrl  = `editor?type=${escHtml(item.type)}&id=${escHtml(id)}`;
 
   return `
     <tr class="cm-table-row" data-id="${escHtml(id)}" data-status="${escHtml(item.status)}">
@@ -482,7 +482,7 @@ function bindLogout() {
       btn.disabled = true;
       try { await api.post('/api/v1/auth/logout'); } catch (_) {}
       sessionStorage.removeItem(ADMIN_USER_KEY);
-      window.location.assign('/client/pages/admin-login.html');
+      window.location.assign('/admin/login');
     });
   });
 }

@@ -1397,6 +1397,11 @@ input[type="search"]::-webkit-search-cancel-button {
 
 /* Responsiveness */
 @media (max-width: 768px) {
+  .team-carousel-viewport {
+    overflow: hidden;
+    width: 100%;
+  }
+
   .main-footer {
     padding: var(--space-10) var(--space-5);
   }
