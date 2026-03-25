@@ -1,8 +1,8 @@
-import { fetchResources } from "../data/resources-api.js";
+// import { fetchResources } from "../data/resources-api.js";
+import { fetchResources } from "../data/resources.js";
 import { createResourceCard, createSkeletonCard } from "../components/resourceCard.js";
 import { renderNavbar, initNavbar } from "../components/navbar.js";
 import { renderFooter } from "../components/footer.js";
-// import { renderCrisisStrip } from "../components/crisisStrip.js";
 
 const ITEMS_PER_PAGE = 9;
 
