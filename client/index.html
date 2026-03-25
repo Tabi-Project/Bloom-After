@@ -22,8 +22,8 @@
       <div id="navbar-root"></div>
 
       <!-- Hero section -->
-      <section class="hero container" aria-labelledby="hero-heading">
-        <article class="hero-content">
+      <section class="hero" aria-labelledby="hero-heading">
+        <article class="hero-content container">
           <h1 class="hero-heading" id="hero-heading">
             Ease your way back in with a community that <em>cares.</em>
           </h1>
@@ -34,10 +34,10 @@
           </p>
 
           <div class="hero-actions">
-            <a href="/client/resources/index.html" class="btn btn-primary"
+            <a href="/resources" class="btn btn-primary"
               >Explore Resources</a
             >
-            <a href="/client/clinics/index.html" class="btn btn-secondary"
+            <a href="/clinics" class="btn btn-secondary"
               >Find Local Clinics</a
             >
           </div>
@@ -228,7 +228,7 @@
 
       <!-- Contributors Section -->
       <section id="team" class="team-section strip">
-        <div class="section-header">
+        <div class="section-header container">
           <h2>Meet our Contributors</h2>
           <p class="content-centered">
             Get to know the passionate minds behind Bloom After. Select a
@@ -256,25 +256,32 @@
       </div>
 
       <section class="container ngo-section">
-        <h2 class="section-header">Local Support & NGOs</h2>
-        <p>
-          Discover organizations across Nigeria dedicated to mental health and
-          family wellbeing.
-        </p>
+        <div class="section-header">
+          <h2 class="section-header">Local Support & NGOs</h2>
+          <p>
+            Discover organizations across Nigeria dedicated to mental health and
+            family wellbeing.
+          </p>
+        </div>
         <div class="partner-list flex">
           <div class="partner-card">PostPartum Support Network</div>
           <div class="partner-card">Mentally Aware Nigeria</div>
           <div class="partner-card">Neem Foundation</div>
         </div>
-        <a href="/client/ngos/index.html" class="btn btn-primary btn-ngo">
+        <a href="/ngos" class="btn btn-primary btn-ngo">
           Explore the NGO directory <i class="fa-solid fa-arrow-right"></i>
         </a>
       </section>
 
       <section class="faq-section">
-        <h2 class="section-header">Frequently Asked Questions</h2>
+        <div class="container">
+          <div class="section-header">
+            <h2>Frequently Asked Questions</h2>
+            <p>Find answers to common questions about postpartum depression and navigating the Bloom After platform.</p>
+          </div>
 
-        <div id="faq-root"></div>
+          <div id="faq-root"></div>
+        </div>
       </section>
     </main>
 

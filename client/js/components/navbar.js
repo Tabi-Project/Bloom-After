@@ -6,7 +6,7 @@ function renderNavbar(activePage = '') {
   return `
     <nav class="navbar" aria-label="Main navigation">
 
-      <a href="/index" class="navbar-logo" aria-label="Bloom After home">
+      <a href="/" class="navbar-logo" aria-label="Bloom After home">
         <img src="${resolveLogoImage('BLOOM LIGHT primary.png')}" alt="Bloom After logo" />
       </a>
 
@@ -83,7 +83,6 @@ function renderNavbar(activePage = '') {
 function initNavbar() {
   const hamburger = document.querySelector('.navbar-hamburger');
   const mobileMenu = document.querySelector('.mobile-menu');
-  // const dropdownToggles = document.querySelectorAll('.navbar-dropdown-toggle');
 
   // hamburger toggle
   hamburger.addEventListener('click', () => {
@@ -92,24 +91,6 @@ function initNavbar() {
     hamburger.setAttribute('aria-expanded', String(!isOpen));
     mobileMenu.setAttribute('aria-hidden', String(isOpen));
   });
-
-  // desktop dropdowns
-  // dropdownToggles.forEach(toggle => {
-  //   toggle.addEventListener('click', () => {
-  //     const parent = toggle.closest('.navbar-dropdown');
-  //     const isOpen = parent.classList.contains('open');
-
-  //     document.querySelectorAll('.navbar-dropdown.open').forEach(d => {
-  //       d.classList.remove('open');
-  //       d.querySelector('.navbar-dropdown-toggle').setAttribute('aria-expanded', 'false');
-  //     });
-
-  //     if (!isOpen) {
-  //       parent.classList.add('open');
-  //       toggle.setAttribute('aria-expanded', 'true');
-  //     }
-  //   });
-  // });
 
   // close on outside click
   document.addEventListener('click', e => {

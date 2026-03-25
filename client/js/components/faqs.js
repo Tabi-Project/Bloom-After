@@ -1,4 +1,4 @@
-import { faqs } from "../data/faqs";
+import { faqs } from "../data/faqs.js";
 function renderFAQs() {
   const faqContainer = document.getElementById("faq-root");
   faqContainer.classList.add("faq-container");
