@@ -1,62 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lifestyle & Medical Interventions - Bloom After</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A holistic approach to postpartum recovery combining supportive lifestyle adjustments and evidence-based clinical care." />
+  <title>Lifestyle &amp; Medical Interventions - Bloom After</title>
   <link rel="icon" type="image/x-icon" href="../assets/logo/favicon.png" />
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/layouts.css">
-  <link rel="stylesheet" href="../css/lifestyle.css">
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layouts.css" />
   <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/lifestyle.css" />
   <link rel="stylesheet" href="../css/suggest-drawer.css" />
 </head>
 <body>
 
-  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <a href="#main-content" class="visually-hidden">Skip to main content</a>
 
   <div id="navbar-root"></div>
 
-  <main id="main-content" class="lifestyle-main">
+  <main id="main-content">
 
-    <!-- Disclaimer Banner -->
-  <div class="disclaimer-banner">
-    <p>This information is for educational purposes only. Always speak to a qualified healthcare professional before making changes to your treatment or lifestyle.</p>
-  </div>
+    <!-- Hero -->
+    <section class="lm-hero" aria-labelledby="lm-hero-heading">
+      <div class="lm-hero-inner container">
+        <span class="lm-hero-eyebrow">Postpartum Recovery</span>
+        <h1 class="lm-hero-title" id="lm-hero-heading">
+          Lifestyle &amp; Medical<br class="lm-hero-br"> Interventions
+        </h1>
+        <p class="lm-hero-subtitle">
+          A holistic approach combining supportive lifestyle adjustments
+          with evidence-based clinical care.
+        </p>
+      </div>
+    </section>
 
-  <!-- Header -->
-  <header class="lifestyle-header">
-    <h1>Lifestyle & Medical Interventions</h1>
-    <p>A holistic approach to postpartum recovery combining supportive lifestyle adjustments and evidence-based care.</p>
-  </header>
+    <!-- Disclaimer -->
+    <div class="lm-disclaimer" role="note">
+      <div class="container lm-disclaimer-inner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p>
+          This information is for educational purposes only. Always speak to a
+          qualified healthcare professional before making changes to your treatment
+          or lifestyle.
+        </p>
+      </div>
+    </div>
 
-  <section class="lifestyle-search-bar container" role="search">
-  <!-- Search Input -->
-  <div class="search-input-wrapper">
-    <input 
-      type="search" 
-      id="lifestyle-search" 
-      placeholder="Search strategies or treatments..." 
-      aria-label="Search strategies or treatments"
+    <!-- Search & Filter -->
+    <div class="page-controls" role="search">
+      <div class="container page-controls-inner">
+        <div class="search-wrap">
+          <span class="search-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </span>
+          <input
+            type="search"
+            id="lm-search"
+            class="search-input"
+            placeholder="Search strategies or treatments…"
+            aria-label="Search lifestyle and medical interventions"
+            autocomplete="off"
+          />
+        </div>
+
+        <nav class="filter-tabs" aria-label="Filter by category">
+          <button class="filter-btn active" data-filter="all"
+                  aria-pressed="true">All</button>
+          <button class="filter-btn" data-filter="lifestyle"
+                  aria-pressed="false">Lifestyle</button>
+          <button class="filter-btn" data-filter="medical"
+                  aria-pressed="false">Medical</button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Lifestyle Changes -->
+    <section
+      id="lm-lifestyle-section"
+      class="lm-section container"
+      aria-labelledby="lm-lifestyle-heading"
     >
-  </div>
+      <div class="lm-section-divider">
+        <span class="lm-divider-line" aria-hidden="true"></span>
+        <h2 class="lm-section-label" id="lm-lifestyle-heading">Lifestyle Changes</h2>
+        <span class="lm-divider-line" aria-hidden="true"></span>
+      </div>
+      <div
+        id="lm-lifestyle-grid"
+        class="lm-cards-grid"
+        aria-live="polite"
+        aria-atomic="false"
+      ></div>
+    </section>
 
-  <!-- Filter Buttons -->
-  <div class="filters">
-    <button class="filter-btn active" data-filter="all">All</button>
-    <button class="filter-btn" data-filter="lifestyle">Lifestyle</button>
-    <button class="filter-btn" data-filter="medical">Medical</button>
-  </div>
-</section>
+    <!-- Medical Options -->
+    <section
+      id="lm-medical-section"
+      class="lm-section lm-medical-section container"
+      aria-labelledby="lm-medical-heading"
+    >
+      <div class="lm-section-divider">
+        <span class="lm-divider-line" aria-hidden="true"></span>
+        <h2 class="lm-section-label" id="lm-medical-heading">Medical Options</h2>
+        <span class="lm-divider-line" aria-hidden="true"></span>
+      </div>
+      <div
+        id="lm-medical-grid"
+        class="lm-medical-grid"
+        aria-live="polite"
+        aria-atomic="false"
+      ></div>
+    </section>
 
-  <!-- Cards Section -->
-  <section id="cards-container" class="cards-grid">
-  </section>
+    <!-- Empty state -->
+    <p id="lm-empty" class="empty-state" hidden role="status">
+      <strong>No results found.</strong><br/>
+      Try a different search term or filter.
+    </p>
 
-</main>
+  </main>
 
   <div id="footer-root"></div>
-  
+
   <script type="module" src="../js/data/lifestyle.js"></script>
 
 </body>

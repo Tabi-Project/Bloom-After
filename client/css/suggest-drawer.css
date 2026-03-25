@@ -83,6 +83,9 @@
 .suggest-nudge {
   background: var(--color-brand-900);
   color: var(--color-white);
+   bottom: 170px;
+  right: 0;
+  position: relative;
   border-radius: var(--radius-lg);
   padding: var(--space-3) var(--space-4);
   font-family: var(--font-body);
@@ -101,9 +104,9 @@
 
 .suggest-nudge::after {
   content: '';
+   bottom: 70px;
+  right: 0;
   position: absolute;
-  bottom: -6px;
-  right: 20px;
   width: 12px;
   height: 12px;
   background: var(--color-brand-900);
