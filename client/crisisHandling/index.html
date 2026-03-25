@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CrisisHandling - Bloom After</title>
+    <link rel="icon" type="image/x-icon" href="./assets/logo/favicon.png" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layouts.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/crisis-handling.css" />
+    <link rel="stylesheet" href="../css/suggest-drawer.css" />
+  </head>
+  <body>
+    <a href="#main-content" class="visually-hidden">Skip to main content</a>
+    <div id="navbar-root"></div>
+
+    <main id="main-content">
+      <section
+        class="crisis-handling-hero"
+        style="
+          background-image: url(&quot;https://plus.unsplash.com/premium_photo-1672759455710-70c879daf721?q=80&w=1416&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&quot;);
+        "
+        aria-labelledby="crisis-hero-heading"
+      >
+        <div class="crisis-handling-hero-content container">
+          <h1 class="crisis-handling-hero-title" id="crisis-hero-heading">
+            Crisis Handling &amp; Emergency Support
+          </h1>
+          <p class="crisis-handling-hero-subtitle">
+            Select the situation that best describes what you or your loved one
+            is experiencing to find immediate, actionable steps. If you are in
+            immediate danger, please contact emergency services without delay.
+          </p>
+        </div>
+      </section>
+
+      <section class="container crisis-handling-content">
+        <div class="search-wrap">
+          <span class="search-icon" aria-hidden="true">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </span>
+          <input
+            type="search"
+            id="search-input"
+            class="search-input"
+            placeholder="Search articles, symptoms or resources"
+            aria-label="Search resources"
+            autocomplete="off"
+          />
+        </div>
+
+        <article class="container helpline-container">
+          <figure><i class="fa-solid fa-phone-volume"></i></figure>
+          <article class="helpline-article">
+            <h2>24/7 National Merit Health Helpline</h2>
+            <p>
+              Free, confidential support from trained maternal mental health
+              counselors. Available in English, Hausa, Yoruba, and Igbo.
+            </p>
+            <div class="flex btn-container">
+              <button class="btn-primary btn-emergency">
+                Call 112 (Emergency)
+              </button>
+              <button class="btn-primary btn-text">
+                <i class="fa-regular fa-message"></i>Text Support
+              </button>
+            </div>
+          </article>
+        </article>
+
+        <div>
+          <h2>Critical Emergencies</h2>
+          <hr />
+          <article id="critical-emergencies"></article>
+        </div>
+      </section>
+    </main>
+    <div id="footer-root"></div>
+
+    <script type="module" src="../js/pages/crisis-handling-page.js"></script>
+    <script
+      src="https://kit.fontawesome.com/68a29caca4.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
