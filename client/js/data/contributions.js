@@ -42,7 +42,7 @@ const teamMembers = [
   {
     id: 5,
     name: "Chijioke Uzodinma",
-    role: "Frontend Engineer",
+    role: "Frontend/Backend Engineer",
     img: resolveTeamImage("Chijioke-Potrait.png"),
     contribution:
       "Developed the server-side logic and integrated the database for efficient data management.",
@@ -58,27 +58,7 @@ const teamMembers = [
       "Implemented and refined frontend components, improved UI responsiveness, and enhanced overall user experience.",
     github: "https://github.com/De-jola",
     linkedin: "https://www.linkedin.com/in/esther-adejola",
-  },
-  {
-    id: 7,
-    name: "Christine Mwangi ",
-    role: "Frontend Engineer",
-    img: resolveTeamImage("Christine-Potrait.jpeg"),
-    contribution:
-      "Worked on Footer and contributed to the development of the frontend components and user interface.",
-    github: "https://github.com/zainabbello",
-    linkedin: "https://www.linkedin.com/in/zainabbello",
-  },
-  {
-    id: 8,
-    name: "Amarachi Uvere",
-    role: "Backend Engineer",
-    img: resolveTeamImage("amarachiprofilepicture.png"),
-    contribution:
-      "Developed and maintained the backend systems and APIs for the application.",
-    github: "https://github.com/bisialade",
-    linkedin: "https://www.linkedin.com/in/bisialade",
-  },
+  }
 ];
 
 function resolveTeamImage(fileName) {

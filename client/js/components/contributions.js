@@ -1,4 +1,4 @@
-import { teamMembers } from "../data/contributions";
+import { teamMembers } from "../data/contributions.js";
 
 function initCarousel() {
   const track = document.getElementById("contributions-container");
