@@ -112,3 +112,46 @@
 .fa-phone-volume {
   font-size: var(--font-size-lg);
 }
+
+.emergencies-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-8);
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-block: var(--space-6);
+}
+.cards.critical-emergency-card {
+  background-color: #fffaf9;
+  border: 0.5px solid rgba(232, 90, 79, 0.7);
+}
+
+.cards.urgent-situation-card {
+  background-color: #fffcf5;
+  border: 1px solid rgba(255, 235, 197, 0.7);
+}
+
+.cards figure {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  height: 44px;
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+.critical-emergency-card figure {
+  background-color: #fdf2f1;
+  color: var(--color-danger);
+}
+
+hr {
+  opacity: 0.5;
+}
