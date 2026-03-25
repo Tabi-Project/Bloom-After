@@ -11,6 +11,9 @@
   align-items: flex-end;
   overflow: hidden;
 }
+.search-wrap {
+  width: 100%;
+}
 
 .crisis-handling-hero::after {
   content: "";
@@ -93,6 +96,7 @@
   padding: var(--space-3) var(--space-8);
   color: var(--color-danger);
   display: flex;
+  justify-content: center;
   gap: var(--space-2);
   align-items: center;
 }
@@ -111,6 +115,9 @@
 
 .fa-phone-volume {
   font-size: var(--font-size-lg);
+}
+.emergencies-section {
+  width: 100%;
 }
 
 .emergencies-section h2 {
@@ -173,4 +180,20 @@
 
 hr {
   opacity: 0.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .helpline-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .btn-container {
+    flex-direction: column;
+    width: 100%;
+  }
+  .emergencies-container {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
 }
