@@ -6,13 +6,13 @@ function renderNavbar(activePage = '') {
   return `
     <nav class="navbar" aria-label="Main navigation">
 
-      <a href="/" class="navbar-logo" aria-label="Bloom After home">
+      <a href="/client/index.html" class="navbar-logo" aria-label="Bloom After home">
         <img src="${resolveLogoImage('BLOOM LIGHT primary.png')}" alt="Bloom After logo" />
       </a>
 
       <nav class="navbar-links" aria-label="Desktop navigation">
 
-        <a href="/resources" class="navbar-link ${activePage === 'resources' ? 'active' : ''}">
+        <a href="/client/resources/index.html" class="navbar-link ${activePage === 'resources' ? 'active' : ''}">
           Resources Hub
         </a>
 
@@ -21,8 +21,8 @@ function renderNavbar(activePage = '') {
             Get Support <span class="navbar-chevron" aria-hidden="true">▾</span>
           </button>
           <nav class="navbar-dropdown-menu" aria-label="Get Support">
-            <a href="/clinics" class="${activePage === 'clinics' ? 'active' : ''}">Clinics & Hospitals</a>
-            <a href="/ngos" class="${activePage === 'ngos' ? 'active' : ''}">NGO Directory</a>
+            <a href="/client/clinics/index.html" class="${activePage === 'clinics' ? 'active' : ''}">Clinics & Hospitals</a>
+            <a href="/client/ngos/index.html" class="${activePage === 'ngos' ? 'active' : ''}">NGO Directory</a>
           </nav>
         </span>
 
@@ -31,12 +31,12 @@ function renderNavbar(activePage = '') {
             Community <span class="navbar-chevron" aria-hidden="true">▾</span>
           </button>
           <nav class="navbar-dropdown-menu" aria-label="Community">
-            <a href="/stories" class="${activePage === 'stories' ? 'active' : ''}">Stories</a>
-            <a href="/lifestyle" class="${activePage === 'lifestyle' ? 'active' : ''}">Lifestyle & Interventions</a>
+            <a href="/client/stories/index.html" class="${activePage === 'stories' ? 'active' : ''}">Stories</a>
+            <a href="/client/lifestyle/index.html" class="${activePage === 'lifestyle' ? 'active' : ''}">Lifestyle & Interventions</a>
           </nav>
         </span>
 
-        <a href="/#team" class="navbar-link ${activePage === 'contributors' ? 'active' : ''}">
+        <a href="/client/index.html#team" class="navbar-link ${activePage === 'contributors' ? 'active' : ''}">
           The Team
         </a>
 
@@ -58,18 +58,18 @@ function renderNavbar(activePage = '') {
     <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation" aria-hidden="true">
 
       <span class="mobile-menu-group-label">Learn More</span>
-      <a href="/resources" class="mobile-menu-link">Resources Hub</a>
+      <a href="/client/resources/index.html" class="mobile-menu-link">Resources Hub</a>
 
       <span class="mobile-menu-group-label">Get Support</span>
-      <a href="/clinics" class="mobile-menu-link">Clinics & Hospitals</a>
-      <a href="/ngos" class="mobile-menu-link">NGO Directory</a>
+      <a href="/client/clinics/index.html" class="mobile-menu-link">Clinics & Hospitals</a>
+      <a href="/client/ngos/index.html" class="mobile-menu-link">NGO Directory</a>
 
       <span class="mobile-menu-group-label">Community</span>
-      <a href="/stories" class="mobile-menu-link">Stories</a>
-      <a href="/lifestyle" class="mobile-menu-link">Lifestyle & Interventions</a>
+      <a href="/client/stories/index.html" class="mobile-menu-link">Stories</a>
+      <a href="/client/lifestyle/index.html" class="mobile-menu-link">Lifestyle & Interventions</a>
 
       <span class="mobile-menu-group-label">The Team</span>
-      <a href="/#team" class="mobile-menu-link">Contributors</a>
+      <a href="/client/index.html#team" class="mobile-menu-link">Contributors</a>
 
       <aside class="mobile-menu-crisis" aria-label="Crisis support">
         <p>If you are in crisis:</p>
