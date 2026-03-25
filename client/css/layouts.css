@@ -19,10 +19,10 @@ header {
 }
 
 /* Hero */
-.hero {
+/* .hero {
   padding-top: calc(var(--nav-height) + var(--space-10));
   padding-bottom: var(--space-10);
-}
+} */
 
 main {
   flex: 1;

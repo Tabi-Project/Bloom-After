@@ -304,9 +304,9 @@
 .hero {
   background: linear-gradient(0deg, rgba(18, 18, 18, 0.65) 0%, rgba(18, 18, 18, 0.65) 100%), 
   url("../assets/images 1/hero-bg.png") center/cover no-repeat;
-  margin-top: var(--nav-height);
-  margin-top: 0;
-  transform: translateY(-1px);
+  margin-top: calc(var(--nav-height) - 1px);
+  padding-top: var(--space-10);
+  padding-bottom: var(--space-10);
 }
 
 .hero-content {
