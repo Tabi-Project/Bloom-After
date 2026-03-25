@@ -86,8 +86,6 @@ const teamMembers = [
 ];
 
 function initCarousel() {
-  if (window.innerWidth > 768) return;
-
   const track = document.getElementById("contributions-container");
   if (!track) return;
 
@@ -108,37 +106,54 @@ function initCarousel() {
   let autoPlayTimer;
 
   track.style.display = "flex";
-  track.style.gap = "0";
   track.style.transition = "transform 0.4s ease";
 
-  cards.forEach((card, i) => {
-    card.style.minWidth = "100%";
-    card.style.flexShrink = "0";
-    card.classList.add("carousel-card");
-    if (i === 0) card.classList.add("active");
-  });
+  function getCardsPerView() {
+    return window.innerWidth > 768 ? 3 : 1;
+  }
 
-  // Dots
+  function setupCards() {
+    const cardsPerView = getCardsPerView();
+    cards.forEach((card, i) => {
+      card.style.minWidth = `calc(${100 / cardsPerView}% - var(--space-4))`;
+      card.style.flexShrink = "0";
+      card.classList.add("carousel-card");
+      if (i < cardsPerView) card.classList.add("active");
+    });
+  }
+
   const dotsContainer = document.createElement("div");
   dotsContainer.className = "carousel-dots";
 
-  cards.forEach((_, i) => {
-    const dot = document.createElement("button");
-    dot.className = "carousel-dot" + (i === 0 ? " active" : "");
-    dot.setAttribute("aria-label", `Go to card ${i + 1}`);
-    dot.addEventListener("click", () => goTo(i));
-    dotsContainer.appendChild(dot);
-  });
+  function totalSlides() {
+    return Math.ceil(total / getCardsPerView());
+  }
+
+  function buildDots() {
+    dotsContainer.innerHTML = "";
+    for (let i = 0; i < totalSlides(); i++) {
+      const dot = document.createElement("button");
+      dot.className = "carousel-dot" + (i === 0 ? " active" : "");
+      dot.setAttribute("aria-label", `Go to slide ${i + 1}`);
+      dot.addEventListener("click", () => goTo(i));
+      dotsContainer.appendChild(dot);
+    }
+  }
 
   viewport.insertAdjacentElement("afterend", dotsContainer);
 
   function goTo(index) {
-    current = ((index % total) + total) % total;
+    const cardsPerView = getCardsPerView();
+    const slides = totalSlides();
+    current = ((index % slides) + slides) % slides;
+
     const slideWidth = viewport.clientWidth;
     track.style.transform = `translateX(-${current * slideWidth}px)`;
 
     cards.forEach((card, i) => {
-      card.classList.toggle("active", i === current);
+      const isActive =
+        i >= current * cardsPerView && i < (current + 1) * cardsPerView;
+      card.classList.toggle("active", isActive);
     });
 
     dotsContainer.querySelectorAll(".carousel-dot").forEach((dot, i) => {
@@ -146,11 +161,15 @@ function initCarousel() {
     });
   }
 
-  window.addEventListener("resize", () => {
-    if (window.innerWidth <= 768) goTo(current);
-  });
-
+  setupCards();
+  buildDots();
   goTo(0);
+
+  window.addEventListener("resize", () => {
+    setupCards();
+    buildDots();
+    goTo(0);
+  });
 
   function startAutoPlay() {
     autoPlayTimer = setInterval(() => goTo(current + 1), 3500);
@@ -193,7 +212,7 @@ function renderTeamMembers() {
   teamMembers.forEach((member) => {
     const memberCard = document.createElement("article");
     memberCard.className = "team-card";
-    memberCard.setAttribute("tabindex", "0"); // Makes it keyboard accessible
+    memberCard.setAttribute("tabindex", "0");
     memberCard.setAttribute("role", "button");
 
     memberCard.innerHTML = `
@@ -205,7 +224,6 @@ function renderTeamMembers() {
       </div>
     `;
 
-    // Open modal on click or Enter key
     const triggerModal = () => showModal(member);
     memberCard.addEventListener("click", triggerModal);
     memberCard.addEventListener("keydown", (e) => {
@@ -217,9 +235,9 @@ function renderTeamMembers() {
 
     container.appendChild(memberCard);
   });
+
   initCarousel();
 }
-
 function showModal(member) {
   const modal = document.getElementById("team-modal");
   const modalBody = document.getElementById("modal-body");
