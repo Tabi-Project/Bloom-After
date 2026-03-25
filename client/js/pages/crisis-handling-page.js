@@ -32,7 +32,7 @@ const criticalEmergencies = [
   {
     id: 3,
     title: "Thoughts of Harming Your Baby",
-    icon: `<i class="fa-solid fa-shield-exclamation"></i>`,
+    icon: `<i class="fa-solid fa-exclamation"></i>`,
     description:
       "Intrusive, disturbing, and overwhelming thoughts or urges about causing harm to your child.",
     linkText: "View Protocol",
@@ -121,7 +121,7 @@ function renderEmergencies(emergencyType) {
     } else {
       article.classList.add("high-distress-card", "cards");
     }
-    article.innerHTML += `<figure>${emergency.icon}</figure> <h3>${emergency.title}</h3> <p>${emergency.description}</p> <hr /> <a href="#" style="color: ${emergency.color}">${emergency.linkText} <i class="fa-solid fa-arrow-right"></i></a> `;
+    article.innerHTML += `<figure>${emergency.icon}</figure> <h3>${emergency.title}</h3> <p>${emergency.description}</p> <hr /> <a href="../../crisisHandling/detail" class="emergency-link" style="color: ${emergency.color}">${emergency.linkText} <i class="fa-solid fa-arrow-right"></i></a> `;
     container.appendChild(article);
   });
 }
