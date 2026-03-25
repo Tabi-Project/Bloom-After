@@ -12,9 +12,9 @@
  *  - Related cards strip at the bottom (reuses lm-card renderer)
  */
 
-import { renderNavbar, initNavbar } from '../../components/navbar.js';
-import { renderFooter }             from '../../components/footer.js';
-import { icons }                    from '../../components/icons.js';
+import { renderNavbar, initNavbar } from '../components/navbar.js';
+import { renderFooter }             from '../components/footer.js';
+import { icons }                    from '../components/icons.js';
 import { lifestyleCards, medicalCards } from '../data/lifestyle.js';
 
 /* ─────────────────────────────────────────────────────────
