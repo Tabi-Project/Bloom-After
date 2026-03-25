@@ -68,12 +68,6 @@ const navGroups = [
         label: "Content Management",
         href:  "/admin/content-manager",  
       },
-      {
-        id:    "user-access",
-        icon:  icons.adminUserAccess,
-        label: "User Access",
-        href:  "#roles-section",
-      },
     ],
   },
   {
@@ -144,10 +138,10 @@ export function renderAdminSidebar({
       </nav>
 
       <div class="sidebar-footer">
-        <a href="/logout" class="sidebar-logout">
+        <button class="sidebar-logout" data-admin-logout type="button" aria-label="Log out">
           <span class="sidebar-nav-icon">${icons.adminLogout}</span>
           <span>Logout</span>
-        </a>
+        </button>
       </div>
     </aside>
 

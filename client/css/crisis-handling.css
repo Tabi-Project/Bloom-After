@@ -1,0 +1,204 @@
+/* Crisis Handling Banner */
+.crisis-handling-hero {
+  position: relative;
+  width: 100%;
+  min-height: 220px;
+  background-size: cover;
+  background-position: center;
+  padding: var(--space-16) 0 var(--space-12) 0;
+
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.search-wrap {
+  width: 100%;
+}
+
+.crisis-handling-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 22, 22, 0.35) 0%,
+    rgba(0, 22, 22, 0.7) 100%
+  );
+}
+
+.crisis-handling-hero-content {
+  position: relative;
+  z-index: 1;
+  padding-block: var(--space-10);
+}
+
+.crisis-handling-hero-title {
+  font-family: var(--font-heading);
+  font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl));
+  font-weight: 900;
+  color: var(--color-white);
+  margin-bottom: var(--space-3);
+}
+
+.crisis-handling-hero-subtitle {
+  font-size: var(--font-size-lg);
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+.crisis-handling-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  align-items: flex-start;
+}
+
+.helpline-container {
+  display: flex;
+  gap: var(--space-8);
+  background-color: #fffaf9;
+  border: 0.5px solid rgba(232, 90, 79, 0.7);
+  border-radius: var(--radius-lg);
+}
+.helpline-container figure {
+  background-color: #fdf2f1;
+  padding: var(--space-3);
+  border-radius: var(--radius-pill);
+  height: 56px;
+  width: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: var(--color-danger);
+}
+
+.helpline-article {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.btn-container {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.btn-emergency {
+  background-color: var(--color-danger);
+  padding: var(--space-3) var(--space-8);
+  color: var(--color-white);
+}
+.btn-text {
+  background-color: var(--color-white);
+  padding: var(--space-3) var(--space-8);
+  color: var(--color-danger);
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.btn-text:hover {
+  background-color: var(--color-danger);
+  color: var(--color-white);
+  opacity: 0.7;
+}
+
+.btn-emergency:hover {
+  background-color: var(--color-danger);
+  color: var(--color-white);
+  opacity: 0.7;
+}
+
+.fa-phone-volume {
+  font-size: var(--font-size-lg);
+}
+.emergencies-section {
+  width: 100%;
+}
+
+.emergencies-section h2 {
+  margin-block: var(--space-6);
+}
+
+.emergencies-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-8);
+}
+.emergencies-container h2 {
+  margin-block: var(--space-6);
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-block: var(--space-6);
+}
+.cards.critical-emergency-card {
+  background-color: #fffaf9;
+  border: 0.5px solid rgba(246, 200, 197, 0.7);
+}
+
+.cards.urgent-situation-card {
+  background-color: #fffcf5;
+  border: 1px solid rgba(255, 235, 197, 0.7);
+}
+.cards.high-distress-card {
+  background-color: var(--color-white);
+  border: 1px solid rgba(168, 203, 183, 0.7);
+}
+
+.cards figure {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  height: 44px;
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+.critical-emergency-card figure {
+  background-color: #fdf2f1;
+  color: var(--color-danger);
+}
+.urgent-situation-card figure {
+  background-color: #fff9e6;
+  color: var(--color-warning);
+}
+.high-distress-card figure {
+  background-color: var(--color-brand-100);
+  color: var(--color-brand-600);
+}
+.cards.emergency-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+hr {
+  opacity: 0.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .helpline-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .btn-container {
+    flex-direction: column;
+    width: 100%;
+  }
+  .emergencies-container {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+}

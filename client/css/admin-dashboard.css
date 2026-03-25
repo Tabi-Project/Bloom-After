@@ -167,6 +167,70 @@
   color: var(--color-text-inverse);
 }
 
+.sidebar-nav-item.has-children {
+  justify-content: space-between;
+}
+
+.sidebar-nav-item.has-children .sidebar-nav-chevron {
+  display: inline-flex;
+  margin-left: auto;
+  transition: transform 0.2s ease;
+  color: var(--sidebar-text-muted, rgba(255, 255, 255, 0.4));
+}
+
+.sidebar-nav-item.has-children[aria-expanded="true"] .sidebar-nav-chevron {
+  transform: rotate(180deg);
+}
+
+.sidebar-subnav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.25s ease;
+}
+
+.sidebar-subnav.open {
+  max-height: 240px;
+}
+
+.sidebar-subnav-item a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4) var(--space-2) calc(var(--space-4) + 28px);
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.65);
+  transition: color 0.15s, background 0.15s;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+
+.sidebar-subnav-item a:hover {
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-subnav-item a.active {
+  color: var(--color-brand-300);
+  font-weight: 600;
+}
+
+.sidebar-subnav-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+.sidebar-subnav-item a.active .sidebar-subnav-dot {
+  opacity: 1;
+  background: var(--color-brand-300);
+}
+
 .sidebar-nav-icon {
   display: flex;
   align-items: center;
@@ -205,6 +269,10 @@
     background-color 0.15s ease-out,
     color 0.15s ease-out;
   text-decoration: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
 }
 
 .sidebar-logout:hover {
@@ -222,6 +290,47 @@
 
 .sidebar-overlay.visible {
   display: block;
+}
+
+.admin-auth-loader {
+  position: fixed;
+  inset: 0;
+  background: rgba(248, 249, 251, 0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.admin-auth-loader.visible {
+  display: flex;
+}
+
+.admin-auth-loader-box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.admin-auth-loader-spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  animation: admin-auth-spin 0.7s linear infinite;
+}
+
+@keyframes admin-auth-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (min-width: 768px) {
