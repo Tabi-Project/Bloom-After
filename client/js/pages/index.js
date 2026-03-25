@@ -5,13 +5,14 @@ import {
   renderTrustBanner,
 } from "../components/features.js";
 import { renderFooter } from "../components/footer.js";
-import { initSuggestDrawer } from "../components/suggest-drawer.js"
+import { initSuggestDrawer } from "../components/suggest-drawer.js";
+import { renderFAQs } from "../components/faqs.js";
 document.getElementById("navbar-root").innerHTML = renderNavbar("home");
-initNavbar()
+initNavbar();
 document.getElementById("features-cards-root").innerHTML =
   renderFeaturesCards();
-document.getElementById("trust-banner-root").innerHTML =
-  renderTrustBanner()
+document.getElementById("trust-banner-root").innerHTML = renderTrustBanner();
 renderTeamMembers();
-document.getElementById("footer-root").innerHTML = renderFooter()
+renderFAQs();
+document.getElementById("footer-root").innerHTML = renderFooter();
 initSuggestDrawer();
