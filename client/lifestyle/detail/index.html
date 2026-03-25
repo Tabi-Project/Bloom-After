@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="" />
+  <title>Lifestyle – Bloom After</title>
+  <link rel="icon" type="image/x-icon" href="../../assets/logo/favicon.png" />
+  <link rel="stylesheet" href="../../css/base.css" />
+  <link rel="stylesheet" href="../../css/layouts.css" />
+  <link rel="stylesheet" href="../../css/components.css" />
+  <link rel="stylesheet" href="../../css/lifestyle.css" />
+  <link rel="stylesheet" href="../../css/lifestyle-detail.css" />
+  <link rel="stylesheet" href="../../css/suggest-drawer.css" />
+</head>
+<body>
+
+  <a href="#main-content" class="visually-hidden">Skip to main content</a>
+
+  <div id="navbar-root"></div>
+
+  <main id="main-content">
+
+    <!-- Breadcrumb -->
+    <nav class="lmd-breadcrumb container" aria-label="Breadcrumb">
+      <a href="/lifestyle" class="lmd-breadcrumb-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Lifestyle &amp; Medical
+      </a>
+      <span class="lmd-breadcrumb-sep" aria-hidden="true">/</span>
+      <span id="lmd-breadcrumb-current" class="lmd-breadcrumb-current"
+            aria-current="page">Loading…</span>
+    </nav>
+
+    <!-- Disclaimer -->
+    <div class="lmd-disclaimer container" role="note">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8"  x2="12"    y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <p>
+        This information is for educational purposes only. Always speak to a
+        qualified healthcare professional before making changes to your
+        treatment or lifestyle.
+      </p>
+    </div>
+
+    <!-- Hero — populated by JS -->
+    <header
+      id="lmd-hero"
+      class="lmd-hero"
+      aria-busy="true"
+      aria-label="Lifestyle intervention header"
+    ></header>
+
+    <!-- Main article — populated by JS -->
+    <article
+      id="lmd-content"
+      class="lmd-content-wrap container"
+      aria-busy="true"
+      aria-live="polite"
+    ></article>
+
+    <!-- Error state -->
+    <div id="lmd-error" class="container lmd-error" hidden
+         role="alert" aria-live="assertive">
+      <h2>Something went wrong</h2>
+      <p class="lmd-error-message"></p>
+      <a href="/lifestyle" class="btn btn-primary">Back to Lifestyle &amp; Medical</a>
+    </div>
+
+    <!-- Crisis strip -->
+    <div id="crisis-root"></div>
+
+    <!-- Related cards -->
+    <section id="lmd-related" class="container lmd-related"
+             aria-live="polite" hidden>
+      <div class="lm-section-divider">
+        <span class="lm-divider-line" aria-hidden="true"></span>
+        <h2 class="lm-section-label">Related Strategies</h2>
+        <span class="lm-divider-line" aria-hidden="true"></span>
+      </div>
+      <div id="lmd-related-grid" class="lm-cards-grid"></div>
+    </section>
+
+  </main>
+
+  <div id="footer-root"></div>
+
+  <script type="module" src="../../js/pages/lifestyle-detail.js"></script>
+
+</body>
+</html>
