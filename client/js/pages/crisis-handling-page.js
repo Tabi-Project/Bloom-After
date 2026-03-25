@@ -72,15 +72,46 @@ const urgentSituations = [
   },
 ];
 
+const highDistress = [
+  {
+    id: 1,
+    title: "Uncontrollable Crying Spells",
+    icon: `<i class="fa-solid fa-cloud-rain"></i>`,
+    description:
+      "Crying for hours, feeling entirely consumed by sadness, and unable to self-soothe.",
+    linkText: "Read Guidance",
+    color: `var(--color-primary)`,
+  },
+
+  {
+    id: 2,
+    title: "Severe Anger or Rage",
+    icon: `<i class="fa-solid fa-fire"></i>`,
+    description:
+      "Uncharacteristic, explosive, or terrifying anger directed towards your partner, baby, or yourself.",
+    linkText: "Read Guidance",
+    color: `var(--color-primary)`,
+  },
+
+  {
+    id: 3,
+    title: "Paralyzing Anxiety",
+    icon: `<i class="fa-solid fa-bolt"></i>`,
+    description:
+      "Unable to make any decisions, constant dread, and a persistent feeling that something terrible will happen.",
+    linkText: "Read Guidance",
+    color: `var(--color-primary)`,
+  },
+];
+
 function renderEmergencies(emergencyType) {
   let container;
   if (emergencyType == criticalEmergencies) {
     container = document.getElementById("critical-emergencies-container");
   } else if (emergencyType == urgentSituations) {
     container = document.getElementById("urgent-situations-container");
-  }
-  else container = document.getElementById("high-distress-container");
-  
+  } else container = document.getElementById("high-distress-container");
+
   emergencyType.forEach((emergency) => {
     const article = document.createElement("article");
     if (emergencyType == criticalEmergencies) {
@@ -97,3 +128,4 @@ function renderEmergencies(emergencyType) {
 
 renderEmergencies(criticalEmergencies);
 renderEmergencies(urgentSituations);
+renderEmergencies(highDistress);

@@ -113,10 +113,17 @@
   font-size: var(--font-size-lg);
 }
 
+.emergencies-section h2 {
+  margin-block: var(--space-6);
+}
+
 .emergencies-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-8);
+}
+.emergencies-container h2 {
+  margin-block: var(--space-6);
 }
 
 .cards {
@@ -129,12 +136,16 @@
 }
 .cards.critical-emergency-card {
   background-color: #fffaf9;
-  border: 0.5px solid rgba(232, 90, 79, 0.7);
+  border: 0.5px solid rgba(246, 200, 197, 0.7);
 }
 
 .cards.urgent-situation-card {
   background-color: #fffcf5;
   border: 1px solid rgba(255, 235, 197, 0.7);
+}
+.cards.high-distress-card {
+  background-color: var(--color-white);
+  border: 1px solid rgba(168, 203, 183, 0.7);
 }
 
 .cards figure {
@@ -150,6 +161,14 @@
 .critical-emergency-card figure {
   background-color: #fdf2f1;
   color: var(--color-danger);
+}
+.urgent-situation-card figure {
+  background-color: #fff9e6;
+  color: var(--color-warning);
+}
+.high-distress-card figure {
+  background-color: var(--color-brand-100);
+  color: var(--color-brand-600);
 }
 
 hr {
