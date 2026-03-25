@@ -1,4 +1,4 @@
-const LOCAL_API_BASE_URL = "https://bloom-after.onrender.com";
+const LOCAL_API_BASE_URL = "http://localhost:3000";
 
 // Set your deployed backend URL here once.
 // Example: "https://bloom-after-api.onrender.com"

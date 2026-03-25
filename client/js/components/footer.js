@@ -42,6 +42,10 @@ const footerLinks = [
 ];
 
 export const renderFooter = () => {
+  if (window.location.pathname.startsWith('/admin')) {
+    return '';
+  }
+
   return `
     <footer class="main-footer">
       <div class="emergency-banner">
