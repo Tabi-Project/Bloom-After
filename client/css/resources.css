@@ -1,11 +1,11 @@
-/* Resource Hub Hero Banner */
 .resources-hero {
   position: relative;
   width: 100%;
-  min-height: 220px;
+  min-height: 280px;
   background-size: cover;
   background-position: center;
-  padding-top: var(--space-6);
+  margin-top: calc(var(--nav-height) - 1px);
+  padding-block: var(--space-2) var(--space-16);
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -30,14 +30,15 @@
 
 .resources-hero-title {
   font-family: var(--font-heading);
-  font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl));
+  font-size: clamp(var(--font-size-2xl), 4vw, var(--font-size-4xl));
   font-weight: 900;
   color: var(--color-white);
   margin-bottom: var(--space-3);
+  line-height: 1.2;
 }
 
 .resources-hero-subtitle {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   color: rgba(255, 255, 255, 0.85);
   max-width: 600px;
   line-height: 1.5;
@@ -45,7 +46,6 @@
 
 /* Resource Grid */
 .resources-grid-section {
-  /* padding-top: var(--space-2); */
   padding-bottom: var(--space-10);
 }
 
