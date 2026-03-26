@@ -14,6 +14,7 @@ export function renderBulletItem(text) {
 
 // Article renderer
 export function renderBlock(block) {
+  const blockImageUrl = block.imageUrl || block.image_url || '';
   switch (block.type) {
     case 'paragraph':
       return `<p class="content-paragraph">${block.text}</p>`;
@@ -28,7 +29,7 @@ export function renderBlock(block) {
             </ul>
           </div>
           <figure class="content-section-image">
-            <img src="${block.image_url}" alt="" loading="lazy" />
+            <img src="${blockImageUrl}" alt="" loading="lazy" />
           </figure>
         </section>
       `;
@@ -36,7 +37,7 @@ export function renderBlock(block) {
       return `
         <section class="content-section content-section-image-text">
           <figure class="content-section-image">
-            <img src="${block.image_url}" alt="" loading="lazy" />
+            <img src="${blockImageUrl}" alt="" loading="lazy" />
           </figure>
           <div class="content-section-text">
             <h2 class="content-section-heading">${block.heading}</h2>
@@ -195,7 +196,8 @@ export function renderMedia(resource) {
   }
 
   // We are pulling the title out now too!
-  const { title, file_url, image_url, structured_content } = resource;
+  const { title, file_url, imageUrl, image_url, structured_content } = resource;
+  const mediaImageUrl = imageUrl || image_url || '';
   const mediaFormat = resource.media_format || 'audio'; 
   const paragraphs = structured_content.summary_paragraphs || [];
 
@@ -206,7 +208,7 @@ export function renderMedia(resource) {
   } else if (mediaFormat === 'video') {
     playerHTML = `
       <div class="video-player-wrapper">
-        <video controls class="media-player video-player" poster="${image_url}">
+        <video controls class="media-player video-player" poster="${mediaImageUrl}">
           <source src="${file_url}" type="video/mp4">
           Your browser does not support the video element.
         </video>
@@ -215,7 +217,7 @@ export function renderMedia(resource) {
   } else if (mediaFormat === 'podcast') {
     playerHTML = `
       <div class="podcast-player-wrapper">
-        <img src="${image_url}" alt="${title}" class="podcast-cover" loading="lazy" />
+        <img src="${mediaImageUrl}" alt="${title}" class="podcast-cover" loading="lazy" />
         <div class="podcast-info">
           <span class="podcast-badge">Podcast Episode</span>
           <h3 class="podcast-title">${title}</h3>

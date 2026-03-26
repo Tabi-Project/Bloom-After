@@ -90,7 +90,7 @@ export function renderAdminSidebar({
   totalPending = 0,
   currentRole  = "Admin",
 } = {}) {
-  const logoSrc = "../assets/logo/favicon.png";
+  const logoSrc = "/assets/logo/favicon.png";
 
   const moderationChildIds = [
     "moderation-stories",

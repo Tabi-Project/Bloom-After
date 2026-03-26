@@ -695,7 +695,12 @@ function bindEditorEvents() {
       setImageUploadState(true, imageUploadStatus);
       try {
         const res = await api.post('/api/v1/admin/upload/image', { image: dataUrl });
-        const uploadedUrl = res?.data?.image_url || '';
+        const uploadedUrl = getFirstNonEmptyString(
+          res?.data?.image_url,
+          res?.data?.imageUrl,
+          res?.image_url,
+          res?.imageUrl,
+        );
         if (!uploadedUrl) {
           throw new Error('Missing uploaded URL');
         }
@@ -784,6 +789,15 @@ function splitLines(value = '') {
     .split('\n')
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function getFirstNonEmptyString(...values) {
+  for (const value of values) {
+    if (typeof value === 'string' && value.trim()) {
+      return value.trim();
+    }
+  }
+  return '';
 }
 
 function splitParagraphs(value = '') {
@@ -905,7 +919,7 @@ function toEditorFormData(raw) {
       article_blocks: toArticleBlocksText(structured, articleBody),
       content_type: selectedType,
       theme: raw.theme || '',
-      image: raw.image_url || raw.imageUrl || '',
+      image: getFirstNonEmptyString(raw.imageUrl, raw.image_url, raw.cover_image, raw.coverImage),
       source_url: raw.source_url || raw.sourceUrl || '',
       read_time: raw.read_time || raw.readTime || '',
       cta_label: raw.cta_label || raw.ctaLabel || 'Read more',
@@ -979,13 +993,21 @@ function toApiPayload(data) {
       content: articleContent,
       theme: data.theme,
       content_type: selectedType,
+      contentType: selectedType,
       image_url: data.image,
+      imageUrl: data.image,
       source_url: data.source_url,
+      sourceUrl: data.source_url,
       file_url: data.file_url,
+      fileUrl: data.file_url,
       media_format: data.media_format || 'audio',
+      mediaFormat: data.media_format || 'audio',
       read_time: data.read_time,
+      readTime: data.read_time,
       cta_label: data.cta_label || 'Read more',
+      ctaLabel: data.cta_label || 'Read more',
       structured_content,
+      structuredContent: structured_content,
       status: normalizeStatus(data.status),
       featured: Boolean(data.featured),
     };
@@ -1086,7 +1108,12 @@ async function saveEntry() {
       }
     }
     isDirty = false;
-    formData = { ...formData, ...data };
+    const savedRaw = res?.data?.resource || res?.data?.ngo || res?.data?.clinic || null;
+    if (savedRaw) {
+      formData = { ...formData, ...toEditorFormData(savedRaw) };
+    } else {
+      formData = { ...formData, ...data };
+    }
     showFeedback(feedback, 'Saved successfully.', 'success');
   } catch (_) {
     showFeedback(feedback, 'Failed to save. Please try again.', 'error');

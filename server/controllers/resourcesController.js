@@ -117,7 +117,8 @@ const normalizeResource = (resource) => {
     content: getString(resource.content),
     theme: getString(resource.theme),
     content_type: contentType,
-    image_url: getString(resource.image_url, getString(resource.imageUrl)),
+    imageUrl: getString(resource.imageUrl, getString(resource.image_url, getString(resource.cover_image))),
+    image_url: getString(resource.imageUrl, getString(resource.image_url, getString(resource.cover_image))),
     date: normalizeDate(resource.date, resource.createdAt),
     read_time: getString(resource.read_time, getString(resource.readTime)),
     cta_label: getString(resource.cta_label, getString(resource.ctaLabel, "Read more")),
@@ -208,7 +209,7 @@ const isValidBlock = (block) => {
       Array.isArray(block.items) &&
       block.items.length > 0 &&
       block.items.every(isNonEmptyString) &&
-      isNonEmptyString(block.image_url)
+      isNonEmptyString(block.imageUrl || block.image_url)
     );
   }
 
@@ -370,7 +371,10 @@ const toAdminResourcePayload = (body, existing = null) => {
     content,
     theme: getString(body?.theme, existing?.theme || "general"),
     contentType,
-    imageUrl: getString(body?.imageUrl || body?.image_url, existing?.imageUrl || ""),
+    imageUrl: getString(
+      body?.imageUrl || body?.image_url || body?.cover_image,
+      existing?.imageUrl || existing?.image_url || existing?.cover_image || ""
+    ),
     sourceUrl,
     fileUrl,
     mediaFormat,
@@ -403,7 +407,7 @@ export const getALLResources = async (req, res) => {
         .limit(limit)
         .toArray(),
     ]);
-
+    
     const totalPages = totalResources > 0 ? Math.ceil(totalResources / limit) : 0;
 
     res.status(200).json({

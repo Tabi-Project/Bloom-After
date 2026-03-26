@@ -1,5 +1,5 @@
 function resolveLogoImage(fileName) {
-  return new URL(`../../assets/logo/${fileName}`, import.meta.url).href;
+  return new URL(`/assets/logo/${fileName}`, import.meta.url).href;
 }
 
 function renderNavbar(activePage = '') {

@@ -31,11 +31,14 @@ export function createResourceCard(resource) {
     summary = '',
     theme = 'General',
     content_type = 'article',
+    imageUrl = '',
     image_url = '',
     date = '',
     read_time = '',
     cta_label = 'Read more'
   } = resource;
+
+  const resourceImageUrl = imageUrl || image_url;
 
   const icon        = CONTENT_TYPE_ICONS[content_type] || CONTENT_TYPE_ICONS['article'];
   const typeLabel   = CONTENT_TYPE_LABELS[content_type] || content_type;
@@ -47,7 +50,7 @@ export function createResourceCard(resource) {
       <a href="${href}" class="resource-card-image-link" tabindex="-1" aria-hidden="true">
         <figure class="resource-card-image">
           <img
-            src="${image_url}"
+            src="${resourceImageUrl}"
             alt=""
             loading="lazy"
             width="400"
