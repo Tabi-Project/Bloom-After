@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 
+const RESOURCE_CONTENT_TYPES = ['article', 'infographic', 'myth-busting', 'media'];
+const RESOURCE_MEDIA_FORMATS = ['audio', 'podcast', 'video'];
+
 const resourceSchema = new mongoose.Schema(
   {
     title: {
@@ -21,6 +24,7 @@ const resourceSchema = new mongoose.Schema(
     contentType: {
       type: String,
       required: true,
+      enum: RESOURCE_CONTENT_TYPES,
     },
     imageUrl: {
       type: String,
@@ -35,10 +39,17 @@ const resourceSchema = new mongoose.Schema(
       required: true,
     },
     structuredContent: {
-      language: {
-        type: String,
-        default: 'en',
-      },
+      type: mongoose.Schema.Types.Mixed,
+      default: null,
+    },
+    fileUrl: {
+      type: String,
+      default: '',
+    },
+    mediaFormat: {
+      type: String,
+      enum: RESOURCE_MEDIA_FORMATS,
+      default: 'audio',
     },
     sourceUrl: {
       type: String,
@@ -68,3 +79,4 @@ const resourceSchema = new mongoose.Schema(
 const Resource = mongoose.model('Resource', resourceSchema);
 
 export default Resource;
+export { RESOURCE_CONTENT_TYPES, RESOURCE_MEDIA_FORMATS };

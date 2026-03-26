@@ -13,7 +13,27 @@ const TYPE_CONFIG = {
   resource: {
     label:    'Resource Hub',
     backUrl:  '/admin/content-manager?filter=resource',
-    fields:   ['title', 'summary', 'content_type', 'theme', 'body', 'image', 'source_url', 'read_time', 'tags'],
+    fields:   [
+      'title',
+      'summary',
+      'content_type',
+      'theme',
+      'image',
+      'source_url',
+      'read_time',
+      'cta_label',
+      'body',
+      'article_blocks',
+      'infographic_title',
+      'infographic_tagline',
+      'infographic_items',
+      'myths',
+      'facts',
+      'media_format',
+      'file_url',
+      'summary_paragraphs',
+      'tags',
+    ],
     apiBase:  '/api/v1/admin/resources',
   },
   ngo: {
@@ -55,8 +75,15 @@ const FIELD_DEFS = {
     label: 'Full content',
     type:  'textarea',
     rows:  10,
-    placeholder: 'Full article or resource body…',
-    hint:  'Supports plain text. Paragraphs separated by blank lines.',
+    placeholder: 'Full article body…',
+    hint:  'Used for article resources as the main content.',
+  },
+  article_blocks: {
+    label: 'Article blocks',
+    type: 'textarea',
+    rows: 8,
+    placeholder: 'One paragraph per block. Separate paragraphs with a blank line.',
+    hint: 'For article type. Each paragraph becomes a structured paragraph block.',
   },
   content_type: {
     label:   'Content type',
@@ -66,10 +93,68 @@ const FIELD_DEFS = {
       { value: '',              label: 'Choose type…'       },
       { value: 'article',       label: 'Article'            },
       { value: 'infographic',   label: 'Infographic'        },
-      { value: 'audio',         label: 'Audio Summary'      },
-      { value: 'podcast',       label: 'Podcast / Media'    },
+      { value: 'media',         label: 'Media'              },
       { value: 'myth-busting',  label: 'Myth-Busting Guide' },
     ],
+  },
+  cta_label: {
+    label: 'CTA label',
+    type: 'text',
+    placeholder: 'e.g. Read more, Listen now, View guide',
+    hint: 'Button label shown on resource cards.',
+  },
+  infographic_title: {
+    label: 'Infographic title',
+    type: 'text',
+    placeholder: 'Main infographic headline',
+  },
+  infographic_tagline: {
+    label: 'Infographic tagline',
+    type: 'text',
+    placeholder: 'Short closing line',
+  },
+  infographic_items: {
+    label: 'Infographic items',
+    type: 'textarea',
+    rows: 6,
+    placeholder: 'icon | label\nicon | label',
+    hint: 'One item per line in the format: icon | label',
+  },
+  myths: {
+    label: 'Myths',
+    type: 'textarea',
+    rows: 6,
+    placeholder: 'Myth 1 | Description\nMyth 2 | Description',
+    hint: 'One myth per line in the format: label | description',
+  },
+  facts: {
+    label: 'Facts',
+    type: 'textarea',
+    rows: 6,
+    placeholder: 'Fact 1 | Description\nFact 2 | Description',
+    hint: 'One fact per line in the format: label | description',
+  },
+  media_format: {
+    label: 'Media format',
+    type: 'select',
+    options: [
+      { value: 'audio', label: 'Audio' },
+      { value: 'podcast', label: 'Podcast' },
+      { value: 'video', label: 'Video' },
+    ],
+  },
+  file_url: {
+    label: 'Media file URL',
+    type: 'url',
+    placeholder: 'https://…',
+    hint: 'Direct audio/video file URL used by the media player.',
+  },
+  summary_paragraphs: {
+    label: 'Media summary paragraphs',
+    type: 'textarea',
+    rows: 6,
+    placeholder: 'One paragraph per line',
+    hint: 'Used beneath the media player. Enter one paragraph per line.',
   },
   theme: {
     label:   'Theme',
@@ -304,11 +389,66 @@ async function fetchEntry(id) {
   return toEditorFormData(raw);
 }
 
+function getNormalizedResourceType(data = {}) {
+  const raw = String(data.content_type || '').trim().toLowerCase();
+  if (!raw) return 'article';
+  if (raw === 'audio' || raw === 'podcast' || raw === 'video') return 'media';
+  if (raw === 'myth_busting') return 'myth-busting';
+  return raw;
+}
+
+function getVisibleFields(fields, data = {}) {
+  if (contentType !== 'resource') return fields;
+
+  const selectedType = getNormalizedResourceType(data);
+  const typeSpecificFields = {
+    article: ['body', 'article_blocks'],
+    infographic: ['infographic_title', 'infographic_tagline', 'infographic_items'],
+    'myth-busting': ['myths', 'facts'],
+    media: ['media_format', 'file_url', 'summary_paragraphs'],
+  };
+
+  const sharedFields = fields.filter((field) => ![
+    'body',
+    'article_blocks',
+    'infographic_title',
+    'infographic_tagline',
+    'infographic_items',
+    'myths',
+    'facts',
+    'media_format',
+    'file_url',
+    'summary_paragraphs',
+  ].includes(field));
+
+  return [...sharedFields, ...(typeSpecificFields[selectedType] || [])];
+}
+
+function isFieldRequired(key, data = {}) {
+  if (contentType !== 'resource') {
+    return Boolean(FIELD_DEFS[key]?.required);
+  }
+
+  const selectedType = getNormalizedResourceType(data);
+  const baseRequired = ['title', 'summary', 'content_type', 'theme', 'image', 'source_url', 'read_time'];
+
+  if (baseRequired.includes(key)) return true;
+
+  const requiredByType = {
+    article: ['body', 'article_blocks'],
+    infographic: ['infographic_title', 'infographic_tagline', 'infographic_items'],
+    'myth-busting': ['myths', 'facts'],
+    media: ['file_url', 'summary_paragraphs', 'media_format'],
+  };
+
+  return (requiredByType[selectedType] || []).includes(key);
+}
+
 // ── Render editor ──────────────────────────────────────────────────────────────
 
 function renderEditor() {
   const root   = document.getElementById('cm-editor-root');
-  const fields = cfg.fields;
+  const fields = getVisibleFields(cfg.fields, formData);
 
   const fieldsHtml = fields.map((key) => {
     const def = FIELD_DEFS[key];
@@ -392,8 +532,9 @@ function renderEditor() {
 
 function renderField(key, def, value = '') {
   const id       = `field-${key}`;
-  const required = def.required ? 'required' : '';
-  const reqMark  = def.required ? `<span class="cm-required" aria-hidden="true">*</span>` : '';
+  const requiredByRule = isFieldRequired(key, formData);
+  const required = requiredByRule ? 'required' : '';
+  const reqMark  = requiredByRule ? `<span class="cm-required" aria-hidden="true">*</span>` : '';
   const hint     = def.hint ? `<p class="cm-field-hint">${def.hint}</p>` : '';
 
   // Special handling for image field: allow URL or file upload with preview
@@ -504,6 +645,16 @@ function renderEditorSkeleton() {
 
 function bindEditorEvents() {
   const form = document.getElementById('cm-editor-form');
+
+  const typeSelect = document.getElementById('field-content_type');
+  if (typeSelect && contentType === 'resource') {
+    typeSelect.addEventListener('change', () => {
+      const currentData = collectFormData();
+      formData = { ...formData, ...currentData, content_type: getNormalizedResourceType(currentData) };
+      renderEditor();
+      bindEditorEvents();
+    });
+  }
 
   // Track dirty state
   form.addEventListener('input', () => { isDirty = true; });
@@ -635,18 +786,139 @@ function splitLines(value = '') {
     .filter(Boolean);
 }
 
+function splitParagraphs(value = '') {
+  return String(value)
+    .split(/\n\s*\n/g)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function parsePipeList(value = '') {
+  return splitLines(value)
+    .map((line) => {
+      const [left, ...rest] = line.split('|');
+      const label = String(left || '').trim();
+      const description = rest.join('|').trim();
+      if (!label || !description) return null;
+      return { label, description };
+    })
+    .filter(Boolean);
+}
+
+function parseInfographicItems(value = '') {
+  return splitLines(value)
+    .map((line) => {
+      const [left, ...rest] = line.split('|');
+      const icon = String(left || '').trim();
+      const label = rest.join('|').trim();
+      if (!icon || !label) return null;
+      return { icon, label };
+    })
+    .filter(Boolean);
+}
+
+function toPipeList(items = []) {
+  if (!Array.isArray(items)) return '';
+  return items
+    .map((item) => {
+      if (!item || typeof item !== 'object') return '';
+      const label = String(item.label || '').trim();
+      const description = String(item.description || '').trim();
+      if (!label || !description) return '';
+      return `${label} | ${description}`;
+    })
+    .filter(Boolean)
+    .join('\n');
+}
+
+function toInfographicLines(items = []) {
+  if (!Array.isArray(items)) return '';
+  return items
+    .map((item) => {
+      if (!item || typeof item !== 'object') return '';
+      const icon = String(item.icon || '').trim();
+      const label = String(item.label || '').trim();
+      if (!icon || !label) return '';
+      return `${icon} | ${label}`;
+    })
+    .filter(Boolean)
+    .join('\n');
+}
+
+function toArticleBlocksText(structuredContent, fallbackBody = '') {
+  if (!Array.isArray(structuredContent) || structuredContent.length === 0) {
+    return fallbackBody || '';
+  }
+
+  const paragraphs = structuredContent
+    .filter((block) => block?.type === 'paragraph' && typeof block?.text === 'string')
+    .map((block) => block.text.trim())
+    .filter(Boolean);
+
+  return paragraphs.join('\n\n') || fallbackBody || '';
+}
+
+function buildResourceStructuredContent(data = {}) {
+  const selectedType = getNormalizedResourceType(data);
+
+  if (selectedType === 'article') {
+    return splitParagraphs(data.article_blocks || data.body).map((text) => ({
+      type: 'paragraph',
+      text,
+    }));
+  }
+
+  if (selectedType === 'infographic') {
+    return {
+      title: String(data.infographic_title || '').trim(),
+      tagline: String(data.infographic_tagline || '').trim(),
+      items: parseInfographicItems(data.infographic_items),
+    };
+  }
+
+  if (selectedType === 'myth-busting') {
+    return {
+      myths: parsePipeList(data.myths),
+      facts: parsePipeList(data.facts),
+    };
+  }
+
+  return {
+    summary_paragraphs: splitLines(data.summary_paragraphs),
+  };
+}
+
 function toEditorFormData(raw) {
   if (contentType === 'resource') {
+    const selectedType = getNormalizedResourceType({
+      content_type: raw.content_type || raw.contentType || '',
+    });
+
+    const structured = raw.structured_content || raw.structuredContent || null;
+    const articleBody = String(raw.content || raw.summary || '').trim();
+
     return {
       type: 'resource',
       title: raw.title || '',
       summary: raw.summary || '',
-      body: raw.content || raw.summary || '',
-      content_type: raw.content_type || raw.contentType || '',
+      body: articleBody,
+      article_blocks: toArticleBlocksText(structured, articleBody),
+      content_type: selectedType,
       theme: raw.theme || '',
       image: raw.image_url || raw.imageUrl || '',
       source_url: raw.source_url || raw.sourceUrl || '',
       read_time: raw.read_time || raw.readTime || '',
+      cta_label: raw.cta_label || raw.ctaLabel || 'Read more',
+      infographic_title: structured?.title || '',
+      infographic_tagline: structured?.tagline || '',
+      infographic_items: toInfographicLines(structured?.items),
+      myths: toPipeList(structured?.myths),
+      facts: toPipeList(structured?.facts),
+      media_format: raw.media_format || raw.mediaFormat || 'audio',
+      file_url: raw.file_url || raw.fileUrl || raw.source_url || raw.sourceUrl || '',
+      summary_paragraphs: Array.isArray(structured?.summary_paragraphs)
+        ? structured.summary_paragraphs.join('\n')
+        : '',
       status: normalizeStatus(raw.status || (raw.published ? 'published' : 'draft')),
       featured: Boolean(raw.featured),
       updatedAt: raw.updatedAt,
@@ -695,15 +967,25 @@ function toEditorFormData(raw) {
 
 function toApiPayload(data) {
   if (contentType === 'resource') {
+    const selectedType = getNormalizedResourceType(data);
+    const structured_content = buildResourceStructuredContent(data);
+    const articleContent = selectedType === 'article'
+      ? String(data.body || data.article_blocks || '').trim()
+      : String(data.summary || '').trim();
+
     return {
       title: data.title,
       summary: data.summary,
-      content: data.body,
+      content: articleContent,
       theme: data.theme,
-      content_type: data.content_type,
+      content_type: selectedType,
       image_url: data.image,
       source_url: data.source_url,
+      file_url: data.file_url,
+      media_format: data.media_format || 'audio',
       read_time: data.read_time,
+      cta_label: data.cta_label || 'Read more',
+      structured_content,
       status: normalizeStatus(data.status),
       featured: Boolean(data.featured),
     };
@@ -773,8 +1055,8 @@ async function saveEntry() {
 
   // Basic required field check
   const missing = cfg.fields.filter((key) => {
-    const def = FIELD_DEFS[key];
-    return def?.required && !data[key];
+    if (!getVisibleFields(cfg.fields, data).includes(key)) return false;
+    return isFieldRequired(key, data) && !data[key];
   });
 
   if (missing.length) {

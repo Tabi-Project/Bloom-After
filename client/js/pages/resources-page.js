@@ -1,5 +1,4 @@
-// import { fetchResources } from "../data/resources-api.js";
-import { fetchResources } from "../data/resources.js";
+import { fetchResources } from "../data/resources-api.js";
 import { createResourceCard, createSkeletonCard } from "../components/resourceCard.js";
 import { renderNavbar, initNavbar } from "../components/navbar.js";
 import { renderFooter } from "../components/footer.js";
