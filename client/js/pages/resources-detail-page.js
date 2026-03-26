@@ -1,5 +1,4 @@
-// import { fetchResourceById } from "../data/resources-api.js";
-import { fetchResourceById } from "../data/resources.js";
+import { fetchResourceById } from "../data/resources-api.js";
 import { renderArticle, renderInfographic, renderMedia, renderMythBusting } from "../components/renderers.js";
 import { renderRelatedResources } from "../components/relatedResources.js";
 import { renderCrisisStrip } from "../components/crisisStrip.js";
