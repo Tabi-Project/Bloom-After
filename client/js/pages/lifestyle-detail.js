@@ -17,10 +17,7 @@ import { renderFooter }             from '../components/footer.js';
 import { icons }                    from '../components/icons.js';
 import { lifestyleCards, medicalCards } from '../data/lifestyle.js';
 
-/* ─────────────────────────────────────────────────────────
-   Extended detail data keyed by card id.
-   Add / expand entries here as content grows.
-   ───────────────────────────────────────────────────────── */
+
 const detailData = {
   sleep: {
     heroImage: 'https://images.unsplash.com/photo-1520206183501-b80df61043c2?w=1200&q=80',
