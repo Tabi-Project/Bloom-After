@@ -325,7 +325,7 @@ export function renderQueuesAndContent(
           ${renderActionRow(
             icons.contentCreate,
             "Create Resource Article",
-            "editor?type=resource",
+            "/admin/content-manager/editor?type=resource",
             "create-resource-action",
           )}
 

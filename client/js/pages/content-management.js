@@ -220,7 +220,7 @@ function renderTableRow(item) {
     ? new Date(item.updatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
     : '';
   const statusCls = `cm-status-${escHtml(item.status)}`;
-  const editUrl  = `editor?type=${escHtml(item.type)}&id=${escHtml(id)}`;
+  const editUrl  = `/admin/content-manager/editor?type=${escHtml(item.type)}&id=${escHtml(id)}`;
 
   return `
     <tr class="cm-table-row" data-id="${escHtml(id)}" data-status="${escHtml(item.status)}">

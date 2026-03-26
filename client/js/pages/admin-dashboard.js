@@ -210,7 +210,7 @@ function bindDraftCard() {
     const draftType = btn.dataset.draftType || "resource";
 
     if (!draftId) {
-      window.location.assign(`editor?type=${encodeURIComponent(draftType)}`);
+      window.location.assign(`/admin/content-manager/editor?type=${encodeURIComponent(draftType)}`);
       return;
     }
 
