@@ -1,204 +1,227 @@
-/* Crisis Handling Banner */
-.crisis-handling-hero {
-  position: relative;
-  width: 100%;
-  min-height: 220px;
-  background-size: cover;
-  background-position: center;
-  padding: var(--space-16) 0 var(--space-12) 0;
-
+.helpline-banner {
   display: flex;
-  align-items: flex-end;
-  overflow: hidden;
+  align-items: center;
+  gap: var(--space-8);
+  background: var(--color-brand-50);
+  border: 1px solid var(--color-brand-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-12);
 }
-.search-wrap {
+
+.helpline-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.helpline-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.helpline-content {
+  flex: 1;
+}
+
+.helpline-content h2 {
+  font-size: var(--font-size-2xl);
+  color: var(--color-brand-900);
+  margin-bottom: var(--space-2);
+  font-family: var(--font-heading);
+}
+
+.helpline-content p {
+  font-size: var(--font-size-base);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-5);
+  max-width: 600px;
+}
+
+.helpline-actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.ch-section {
+  margin-bottom: var(--space-16);
+}
+
+.ch-section-title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-2xl);
+  color: var(--color-brand-900);
+  margin-bottom: var(--space-6);
+}
+
+.ch-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+.ch-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  gap: var(--space-4);
+  text-align: left;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--color-border);
+  border-left-width: 4px;
+  cursor: pointer;
   width: 100%;
 }
 
-.crisis-handling-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 22, 22, 0.35) 0%,
-    rgba(0, 22, 22, 0.7) 100%
-  );
+.ch-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 38, 38, 0.08);
 }
 
-.crisis-handling-hero-content {
-  position: relative;
-  z-index: 1;
-  padding-block: var(--space-10);
+.ch-card--critical { border-left-color: var(--color-danger); }
+.ch-card--urgent { border-left-color: var(--color-warning); }
+.ch-card--distress { border-left-color: var(--color-primary); }
+
+.ch-card-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
 }
 
-.crisis-handling-hero-title {
+.ch-card--critical .ch-card-icon { background: #fdf2f1; color: var(--color-danger); }
+.ch-card--urgent .ch-card-icon { background: #fff9e6; color: var(--color-warning); }
+.ch-card--distress .ch-card-icon { background: var(--color-brand-50); color: var(--color-primary); }
+
+.ch-card-title {
   font-family: var(--font-heading);
-  font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl));
-  font-weight: 900;
-  color: var(--color-white);
+  font-size: var(--font-size-lg);
+  color: var(--color-brand-900);
+  margin: 0;
+}
+
+.ch-card-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.ch-card-cta {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: auto;
+}
+
+.ch-card--critical .ch-card-cta { color: var(--color-danger); }
+.ch-card--urgent .ch-card-cta { color: #d99c00; }
+.ch-card--distress .ch-card-cta { color: var(--color-primary); }
+
+
+.ch-modal-content {
+  max-width: 600px;
+  padding: var(--space-8) var(--space-10);
+  border-top: 6px solid var(--color-primary);
+}
+
+.ch-modal-header {
+  margin-bottom: var(--space-6);
+}
+
+.ch-modal-tag {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  align-self: flex-start;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 100px;
   margin-bottom: var(--space-3);
 }
 
-.crisis-handling-hero-subtitle {
-  font-size: var(--font-size-lg);
-  color: rgba(255, 255, 255, 0.85);
-  max-width: 600px;
-  line-height: 1.5;
+.ch-modal-title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-2xl);
+  color: var(--color-brand-900);
+  line-height: 1.2;
 }
 
-.crisis-handling-content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-12);
-  align-items: flex-start;
-}
-
-.helpline-container {
-  display: flex;
-  gap: var(--space-8);
-  background-color: #fffaf9;
-  border: 0.5px solid rgba(232, 90, 79, 0.7);
-  border-radius: var(--radius-lg);
-}
-.helpline-container figure {
-  background-color: #fdf2f1;
-  padding: var(--space-3);
-  border-radius: var(--radius-pill);
-  height: 56px;
-  width: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  color: var(--color-danger);
-}
-
-.helpline-article {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  align-items: flex-start;
-}
-
-.btn-container {
-  display: flex;
-  gap: var(--space-4);
-}
-
-.btn-emergency {
-  background-color: var(--color-danger);
-  padding: var(--space-3) var(--space-8);
-  color: var(--color-white);
-}
-.btn-text {
-  background-color: var(--color-white);
-  padding: var(--space-3) var(--space-8);
-  color: var(--color-danger);
-  display: flex;
-  justify-content: center;
-  gap: var(--space-2);
-  align-items: center;
-}
-
-.btn-text:hover {
-  background-color: var(--color-danger);
-  color: var(--color-white);
-  opacity: 0.7;
-}
-
-.btn-emergency:hover {
-  background-color: var(--color-danger);
-  color: var(--color-white);
-  opacity: 0.7;
-}
-
-.fa-phone-volume {
-  font-size: var(--font-size-lg);
-}
-.emergencies-section {
-  width: 100%;
-}
-
-.emergencies-section h2 {
-  margin-block: var(--space-6);
-}
-
-.emergencies-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-8);
-}
-.emergencies-container h2 {
-  margin-block: var(--space-6);
-}
-
-.cards {
+.ch-modal-steps {
+  list-style: none;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  margin-block: var(--space-6);
-}
-.cards.critical-emergency-card {
-  background-color: #fffaf9;
-  border: 0.5px solid rgba(246, 200, 197, 0.7);
 }
 
-.cards.urgent-situation-card {
-  background-color: #fffcf5;
-  border: 1px solid rgba(255, 235, 197, 0.7);
-}
-.cards.high-distress-card {
-  background-color: var(--color-white);
-  border: 1px solid rgba(168, 203, 183, 0.7);
-}
-
-.cards figure {
-  padding: var(--space-3);
+.ch-modal-step-item {
+  display: flex;
+  gap: var(--space-4);
+  background: var(--color-bg-muted);
+  padding: var(--space-5);
   border-radius: var(--radius-md);
-  height: 44px;
-  width: 44px;
+  align-items: flex-start;
+}
+
+.ch-modal-step-number {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--color-surface);
+  color: var(--color-brand-900);
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.ch-modal-step-text {
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  line-height: 1.5;
   margin: 0;
 }
-.critical-emergency-card figure {
-  background-color: #fdf2f1;
-  color: var(--color-danger);
-}
-.urgent-situation-card figure {
-  background-color: #fff9e6;
-  color: var(--color-warning);
-}
-.high-distress-card figure {
-  background-color: var(--color-brand-100);
-  color: var(--color-brand-600);
-}
-.cards.emergency-link {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
 
-hr {
-  opacity: 0.5;
-}
-
-/* Responsive Design */
 @media (max-width: 768px) {
-  .helpline-container {
+  .helpline-banner {
     flex-direction: column;
-    align-items: flex-start;
+    text-align: center;
+    padding: var(--space-6);
   }
-  .btn-container {
-    flex-direction: column;
-    width: 100%;
+  
+  .helpline-actions {
+    justify-content: center;
   }
-  .emergencies-container {
+  
+  .ch-grid {
     grid-template-columns: 1fr;
-    gap: var(--space-2);
+  }
+
+  .ch-modal-content {
+    padding: var(--space-6) var(--space-5);
   }
 }
