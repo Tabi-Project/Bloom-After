@@ -23,7 +23,7 @@ function renderNavbar(activePage = '') {
           <nav class="navbar-dropdown-menu" aria-label="Get Support">
             <a href="/clinics" class="${activePage === 'clinics' ? 'active' : ''}">Clinics & Hospitals</a>
             <a href="/ngos" class="${activePage === 'ngos' ? 'active' : ''}">NGO Directory</a>
-             <a href="/crisis-handling" class="${activePage === 'crisis-handling' ? 'active' : ''}">Crisis Handling</a>
+              <a href="/crisis-handling" class="${activePage === 'crisis-handling' ? 'active' : ''}">Crisis Handling</a>
           </nav>
         </span>
 
@@ -64,6 +64,7 @@ function renderNavbar(activePage = '') {
       <span class="mobile-menu-group-label">Get Support</span>
       <a href="/clinics" class="mobile-menu-link">Clinics & Hospitals</a>
       <a href="/ngos" class="mobile-menu-link">NGO Directory</a>
+      <a href="/crisis-handling" class="mobile-menu-link">Crisis Handling</a>
 
       <span class="mobile-menu-group-label">Community</span>
       <a href="/stories" class="mobile-menu-link">Stories</a>

@@ -24,7 +24,7 @@ const footerLinks = [
       { text: 'Find a Clinic', href: '/clinics' },
       // { text: 'Specialists', href: 'specialists.html' },
       { text: 'NGO Directory', href: '/ngos' },
-      { text: 'Visit our Crisis Handling Hub', href: '/crisis-handling' },
+      { text: 'Crisis Handling Hub', href: '/crisis-handling' },
     ],
   },
   {
@@ -33,7 +33,7 @@ const footerLinks = [
       { text: 'Stories', href: '/stories' },
       { text: 'Share Your Story', href: '/stories/editor' },
       // { text: 'Podcasts & Media', href: '/media' },
-     { text: 'Lifestyle Guides', href: '/lifestyle' },
+      { text: 'Lifestyle Guides', href: '/lifestyle' },
     ],
   },
   {
