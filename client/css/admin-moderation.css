@@ -1,6 +1,4 @@
-
 /* Page header  */
-
 .mod-page-header {
   display: flex;
   align-items: flex-start;
@@ -25,7 +23,7 @@
   font-size: var(--font-size-sm);
   line-height: 1.4;
 }
- 
+
 .mod-queue-date {
   display: block;
   font-size: var(--font-size-xs);
@@ -160,7 +158,6 @@
 }
 
 /*  Story list  */
-
 .mod-story-list {
   display: flex;
   flex-direction: column;
@@ -265,6 +262,7 @@
   line-height: 1.5;
   overflow: hidden;
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
@@ -1244,6 +1242,7 @@
   color: var(--color-text-muted);
   line-height: 1.6;
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -1428,7 +1427,6 @@
   background-position: right var(--space-3) center;
   padding-right: var(--space-8);
 }
-
 
 @media (max-width: 768px) {
   .mod-submission-card {

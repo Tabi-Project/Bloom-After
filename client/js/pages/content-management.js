@@ -1,10 +1,3 @@
-/**
- * content-management.js
- * Admin content management hub.
- * Shows destination cards + a unified content table with
- * search, status/type filtering, and CRUD actions.
- */
-
 import {
   renderAdminSidebar,
   renderAdminTopbar,
@@ -13,12 +6,11 @@ import {
 import { renderFooter } from '../components/footer.js';
 import api from '../api.js';
 
-// ── Constants ──────────────────────────────────────────────────────────────────
-
+// Constants
 const ADMIN_USER_KEY = 'adminUser';
 const PAGE_SIZE      = 15;
 
-// ── Destination config ─────────────────────────────────────────────────────────
+// Destination config
 
 const DESTINATIONS = [
   {
@@ -53,8 +45,7 @@ const DESTINATIONS = [
   },
 ];
 
-// ── State ──────────────────────────────────────────────────────────────────────
-
+// State 
 let allContent    = [];
 let filtered      = [];
 let currentStatus = '';
@@ -63,8 +54,7 @@ let currentQuery  = '';
 let currentPage   = 1;
 let pendingDeleteId = null;
 
-// ── Boot ───────────────────────────────────────────────────────────────────────
-
+// Boot
 async function init() {
   const stored = getStoredAdmin();
 
@@ -101,8 +91,7 @@ async function init() {
   bindControls();
 }
 
-// ── Data ───────────────────────────────────────────────────────────────────────
-
+// Data
 async function fetchContent() {
   const [resourcesRes, ngosRes, clinicsRes] = await Promise.all([
     api.get('/api/v1/admin/resources'),
@@ -137,8 +126,7 @@ async function fetchContent() {
   return [...resources, ...ngos, ...clinics];
 }
 
-// ── Destination cards ──────────────────────────────────────────────────────────
-
+// Destination cards 
 function renderDestinationCards() {
   const grid = document.getElementById('cm-destination-grid');
   grid.innerHTML = DESTINATIONS.map((d) => {
@@ -165,8 +153,7 @@ function renderDestinationCards() {
   }).join('');
 }
 
-// ── Stats ──────────────────────────────────────────────────────────────────────
-
+// Stats
 function renderStats() {
   const counts = { published: 0, draft: 0, archived: 0 };
   allContent.forEach((c) => { if (counts[c.status] !== undefined) counts[c.status]++; });
@@ -176,8 +163,7 @@ function renderStats() {
   renderDestinationCards(); // re-render with counts
 }
 
-// ── Filtering ──────────────────────────────────────────────────────────────────
-
+// Filtering
 function applyFilters() {
   const q = currentQuery.toLowerCase().trim();
   filtered = allContent.filter((c) => {
@@ -192,8 +178,7 @@ function applyFilters() {
   renderPagination();
 }
 
-// ── Table ──────────────────────────────────────────────────────────────────────
-
+// Table
 function renderTable() {
   const tbody = document.getElementById('cm-table-body');
   const empty = document.getElementById('cm-table-empty');
@@ -313,8 +298,7 @@ function renderPagination() {
   `;
 }
 
-// ── Event binding ──────────────────────────────────────────────────────────────
-
+// Event binding
 function bindControls() {
   // Status filter tabs
   document.querySelectorAll('.cm-filter-btn').forEach((btn) => {
@@ -394,8 +378,7 @@ async function handleTableAction(e) {
   }
 }
 
-// ── Delete modal ───────────────────────────────────────────────────────────────
-
+// Delete modal
 function openDeleteModal(id, title) {
   pendingDeleteId = id;
   document.getElementById('cm-delete-modal-body').textContent =
@@ -426,8 +409,7 @@ async function confirmDelete() {
   } catch (_) { /* silently fail */ }
 }
 
-// ── Bulk import ────────────────────────────────────────────────────────────────
-
+// Bulk import 
 function triggerImport(type) {
   window.alert(`Import for ${type} is temporarily unavailable.`);
 }
@@ -469,8 +451,7 @@ function mapContentStatusToNgoStatus(status) {
   return 'pending';
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
-
+// Helpers
 function getStoredAdmin() {
   try { return JSON.parse(sessionStorage.getItem(ADMIN_USER_KEY)) || {}; }
   catch { return {}; }

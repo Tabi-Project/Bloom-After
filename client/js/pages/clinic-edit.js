@@ -1,8 +1,3 @@
-/**
- * clinic-edit.js
- * Moderator review page for a single clinic submission.
- */
-
 import { renderAdminSidebar, renderAdminTopbar, initAdminNavbar } from '../components/adminNavbar.js';
 import { renderFooter } from '../components/footer.js';
 import { renderSubmissionEdit, escHtml } from '../components/submissionEditRenderer.js';

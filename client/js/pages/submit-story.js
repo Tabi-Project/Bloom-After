@@ -327,6 +327,11 @@ function init() {
       const privacyValue = document.getElementById('privacy-value')?.value || 'named';
       const consent = !!form.querySelector('#consent')?.checked;
 
+      if (!consent) {
+        alert("Please consent to your story being moderated to continue.");
+        return; 
+      }
+
       if (storyEditor && storyInput) {
         storyInput.value = storyEditor.getHTML();
       }
@@ -335,6 +340,7 @@ function init() {
       const storyText = richTextToPlainText(storyHtml);
 
       if (!storyText) {
+        alert("Please tell us your story before continuing.");
         if (storyEditorRoot) storyEditorRoot.focus();
         return;
       }
