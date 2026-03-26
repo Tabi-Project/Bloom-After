@@ -516,28 +516,6 @@ export function renderSettingsSection(settings = {}) {
           </table>
         </div>
       </div>
-
-      <div class="settings-block">
-        <h3 class="settings-block-title">General Settings</h3>
-        <p class="settings-block-subtitle">Configure your environment's global preferences and core identity.</p>
-        <div class="settings-general-grid">
-          <div class="settings-card">
-            <h4 class="settings-card-title">App Identity</h4>
-            <label class="settings-field-wrap"><span class="settings-field-label">Application Name</span><input type="text"  class="settings-input" value="${escHtml(appIdentity.applicationName || "")}" /></label>
-            <label class="settings-field-wrap"><span class="settings-field-label">System Email</span><input    type="email" class="settings-input" value="${escHtml(appIdentity.systemEmail || "")}" /></label>
-            <div class="settings-inline-fields">
-              <label class="settings-field-wrap"><span class="settings-field-label">Timezone</span>   <select class="settings-select"><option>${escHtml(appIdentity.timezone   || "UTC")}</option></select></label>
-              <label class="settings-field-wrap"><span class="settings-field-label">Date Format</span><select class="settings-select"><option>${escHtml(appIdentity.dateFormat  || "DD/MM/YYYY")}</option></select></label>
-            </div>
-          </div>
-          <div class="settings-card">
-            <h4 class="settings-card-title">Security Protocol</h4>
-            ${renderSwitchRow("security-two-factor",     "Two-Factor Authentication", "Require 2FA for all Super Admin roles.",                Boolean(securityProtocol.twoFactorAuthentication))}
-            ${renderSwitchRow("security-auto-logout",    "Auto-logout Inactivity",    "Logout users after 30 minutes of inactivity.",          Boolean(securityProtocol.autoLogoutInactivity))}
-            ${renderSwitchRow("security-password-reset", "Enforce Password Reset",    "Force all users to change passwords every 90 days.",    Boolean(securityProtocol.forcePasswordReset))}
-          </div>
-        </div>
-      </div>
     </section>
   `;
 }

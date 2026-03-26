@@ -62,7 +62,8 @@ async function init() {
 
 /* Hero */
 function populateHero(resource) {
-  heroBanner.style.backgroundImage = `url('${resource.image_url}')`;
+  const imageUrl = resource.imageUrl || resource.image_url || '';
+  heroBanner.style.backgroundImage = `url('${imageUrl}')`;
   heroBanner.innerHTML = `
     <div class="resource-hero-overlay" aria-hidden="true"></div>
     <div class="resource-hero-content container">
