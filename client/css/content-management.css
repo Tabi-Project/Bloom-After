@@ -1,10 +1,4 @@
-/* ============================================================
-   content-management.css
-   Scoped styles for content-management.html and content-editor.html
-   ============================================================ */
-
-/* ── Page header ────────────────────────────────────────────── */
-
+/* Page header */
 .cm-page-header {
   display: flex;
   align-items: flex-start;
@@ -60,8 +54,7 @@
 .cm-dot-draft     { background: var(--color-warning);   }
 .cm-dot-archived  { background: var(--color-gray-400);  }
 
-/* ── Section titles ─────────────────────────────────────────── */
-
+/* Section titles */
 .cm-section-title {
   font-family: var(--font-heading);
   font-size: var(--font-size-lg);
@@ -79,8 +72,7 @@
   margin-bottom: var(--space-4);
 }
 
-/* ── Destination cards ──────────────────────────────────────── */
-
+/* Destination cards */
 .cm-destination-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -189,9 +181,7 @@
   border-color: var(--dest-color, var(--color-brand-400));
   color: var(--dest-color, var(--color-brand-400));
 }
-
-/* ── Table controls ─────────────────────────────────────────── */
-
+/* Table controls */
 .cm-table-controls {
   display: flex;
   align-items: center;
@@ -279,8 +269,7 @@
 
 .cm-select:focus { border-color: var(--color-primary); }
 
-/* ── Content table ──────────────────────────────────────────── */
-
+/* Content table */
 .cm-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--color-border);
@@ -425,8 +414,7 @@
   font-size: var(--font-size-sm);
 }
 
-/* ── Delete modal ───────────────────────────────────────────── */
-
+/* Delete modal */
 .cm-modal-overlay {
   position: fixed;
   inset: 0;
@@ -541,8 +529,7 @@
   to { transform: rotate(360deg); }
 }
 
-/* ── Editor layout ──────────────────────────────────────────── */
-
+/* editor layout */
 .cm-editor-nav {
   display: flex;
   align-items: center;
@@ -551,11 +538,37 @@
   font-size: var(--font-size-sm);
 }
 
-.cm-breadcrumb-sep { color: var(--color-text-muted); }
+/* 1. Turn the link into a flex container so the icon and text align */
+.mod-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2); /* Spacing between icon and text */
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+/* 2. Remove the hidden baseline gap under the SVG */
+.mod-back-link svg {
+  display: block; 
+}
+
+.mod-back-link:hover {
+  color: var(--color-brand-900);
+}
+
+/* 3. Force flex on the text spans just in case line-heights are fighting us */
+.cm-breadcrumb-sep { 
+  color: var(--color-text-muted); 
+  display: flex;
+  align-items: center;
+}
 
 .cm-breadcrumb-current {
   font-weight: 600;
   color: var(--color-brand-900);
+  display: flex;
+  align-items: center;
 }
 
 .cm-editor-layout {
