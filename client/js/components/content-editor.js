@@ -1081,7 +1081,7 @@ async function saveEntry() {
       const newId = res?.data?.resource?.id || res?.data?.ngo?.id || res?.data?.clinic?.id || res?.data?.id;
       if (newId) {
         isDirty = false;
-        window.location.replace(`editor?type=${contentType}&id=${newId}`);
+        window.location.replace(`/admin/content-manager/editor?type=${contentType}&id=${newId}`);
         return;
       }
     }
