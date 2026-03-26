@@ -12,7 +12,7 @@ const CONTENT_TYPE_ICONS = {
     <path d="M9 21V9"/>
   </svg>`,
 
-  'media': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20v-6l6-6H6l6 6z"/></svg>`,
+  'media': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>`,
 
   'myth-busting': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
 };
@@ -31,15 +31,18 @@ export function createResourceCard(resource) {
     summary = '',
     theme = 'General',
     content_type = 'article',
+    imageUrl = '',
     image_url = '',
     date = '',
     read_time = '',
     cta_label = 'Read more'
   } = resource;
 
+  const resourceImageUrl = imageUrl || image_url;
+
   const icon        = CONTENT_TYPE_ICONS[content_type] || CONTENT_TYPE_ICONS['article'];
   const typeLabel   = CONTENT_TYPE_LABELS[content_type] || content_type;
-  const href        = `/resources/detail?id=${encodeURIComponent(id)}`;
+  const href = `/resources/detail?id=${encodeURIComponent(id)}`;
   const themeClass  = `badge-theme-${theme.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
   return `
@@ -47,7 +50,7 @@ export function createResourceCard(resource) {
       <a href="${href}" class="resource-card-image-link" tabindex="-1" aria-hidden="true">
         <figure class="resource-card-image">
           <img
-            src="${image_url}"
+            src="${resourceImageUrl}"
             alt=""
             loading="lazy"
             width="400"

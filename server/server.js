@@ -54,6 +54,7 @@ app.use(
 );
 
 app.use(express.json({ limit: '10mb' }));
+app.set('trust proxy', 1);
 app.use(cookieParser());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/resources', resourceRouter);

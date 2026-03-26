@@ -1,63 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lifestyle & Medical Interventions - Bloom After</title>
   <link rel="icon" type="image/x-icon" href="../assets/logo/favicon.png" />
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/layouts.css">
-  <link rel="stylesheet" href="../css/lifestyle.css">
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layouts.css" />
   <link rel="stylesheet" href="../css/components.css" />
-  <link rel="stylesheet" href="../css/suggest-drawer.css" />
+  <link rel="stylesheet" href="../css/resources.css" />
+  <link rel="stylesheet" href="../css/lifestyle.css" />
 </head>
 <body>
-
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-
   <div id="navbar-root"></div>
 
-  <main id="main-content" class="lifestyle-main">
+  <main id="main-content">
+    
+    <section class="resources-hero" style="background-image: url('https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1400&q=80')" aria-labelledby="lm-hero-heading">
+      <div class="resources-hero-content container">
+        <h1 class="resources-hero-title" id="lm-hero-heading">Lifestyle & Medical Interventions</h1>
+        <p class="resources-hero-subtitle">A holistic approach combining supportive lifestyle adjustments with evidence-based clinical care.</p>
+      </div>
+    </section>
 
-    <!-- Disclaimer Banner -->
-  <div class="disclaimer-banner">
-    <p>This information is for educational purposes only. Always speak to a qualified healthcare professional before making changes to your treatment or lifestyle.</p>
-  </div>
+    <section class="page-controls" aria-label="Search and filter">
+      <div class="container page-controls-inner">
+        <div class="search-wrap">
+          <input type="search" id="lm-search" class="search-input" placeholder="Search strategies..." />
+        </div>
+        <nav class="filter-tabs" aria-label="Category filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="lifestyle">Lifestyle</button>
+          <button class="filter-btn" data-filter="medical">Medical</button>
+        </nav>
+      </div>
+    </section>
 
-  <!-- Header -->
-  <header class="lifestyle-header">
-    <h1>Lifestyle & Medical Interventions</h1>
-    <p>A holistic approach to postpartum recovery combining supportive lifestyle adjustments and evidence-based care.</p>
-  </header>
+    <section class="resources-grid-section container" aria-label="Interventions Grid">
+      
+      <div id="lm-grid" class="lm-cards-grid" aria-live="polite"></div>
+      
+      <p id="lm-empty" class="empty-state" hidden>
+        <strong>No strategies found.</strong><br />
+        Try adjusting your search or filters.
+      </p>
 
-  <section class="lifestyle-search-bar container" role="search">
-  <!-- Search Input -->
-  <div class="search-input-wrapper">
-    <input 
-      type="search" 
-      id="lifestyle-search" 
-      placeholder="Search strategies or treatments..." 
-      aria-label="Search strategies or treatments"
-    >
-  </div>
+      <div id="pagination" class="pagination-wrap" aria-live="polite"></div>
 
-  <!-- Filter Buttons -->
-  <div class="filters">
-    <button class="filter-btn active" data-filter="all">All</button>
-    <button class="filter-btn" data-filter="lifestyle">Lifestyle</button>
-    <button class="filter-btn" data-filter="medical">Medical</button>
-  </div>
-</section>
+    </section>
+  </main>
 
-  <!-- Cards Section -->
-  <section id="cards-container" class="cards-grid">
-  </section>
-
-</main>
-
-  <div id="footer-root"></div>
+  <footer id="footer-root"></footer>
   
-  <script type="module" src="../js/data/lifestyle.js"></script>
-
+  <script type="module" src="../js/pages/lifestyle-page.js"></script>
 </body>
 </html>

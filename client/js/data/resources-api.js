@@ -22,22 +22,35 @@ const normalizeStructuredContent = (resource) => {
 };
 
 const normalizeResource = (resource) => {
+  const contentType = resource?.content_type || resource?.contentType || "article";
+
   const normalized = {
     id: resource?.id || resource?._id || "",
     title: resource?.title || "",
     summary: resource?.summary || resource?.content || "",
+    content: resource?.content || "",
     theme: resource?.theme || "",
-    content_type: resource?.content_type || resource?.contentType || "article",
-    image_url: resource?.image_url || resource?.imageUrl || "",
+    content_type: contentType,
+    imageUrl: resource?.imageUrl || resource?.image_url || "",
+    image_url: resource?.imageUrl || resource?.image_url || "",
     date: resource?.date || "",
     read_time: resource?.read_time || resource?.readTime || "",
     cta_label: resource?.cta_label || resource?.ctaLabel || "Read more",
     published: typeof resource?.published === "boolean" ? resource.published : true,
   };
 
-  const fileUrl = resource?.file_url || resource?.sourceUrl;
+  const sourceUrl = resource?.source_url || resource?.sourceUrl || "";
+  if (sourceUrl) {
+    normalized.source_url = sourceUrl;
+  }
+
+  const fileUrl = resource?.file_url || resource?.fileUrl || (contentType === "media" ? sourceUrl : "");
   if (fileUrl) {
     normalized.file_url = fileUrl;
+  }
+
+  if (contentType === "media") {
+    normalized.media_format = resource?.media_format || resource?.mediaFormat || "audio";
   }
 
   const structuredContent = normalizeStructuredContent(resource);

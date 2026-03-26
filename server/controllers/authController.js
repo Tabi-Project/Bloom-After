@@ -106,6 +106,26 @@ export const logout = (req, res) => {
     .json({ message: 'Logged out successfully' });
 };
 
+export const getSession = async (req, res) => {
+  const user = req.user;
+
+  if (!user) {
+    return res.status(401).json({ status: 'error', error: 'Not authorized' });
+  }
+
+  return res.status(200).json({
+    status: 'success',
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      isSuperAdmin: user.isSuperAdmin,
+      role: user.role || (user.isSuperAdmin ? 'superadmin' : 'moderator'),
+      status: user.status || 'active',
+    },
+  });
+};
+
 export const validateInviteToken = async (req, res) => {
   try {
     const token = String(req.params?.token || '').trim();

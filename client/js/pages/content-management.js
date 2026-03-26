@@ -1,10 +1,3 @@
-/**
- * content-management.js
- * Admin content management hub.
- * Shows destination cards + a unified content table with
- * search, status/type filtering, and CRUD actions.
- */
-
 import {
   renderAdminSidebar,
   renderAdminTopbar,
@@ -13,12 +6,11 @@ import {
 import { renderFooter } from '../components/footer.js';
 import api from '../api.js';
 
-// ── Constants ──────────────────────────────────────────────────────────────────
-
+// Constants
 const ADMIN_USER_KEY = 'adminUser';
 const PAGE_SIZE      = 15;
 
-// ── Destination config ─────────────────────────────────────────────────────────
+// Destination config
 
 const DESTINATIONS = [
   {
@@ -26,7 +18,7 @@ const DESTINATIONS = [
     label:    'Resource Hub',
     desc:     'Articles, infographics, audio summaries, podcasts, myth-busting guides.',
     icon:     `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
-    newUrl:   'editor?type=resource',
+    newUrl:   '/admin/content-manager/editor?type=resource',
     listUrl:  '/admin/content-manager?filter=resource',
     color:    'var(--color-brand-400)',
     bgColor:  'var(--color-brand-50)',
@@ -36,7 +28,7 @@ const DESTINATIONS = [
     label:    'NGO Directory',
     desc:     'NGOs and support organisations providing maternal health services.',
     icon:     `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
-    newUrl:   'editor?type=ngo',
+    newUrl:   '/admin/content-manager/editor?type=ngo',
     listUrl:  '/admin/content-manager?filter=ngo',
     color:    '#0369a1',
     bgColor:  '#f0f9ff',
@@ -46,15 +38,14 @@ const DESTINATIONS = [
     label:    'Clinic Directory',
     desc:     'Verified healthcare providers offering postpartum mental health support.',
     icon:     `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
-    newUrl:   'editor?type=clinic',
+    newUrl:   '/admin/content-manager/editor?type=clinic',
     listUrl:  '/admin/content-manager?filter=clinic',
     color:    '#15803d',
     bgColor:  '#f0fdf4',
   },
 ];
 
-// ── State ──────────────────────────────────────────────────────────────────────
-
+// State 
 let allContent    = [];
 let filtered      = [];
 let currentStatus = '';
@@ -63,8 +54,7 @@ let currentQuery  = '';
 let currentPage   = 1;
 let pendingDeleteId = null;
 
-// ── Boot ───────────────────────────────────────────────────────────────────────
-
+// Boot
 async function init() {
   const stored = getStoredAdmin();
 
@@ -101,8 +91,7 @@ async function init() {
   bindControls();
 }
 
-// ── Data ───────────────────────────────────────────────────────────────────────
-
+// Data
 async function fetchContent() {
   const [resourcesRes, ngosRes, clinicsRes] = await Promise.all([
     api.get('/api/v1/admin/resources'),
@@ -137,8 +126,7 @@ async function fetchContent() {
   return [...resources, ...ngos, ...clinics];
 }
 
-// ── Destination cards ──────────────────────────────────────────────────────────
-
+// Destination cards 
 function renderDestinationCards() {
   const grid = document.getElementById('cm-destination-grid');
   grid.innerHTML = DESTINATIONS.map((d) => {
@@ -165,8 +153,7 @@ function renderDestinationCards() {
   }).join('');
 }
 
-// ── Stats ──────────────────────────────────────────────────────────────────────
-
+// Stats
 function renderStats() {
   const counts = { published: 0, draft: 0, archived: 0 };
   allContent.forEach((c) => { if (counts[c.status] !== undefined) counts[c.status]++; });
@@ -176,8 +163,7 @@ function renderStats() {
   renderDestinationCards(); // re-render with counts
 }
 
-// ── Filtering ──────────────────────────────────────────────────────────────────
-
+// Filtering
 function applyFilters() {
   const q = currentQuery.toLowerCase().trim();
   filtered = allContent.filter((c) => {
@@ -192,8 +178,7 @@ function applyFilters() {
   renderPagination();
 }
 
-// ── Table ──────────────────────────────────────────────────────────────────────
-
+// Table
 function renderTable() {
   const tbody = document.getElementById('cm-table-body');
   const empty = document.getElementById('cm-table-empty');
@@ -220,7 +205,7 @@ function renderTableRow(item) {
     ? new Date(item.updatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
     : '';
   const statusCls = `cm-status-${escHtml(item.status)}`;
-  const editUrl  = `editor?type=${escHtml(item.type)}&id=${escHtml(id)}`;
+  const editUrl  = `/admin/content-manager/editor?type=${escHtml(item.type)}&id=${escHtml(id)}`;
 
   return `
     <tr class="cm-table-row" data-id="${escHtml(id)}" data-status="${escHtml(item.status)}">
@@ -313,8 +298,7 @@ function renderPagination() {
   `;
 }
 
-// ── Event binding ──────────────────────────────────────────────────────────────
-
+// Event binding
 function bindControls() {
   // Status filter tabs
   document.querySelectorAll('.cm-filter-btn').forEach((btn) => {
@@ -394,8 +378,7 @@ async function handleTableAction(e) {
   }
 }
 
-// ── Delete modal ───────────────────────────────────────────────────────────────
-
+// Delete modal
 function openDeleteModal(id, title) {
   pendingDeleteId = id;
   document.getElementById('cm-delete-modal-body').textContent =
@@ -426,8 +409,7 @@ async function confirmDelete() {
   } catch (_) { /* silently fail */ }
 }
 
-// ── Bulk import ────────────────────────────────────────────────────────────────
-
+// Bulk import 
 function triggerImport(type) {
   window.alert(`Import for ${type} is temporarily unavailable.`);
 }
@@ -469,8 +451,7 @@ function mapContentStatusToNgoStatus(status) {
   return 'pending';
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
-
+// Helpers
 function getStoredAdmin() {
   try { return JSON.parse(sessionStorage.getItem(ADMIN_USER_KEY)) || {}; }
   catch { return {}; }

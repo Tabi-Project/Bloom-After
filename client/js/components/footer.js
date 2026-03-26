@@ -9,6 +9,11 @@ const emergencyContacts = [
     label: 'Mentally Aware Nigeria Initiative',
     phone: '0809 111 6264',
   },
+  {
+    label: 'Need More Information in case of Emergencies',
+    href: '/crisis-handling',
+    text: 'Visit our crisis handling hub today',
+  },
 ];
 
 const footerLinks = [
@@ -18,16 +23,17 @@ const footerLinks = [
       { text: 'Resources', href: '/resources' },
       { text: 'Find a Clinic', href: '/clinics' },
       // { text: 'Specialists', href: 'specialists.html' },
-      { text: 'Lifestyle Guides', href: '/lifestyle' },
+      { text: 'NGO Directory', href: '/ngos' },
+      { text: 'Crisis Handling Hub', href: '/crisis-handling' },
     ],
   },
   {
     title: 'COMMUNITY',
     items: [
       { text: 'Stories', href: '/stories' },
-      { text: 'Share Your Story', href: '/submit-story' },
+      { text: 'Share Your Story', href: '/stories/editor' },
       // { text: 'Podcasts & Media', href: '/media' },
-      { text: 'NGO Directory', href: '/ngos' },
+      { text: 'Lifestyle Guides', href: '/lifestyle' },
     ],
   },
   {
@@ -42,16 +48,23 @@ const footerLinks = [
 ];
 
 export const renderFooter = () => {
+  if (window.location.pathname.startsWith('/admin')) {
+    return '';
+  }
+
   return `
     <footer class="main-footer">
       <div class="emergency-banner">
         <h3>Need Immediate Help?</h3>
         <div class="contact-links">
           ${emergencyContacts
-            .map(
-              (c) =>
-                `<a href="tel:${c.phone.replace(/\s/g, '')}" class="contact-item"><span class="icon">${icons.phone}</span><div><p class="label">${c.label}</p><p class="phone">${c.phone}</p></div></a>`
-            )
+            .map((c) => {
+              if (c.href) {
+                return `<a href="${c.href}" class="contact-item"><span class="icon">${icons.link}</span><div><p class="label">${c.label}</p><p class="phone">${c.text || c.href}</p></div></a>`;
+              }
+
+              return `<a href="tel:${c.phone.replace(/\s/g, '')}" class="contact-item"><span class="icon">${icons.phone}</span><div><p class="label">${c.label}</p><p class="phone">${c.phone}</p></div></a>`;
+            })
             .join('')}
         </div>
       </div>

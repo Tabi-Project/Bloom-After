@@ -91,12 +91,13 @@ export const resources = [
     summary: "Discover personal stories from mothers who have navigated postpartum challenges, offering insights and hope for your journey.",
     theme: "Recovery",
     content_type: "media",
+    media_format: "podcast", 
     image_url: "https://images.unsplash.com/photo-1609220136736-443140cffec6?w=600&q=80",
     date: "Dec 12, 2025",
     read_time: "4 mins read",
     cta_label: "Listen now",
     published: true,
-    file_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    file_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", 
     structured_content: {
       summary_paragraphs: [
         "Annie and Layo share stories together on how their postpartum experience was, sharing laughs and lessons.",
@@ -482,15 +483,16 @@ export const resources = [
     summary: "Simple, evidence-based mindfulness techniques adapted for the realities of new motherhood.",
     theme: "Recovery",
     content_type: "media",
+    media_format: "video", 
     image_url: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&q=80",
     date: "Mar 5, 2026",
     read_time: "3 mins read",
-    cta_label: "Listen now",
+    cta_label: "Watch now",
     published: true,
-    file_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+    file_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", 
     structured_content: {
       summary_paragraphs: [
-        "This guided audio series introduces mindfulness practices specifically adapted for new mothers — techniques that can be practiced in under five minutes, even with a baby in your arms.",
+        "This guided video series introduces mindfulness practices specifically adapted for new mothers — techniques that can be practiced in under five minutes, even with a baby in your arms.",
         "Research shows that consistent mindfulness practice reduces cortisol, improves sleep quality, and significantly lowers the risk and severity of postpartum depression.",
         "Each session in this series builds on the last, helping you develop a sustainable practice that grows with you through your postpartum journey."
       ]
@@ -561,6 +563,26 @@ export const resources = [
   }
 ];
 
+// export async function fetchResources(filters = {}) {
+//   await new Promise(resolve => setTimeout(resolve, 600));
+
+//   let results = [...resources];
+
+//   if (filters.content_type) {
+//     results = results.filter(r => r.content_type === filters.content_type);
+//   }
+
+//   if (filters.q) {
+//     const q = filters.q.toLowerCase();
+//     results = results.filter(r =>
+//       r.title.toLowerCase().includes(q) ||
+//       r.summary.toLowerCase().includes(q)
+//     );
+//   }
+
+//   return results;
+// }
+
 export async function fetchResources(filters = {}) {
   await new Promise(resolve => setTimeout(resolve, 600));
 
@@ -578,7 +600,24 @@ export async function fetchResources(filters = {}) {
     );
   }
 
-  return results;
+  const page = filters.page || 1;
+  const limit = filters.limit || 9;
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  
+  const paginatedData = results.slice(startIndex, endIndex);
+
+  return {
+    data: paginatedData,
+    pagination: {
+      totalResources: results.length,
+      totalPages: Math.ceil(results.length / limit) || 1,
+      currentPage: page,
+      pageSize: limit,
+      hasNextPage: endIndex < results.length,
+      hasPrevPage: page > 1,
+    }
+  };
 }
 
 export async function fetchResourceById(id) {

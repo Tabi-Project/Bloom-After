@@ -14,6 +14,7 @@ export function renderBulletItem(text) {
 
 // Article renderer
 export function renderBlock(block) {
+  const blockImageUrl = block.imageUrl || block.image_url || '';
   switch (block.type) {
     case 'paragraph':
       return `<p class="content-paragraph">${block.text}</p>`;
@@ -28,7 +29,7 @@ export function renderBlock(block) {
             </ul>
           </div>
           <figure class="content-section-image">
-            <img src="${block.image_url}" alt="" loading="lazy" />
+            <img src="${blockImageUrl}" alt="" loading="lazy" />
           </figure>
         </section>
       `;
@@ -36,7 +37,7 @@ export function renderBlock(block) {
       return `
         <section class="content-section content-section-image-text">
           <figure class="content-section-image">
-            <img src="${block.image_url}" alt="" loading="lazy" />
+            <img src="${blockImageUrl}" alt="" loading="lazy" />
           </figure>
           <div class="content-section-text">
             <h2 class="content-section-heading">${block.heading}</h2>
@@ -144,6 +145,49 @@ export function renderMythBusting(resource) {
   `;
 }
 
+// Media renderer
+// export function renderMedia(resource) {
+//   if (!resource || !resource.structured_content) {
+//     return `<p class="content-empty">Media unavailable.</p>`;
+//   }
+
+//   const { file_url, structured_content } = resource;
+
+//   const paragraphs = structured_content.summary_paragraphs || [];
+
+//   return `
+//     <article class="media-layout content-canvas">
+
+//       <div class="media-player-wrapper">
+//         ${
+//           file_url
+//             ? `
+//           <audio controls class="media-player">
+//             <source src="${file_url}" type="audio/mpeg">
+//             Your browser does not support the audio element.
+//           </audio>
+//         `
+//             : `
+//           <div class="media-fallback">
+//             <p>Audio not available.</p>
+//           </div>
+//         `
+//         }
+//       </div>
+
+//       <div class="media-content">
+//         ${paragraphs
+//           .map(
+//             (text) => `
+//           <p class="media-paragraph">${text}</p>
+//         `
+//           )
+//           .join('')}
+//       </div>
+
+//     </article>
+//   `;
+// }
 
 // Media renderer
 export function renderMedia(resource) {
@@ -151,40 +195,61 @@ export function renderMedia(resource) {
     return `<p class="content-empty">Media unavailable.</p>`;
   }
 
-  const { file_url, structured_content } = resource;
-
+  // We are pulling the title out now too!
+  const { title, file_url, imageUrl, image_url, structured_content } = resource;
+  const mediaImageUrl = imageUrl || image_url || '';
+  const mediaFormat = resource.media_format || 'audio'; 
   const paragraphs = structured_content.summary_paragraphs || [];
 
-  return `
-    <article class="media-layout content-canvas">
+  let playerHTML = '';
 
-      <div class="media-player-wrapper">
-        ${
-          file_url
-            ? `
-          <audio controls class="media-player">
+  if (!file_url) {
+    playerHTML = `<div class="media-fallback"><p>${mediaFormat} not available.</p></div>`;
+  } else if (mediaFormat === 'video') {
+    playerHTML = `
+      <div class="video-player-wrapper">
+        <video controls class="media-player video-player" poster="${mediaImageUrl}">
+          <source src="${file_url}" type="video/mp4">
+          Your browser does not support the video element.
+        </video>
+      </div>
+    `;
+  } else if (mediaFormat === 'podcast') {
+    playerHTML = `
+      <div class="podcast-player-wrapper">
+        <img src="${mediaImageUrl}" alt="${title}" class="podcast-cover" loading="lazy" />
+        <div class="podcast-info">
+          <span class="podcast-badge">Podcast Episode</span>
+          <h3 class="podcast-title">${title}</h3>
+          <audio controls class="media-player audio-player">
             <source src="${file_url}" type="audio/mpeg">
             Your browser does not support the audio element.
           </audio>
-        `
-            : `
-          <div class="media-fallback">
-            <p>Audio not available.</p>
-          </div>
-        `
-        }
+        </div>
       </div>
+    `;
+  } else {
+    // Standard Audio
+    playerHTML = `
+      <div class="audio-player-wrapper">
+        <span class="podcast-badge">Audio Guide</span>
+        <h3 class="podcast-title">${title}</h3>
+        <audio controls class="media-player audio-player">
+          <source src="${file_url}" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+    `;
+  }
 
+  return `
+    <article class="media-layout content-canvas">
+      <div class="media-player-container">
+        ${playerHTML}
+      </div>
       <div class="media-content">
-        ${paragraphs
-          .map(
-            (text) => `
-          <p class="media-paragraph">${text}</p>
-        `
-          )
-          .join('')}
+        ${paragraphs.map((text) => `<p class="media-paragraph">${text}</p>`).join('')}
       </div>
-
     </article>
   `;
 }

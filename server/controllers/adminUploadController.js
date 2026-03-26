@@ -16,6 +16,7 @@ export const uploadAdminImage = async (req, res) => {
     return res.status(200).json({
       status: 'success',
       data: {
+        imageUrl: image_url,
         image_url,
       },
     });

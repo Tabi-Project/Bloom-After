@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./css/base.css" />
     <link rel="stylesheet" href="./css/layouts.css" />
     <link rel="stylesheet" href="./css/components.css" />
+    <link rel="stylesheet" href="./css/resources.css" />
     <link rel="stylesheet" href="./css/suggest-drawer.css" />
   </head>
 
@@ -22,8 +23,8 @@
       <div id="navbar-root"></div>
 
       <!-- Hero section -->
-      <section class="hero container" aria-labelledby="hero-heading">
-        <article class="hero-content">
+      <section class="hero" aria-labelledby="hero-heading">
+        <article class="hero-content container">
           <h1 class="hero-heading" id="hero-heading">
             Ease your way back in with a community that <em>cares.</em>
           </h1>
@@ -50,38 +51,6 @@
           </blockquote>
           <figcaption>&mdash; Anonymous Mother, Lagos</figcaption>
         </figure>
-
-        <!--
-        <figure class="hero-visual" aria-hidden="true">
-          <svg
-            viewBox="50 50 300 300"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            
-            <ellipse
-              cx="195"
-              cy="215"
-              rx="168"
-              ry="158"
-              fill="#a8cbb7"
-              opacity="0.45"
-            />
-            
-            <ellipse
-              cx="215"
-              cy="195"
-              rx="118"
-              ry="128"
-              fill="#4f8a6f"
-              opacity="0.9"
-            />
-            
-            <circle cx="298" cy="148" r="48" fill="#002626" />
-            
-            <circle cx="148" cy="308" r="30" fill="#7fb8a0" opacity="0.75" />
-          </svg>
-        </figure> -->
       </section>
     </header>
 
@@ -119,7 +88,7 @@
         </header>
 
         <section
-          class="voices-card-list"
+          class="voices-card-list resources-grid"
           id="voices-card-list"
           aria-labelledby="voices-media-heading"
         >
@@ -136,7 +105,11 @@
               Navigating the Fourth Trimester
             </h4>
 
-            <a class="voices-card-link" href="media.html" aria-label="Listen now: Navigating the Fourth Trimester">
+            <a
+              class="voices-card-link"
+              href="media.html"
+              aria-label="Listen now: Navigating the Fourth Trimester"
+            >
               <span class="voices-card-link-icon" aria-hidden="true">
                 <svg
                   viewBox="0 0 24 24"
@@ -171,7 +144,11 @@
               Motherhood Unfiltered: Lagos Edition
             </h4>
 
-            <a class="voices-card-link" href="media.html" aria-label="Listen now: Motherhood Unfiltered: Lagos Edition">
+            <a
+              class="voices-card-link"
+              href="media.html"
+              aria-label="Listen now: Motherhood Unfiltered: Lagos Edition"
+            >
               <span class="voices-card-link-icon" aria-hidden="true">
                 <svg
                   viewBox="0 0 24 24"
@@ -206,7 +183,11 @@
               Recognizing PPD with Dr. Adeyemi
             </h4>
 
-            <a class="voices-card-link" href="media.html" aria-label="Watch video: Recognizing PPD with Dr. Adeyemi">
+            <a
+              class="voices-card-link"
+              href="media.html"
+              aria-label="Watch video: Recognizing PPD with Dr. Adeyemi"
+            >
               <span class="voices-card-link-icon" aria-hidden="true">
                 <svg
                   viewBox="0 0 24 24"
@@ -233,8 +214,8 @@
         </section>
 
         <section class="voices-cta-wrap" aria-label="Media section actions">
-          <a class="voices-cta" id="voices-cta" href="media.html">
-            <span>Browse podcasts and media</span>
+          <a class="voices-cta" id="voices-cta" href="/resources">
+            <span>See More Resources</span>
             <span aria-hidden="true">&rarr;</span>
           </a>
         </section>
@@ -248,7 +229,7 @@
 
       <!-- Contributors Section -->
       <section id="team" class="team-section strip">
-        <div class="section-header">
+        <div class="section-header container">
           <h2>Meet our Contributors</h2>
           <p class="content-centered">
             Get to know the passionate minds behind Bloom After. Select a
@@ -275,12 +256,14 @@
         </div>
       </div>
 
-      <section class="container section-header ngo-section">
-        <h2>Local Support & NGOs</h2>
-        <p>
-          Discover organizations across Nigeria dedicated to mental health and
-          family wellbeing.
-        </p>
+      <section class="container ngo-section">
+        <div class="section-header">
+          <h2 class="section-header">Local Support & NGOs</h2>
+          <p>
+            Discover organizations across Nigeria dedicated to mental health and
+            family wellbeing.
+          </p>
+        </div>
         <div class="partner-list flex">
           <div class="partner-card">PostPartum Support Network</div>
           <div class="partner-card">Mentally Aware Nigeria</div>
@@ -289,6 +272,17 @@
         <a href="/ngos" class="btn btn-primary btn-ngo">
           Explore the NGO directory <i class="fa-solid fa-arrow-right"></i>
         </a>
+      </section>
+
+      <section class="faq-section">
+        <div class="container">
+          <div class="section-header">
+            <h2>Frequently Asked Questions</h2>
+            <p>Find answers to common questions about postpartum depression and navigating the Bloom After platform.</p>
+          </div>
+
+          <div id="faq-root"></div>
+        </div>
       </section>
     </main>
 

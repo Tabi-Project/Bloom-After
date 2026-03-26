@@ -39,13 +39,10 @@ const TYPE_CONFIG = {
   ngo:        { label: "NGO",        reviewBase: "/admin/moderation/ngos",               editPage: "/admin/ngos/edit",                  badgeClass: "mod-type-ngo"        },
   suggestion: { label: "Suggestion", reviewBase: "/admin/moderation/suggestions",        editPage: "/admin/moderation/suggestions",     badgeClass: "mod-type-suggestion" },
   clinic:     { label: "Clinic",     reviewBase: "/admin/moderation?type=clinic",        editPage: "/admin/clinic/edit",                badgeClass: "mod-type-clinic"     },
-  specialist: { label: "Specialist", reviewBase: "/admin/moderation?type=specialist",    editPage: "/admin/specialist/edit",            badgeClass: "mod-type-specialist" },
-  media:      { label: "Media",      reviewBase: "/admin/moderation?type=media",         editPage: "/admin/media/edit",                 badgeClass: "mod-type-media"      },
-  request:    { label: "Request",    reviewBase: "/admin/moderation?type=request",       editPage: "/admin/moderation?type=request",    badgeClass: "mod-type-request"    },
 };
 
 function getTypeConfig(type = "") {
-  return TYPE_CONFIG[type.toLowerCase()] || TYPE_CONFIG.request;
+  return TYPE_CONFIG[type.toLowerCase()] || TYPE_CONFIG.story;
 }
 
 // ── Overview ──────────────────────────────────────────────────────────────────
@@ -174,9 +171,11 @@ function renderModerationQueueSkeleton() {
 }
 
 export function renderModerationQueue(submissions = [], totalPending = 0, loading = false) {
+  const pendingSubmissions = submissions.filter((item) => (item.status || "").toLowerCase() === "pending");
+
   const rowsHtml  = loading
     ? renderModerationQueueSkeleton()
-    : renderModerationQueueRows(submissions.slice(0, 4));
+    : renderModerationQueueRows(pendingSubmissions.slice(0, 4));
 
   const badgeHtml = totalPending > 0
     ? `<span class="dash-stories-badge">${totalPending} pending</span>`
@@ -325,7 +324,7 @@ export function renderQueuesAndContent(
           ${renderActionRow(
             icons.contentCreate,
             "Create Resource Article",
-            "editor?type=resource",
+            "/admin/content-manager/editor?type=resource",
             "create-resource-action",
           )}
 
@@ -515,28 +514,6 @@ export function renderSettingsSection(settings = {}) {
             <thead><tr><th>Capabilities</th><th>Super Admin</th><th>Content Editor</th><th>Moderator</th></tr></thead>
             <tbody>${capabilities.map(renderCapabilityRow).join("")}</tbody>
           </table>
-        </div>
-      </div>
-
-      <div class="settings-block">
-        <h3 class="settings-block-title">General Settings</h3>
-        <p class="settings-block-subtitle">Configure your environment's global preferences and core identity.</p>
-        <div class="settings-general-grid">
-          <div class="settings-card">
-            <h4 class="settings-card-title">App Identity</h4>
-            <label class="settings-field-wrap"><span class="settings-field-label">Application Name</span><input type="text"  class="settings-input" value="${escHtml(appIdentity.applicationName || "")}" /></label>
-            <label class="settings-field-wrap"><span class="settings-field-label">System Email</span><input    type="email" class="settings-input" value="${escHtml(appIdentity.systemEmail || "")}" /></label>
-            <div class="settings-inline-fields">
-              <label class="settings-field-wrap"><span class="settings-field-label">Timezone</span>   <select class="settings-select"><option>${escHtml(appIdentity.timezone   || "UTC")}</option></select></label>
-              <label class="settings-field-wrap"><span class="settings-field-label">Date Format</span><select class="settings-select"><option>${escHtml(appIdentity.dateFormat  || "DD/MM/YYYY")}</option></select></label>
-            </div>
-          </div>
-          <div class="settings-card">
-            <h4 class="settings-card-title">Security Protocol</h4>
-            ${renderSwitchRow("security-two-factor",     "Two-Factor Authentication", "Require 2FA for all Super Admin roles.",                Boolean(securityProtocol.twoFactorAuthentication))}
-            ${renderSwitchRow("security-auto-logout",    "Auto-logout Inactivity",    "Logout users after 30 minutes of inactivity.",          Boolean(securityProtocol.autoLogoutInactivity))}
-            ${renderSwitchRow("security-password-reset", "Enforce Password Reset",    "Force all users to change passwords every 90 days.",    Boolean(securityProtocol.forcePasswordReset))}
-          </div>
         </div>
       </div>
     </section>

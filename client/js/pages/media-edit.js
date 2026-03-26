@@ -1,8 +1,3 @@
-/**
- * media-edit.js
- * Moderator review page for a single media suggestion.
- */
-
 import { renderAdminSidebar, renderAdminTopbar, initAdminNavbar } from '../components/adminNavbar.js';
 import { renderFooter } from '../components/footer.js';
 import { renderSubmissionEdit } from '../components/submissionEditRenderer.js';
