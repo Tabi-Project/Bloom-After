@@ -23,9 +23,6 @@ async function init() {
   document.getElementById("navbar-root").innerHTML = renderNavbar("resources");
   initNavbar();
   document.getElementById("footer-root").innerHTML = renderFooter();
-  // if (crisisRoot) {
-  //   crisisRoot.innerHTML = renderCrisisStrip();
-  // }
 
   bindEvents();
   await loadResources();

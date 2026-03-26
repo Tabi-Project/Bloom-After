@@ -15,7 +15,7 @@
   background-color: var(--color-brand-900);
   background-size: cover;
   background-position: center;
-  padding: var(--space-16) 0 var(--space-12) 0;
+  padding: var(--space-2) 0 var(--space-4) 0;
   margin-top: var(--nav-height);
 }
 
@@ -36,7 +36,8 @@
 }
 
 .hero-title {
-  font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-5xl));
+  font-family: var(--font-heading);
+  font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl));
   color: var(--color-white);
   line-height: 1.1;
   margin: 0;
