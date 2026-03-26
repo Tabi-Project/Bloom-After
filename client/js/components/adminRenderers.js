@@ -39,13 +39,10 @@ const TYPE_CONFIG = {
   ngo:        { label: "NGO",        reviewBase: "/admin/moderation/ngos",               editPage: "/admin/ngos/edit",                  badgeClass: "mod-type-ngo"        },
   suggestion: { label: "Suggestion", reviewBase: "/admin/moderation/suggestions",        editPage: "/admin/moderation/suggestions",     badgeClass: "mod-type-suggestion" },
   clinic:     { label: "Clinic",     reviewBase: "/admin/moderation?type=clinic",        editPage: "/admin/clinic/edit",                badgeClass: "mod-type-clinic"     },
-  specialist: { label: "Specialist", reviewBase: "/admin/moderation?type=specialist",    editPage: "/admin/specialist/edit",            badgeClass: "mod-type-specialist" },
-  media:      { label: "Media",      reviewBase: "/admin/moderation?type=media",         editPage: "/admin/media/edit",                 badgeClass: "mod-type-media"      },
-  request:    { label: "Request",    reviewBase: "/admin/moderation?type=request",       editPage: "/admin/moderation?type=request",    badgeClass: "mod-type-request"    },
 };
 
 function getTypeConfig(type = "") {
-  return TYPE_CONFIG[type.toLowerCase()] || TYPE_CONFIG.request;
+  return TYPE_CONFIG[type.toLowerCase()] || TYPE_CONFIG.story;
 }
 
 // ── Overview ──────────────────────────────────────────────────────────────────
@@ -174,9 +171,11 @@ function renderModerationQueueSkeleton() {
 }
 
 export function renderModerationQueue(submissions = [], totalPending = 0, loading = false) {
+  const pendingSubmissions = submissions.filter((item) => (item.status || "").toLowerCase() === "pending");
+
   const rowsHtml  = loading
     ? renderModerationQueueSkeleton()
-    : renderModerationQueueRows(submissions.slice(0, 4));
+    : renderModerationQueueRows(pendingSubmissions.slice(0, 4));
 
   const badgeHtml = totalPending > 0
     ? `<span class="dash-stories-badge">${totalPending} pending</span>`

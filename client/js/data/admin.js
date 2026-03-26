@@ -20,17 +20,17 @@ export const statsData = [
     muted: true,
   },
   {
-    id:    "draft-resources-card",
-    label: "Drafts",
+    id:    "pending-stories-card",
+    label: "Pending Stories",
     value: "—",
-    meta:  "Unpublished — in progress",
+    meta:  "Story submissions awaiting review",
     muted: true,
   },
   {
-    id:    "pending-stories-card",
-    label: "Pending Moderation",
+    id:    "pending-ngos-card",
+    label: "Pending NGOs",
     value: "—",
-    meta:  "Submissions awaiting review",
+    meta:  "NGO submissions awaiting review",
     muted: true,
   },
 ];

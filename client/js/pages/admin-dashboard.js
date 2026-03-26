@@ -45,13 +45,14 @@ const fmt = (v) =>
 
 // ── Overview stats ────────────────────────────────────────────────────────────
 //
-// Builds the four stat cards from whatever the /admin/stats endpoint returns.
-// Expected shape: { resources: { total, published, drafts }, submissions: { pending } }
+// Builds the overview stat cards from /admin/stats.
+// Expected shape: { resources, stories, ngos }
 // Falls back to zeros if keys are missing.
 
 function buildOverviewStats(data = {}) {
-  const resources   = data.resources   || {};
-  const submissions = data.submissions || data.moderation || {};
+  const resources = data.resources || {};
+  const stories = data.stories || {};
+  const ngos = data.ngos || {};
 
   return [
     {
@@ -69,17 +70,17 @@ function buildOverviewStats(data = {}) {
       muted: true,
     },
     {
-      id:    "draft-resources-card",
-      label: "Drafts",
-      value: fmt(resources.drafts ?? 0),
-      meta:  "Unpublished — in progress",
+      id:    "pending-stories-card",
+      label: "Pending Stories",
+      value: fmt(stories.pending ?? 0),
+      meta:  "Story submissions awaiting review",
       muted: true,
     },
     {
-      id:    "pending-stories-card",
-      label: "Pending Moderation",
-      value: fmt(submissions.pending ?? 0),
-      meta:  "Submissions awaiting review",
+      id:    "pending-ngos-card",
+      label: "Pending NGOs",
+      value: fmt(ngos.pending ?? 0),
+      meta:  "NGO submissions awaiting review",
       muted: true,
     },
   ];
@@ -102,40 +103,21 @@ async function fetchOverviewStats() {
 }
 
 /**
- * fetchLatestDraft
- * Fetches the most recently updated draft content item.
- * Returns null if there are none or if the endpoint is not yet live.
- * Only returns an item that has at least a non-empty title.
- */
-async function fetchLatestDraft() {
-  try {
-    const res = await api.get("/api/v1/admin/content?status=draft&sort=updatedAt&limit=1");
-    const items =
-      res?.data?.items ||
-      res?.data?.data  ||
-      (Array.isArray(res?.data) ? res.data : []);
-
-    const draft = items[0] || null;
-    // Only surface a draft that has at minimum a title
-    if (draft && draft.title && draft.title.trim()) return draft;
-    return null;
-  } catch (_) {
-    // Endpoint not live yet — return null so the card simply doesn't show
-    return null;
-  }
-}
-
-/**
  * fetchAllSubmissions
- * Hits all five moderation endpoints simultaneously.
+ * Hits all supported moderation endpoints simultaneously.
  */
 async function fetchAllSubmissions() {
-  const extract = (res) => {
+  const extract = (res, type) => {
     const d = res?.data;
     if (Array.isArray(d))          return d;
     if (Array.isArray(d?.items))   return d.items;
     if (Array.isArray(d?.data))    return d.data;
-    if (Array.isArray(d?.stories)) return d.stories;
+
+    if (type === "story" && Array.isArray(d?.stories)) return d.stories;
+    if (type === "ngo" && Array.isArray(d?.ngos)) return d.ngos;
+    if (type === "clinic" && Array.isArray(d?.clinics)) return d.clinics;
+    if (type === "suggestion" && Array.isArray(d?.suggestions)) return d.suggestions;
+
     return [];
   };
 
@@ -144,14 +126,18 @@ async function fetchAllSubmissions() {
     const title =
       item.title ||
       item.name  ||
+      item.content?.slice(0, 80) ||
       (item.story ? item.story.replace(/<[^>]+>/g, " ").trim().slice(0, 80) : "") ||
       item.story_text?.slice(0, 80) ||
       "Untitled";
     const submittedBy =
       item.submittedBy ||
       item.submitterName ||
+      item.email ||
+      item.contact?.email ||
       (item.privacy === "named" && item.name ? item.name : null) ||
       (type === "story" ? "Anonymous" : null);
+
     return {
       ...item, id, type, title, submittedBy,
       submittedAt: item.submittedAt || item.createdAt,
@@ -160,17 +146,16 @@ async function fetchAllSubmissions() {
   };
 
   try {
-    const [storiesRes, clinicsRes, specialistsRes, mediaRes, requestsRes] =
+    const [storiesRes, ngosRes, clinicsRes, suggestionsRes] =
       await Promise.allSettled([
         api.get("/api/v1/admin/stories"),
+        api.get("/api/v1/admin/ngos"),
         api.get("/api/v1/admin/clinics"),
-        api.get("/api/v1/admin/specialists"),
-        api.get("/api/v1/admin/media"),
-        api.get("/api/v1/admin/requests"),
+        api.get("/api/v1/admin/suggestions"),
       ]);
 
     // Auth failure on any request → redirect
-    for (const r of [storiesRes, clinicsRes, specialistsRes, mediaRes, requestsRes]) {
+    for (const r of [storiesRes, ngosRes, clinicsRes, suggestionsRes]) {
       if (r.status === "rejected" && (r.reason?.status === 401 || r.reason?.status === 403)) {
         window.location.assign("/admin/login");
         return [];
@@ -178,14 +163,13 @@ async function fetchAllSubmissions() {
     }
 
     const tag = (res, type) =>
-      res.status === "fulfilled" ? extract(res.value).map((i) => normalise(i, type)) : [];
+      res.status === "fulfilled" ? extract(res.value, type).map((i) => normalise(i, type)) : [];
 
     return [
-      ...tag(storiesRes,     "story"),
-      ...tag(clinicsRes,     "clinic"),
-      ...tag(specialistsRes, "specialist"),
-      ...tag(mediaRes,       "media"),
-      ...tag(requestsRes,    "request"),
+      ...tag(storiesRes, "story"),
+      ...tag(ngosRes, "ngo"),
+      ...tag(clinicsRes, "clinic"),
+      ...tag(suggestionsRes, "suggestion"),
     ].sort((a, b) => new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0));
 
   } catch (err) {
@@ -323,11 +307,10 @@ async function init() {
   bindLogout();
   initProfileMenu();
 
-  // ── Parallel fetch — stats + submissions + latest draft ─────────────────
-  const [{ authorized, stats }, submissions, latestDraft] = await Promise.all([
+  // ── Parallel fetch — stats + submissions ─────────────────────────────────
+  const [{ authorized, stats }, submissions] = await Promise.all([
     fetchOverviewStats(),
     fetchAllSubmissions(),
-    fetchLatestDraft(),
   ]);
 
   if (!authorized) return;
@@ -348,7 +331,7 @@ async function init() {
 
   // Queue + content section — pass latestDraft (may be null — card hidden if so)
   document.getElementById("queues-content-root").innerHTML =
-    renderQueuesAndContent([], latestDraft, submissions, false);
+    renderQueuesAndContent([], null, submissions, false);
 
   // Wire draft card buttons (only present if latestDraft exists)
   bindDraftCard();
