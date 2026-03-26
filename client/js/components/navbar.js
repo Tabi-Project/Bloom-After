@@ -42,7 +42,7 @@ function renderNavbar(activePage = '') {
 
       </nav>
 
-      <a href="/clinics" class="navbar-cta">Start a Conversation</a>
+      <a href="/clinics" class="navbar-cta">Find care near you</a>
 
       <button
         class="navbar-hamburger"
