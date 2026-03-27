@@ -36,6 +36,12 @@ const TYPE_CONFIG = {
     ],
     apiBase:  '/api/v1/admin/resources',
   },
+  lifestyle: {
+    label:    'Lifestyle Hub',
+    backUrl:  '/admin/content-manager?filter=lifestyle',
+    fields:   ['title', 'category', 'subtitle', 'summary', 'foundation', 'tips', 'evidence'],
+    apiBase:  '/api/v1/admin/lifestyle',
+  },
   ngo: {
     label:    'NGO Directory',
     backUrl:  '/admin/content-manager?filter=ngo',
@@ -64,6 +70,26 @@ const FIELD_DEFS = {
     rows:  2,
     placeholder: 'Short description shown on cards (150 chars max)',
     hint:  'Shown on resource cards in the hub.',
+  },
+  foundation: {
+    label: 'Foundation paragraphs',
+    type:  'textarea',
+    rows:  6,
+    placeholder: 'One paragraph per line',
+    hint:  'Each line becomes a paragraph in the Foundation section.',
+  },
+  tips: {
+    label: 'Practical strategies',
+    type: 'textarea',
+    rows: 6,
+    placeholder: 'Tip title | Tip description',
+    hint: 'One tip per line in the format: title | description',
+  },
+  evidence: {
+    label: 'Clinical evidence',
+    type: 'textarea',
+    rows: 6,
+    placeholder: 'One evidence point per line',
   },
   description: {
     label: 'Description',
@@ -384,7 +410,7 @@ if (urlTitle && !contentId) {
 
 async function fetchEntry(id) {
   const res = await api.get(`${cfg.apiBase}/${id}`);
-  const raw = res?.data?.resource || res?.data?.ngo || res?.data?.clinic || res?.data || null;
+  const raw = res?.data?.resource || res?.data?.lifestyle || res?.data?.ngo || res?.data?.clinic || res?.data || null;
   if (!raw) return null;
   return toEditorFormData(raw);
 }
@@ -939,6 +965,31 @@ function toEditorFormData(raw) {
     };
   }
 
+  if (contentType === 'lifestyle') {
+    return {
+      type: 'lifestyle',
+      title: raw.title || '',
+      category: raw.category || 'lifestyle',
+      subtitle: raw.subtitle || '',
+      summary: raw.summary || '',
+      foundation: Array.isArray(raw.foundation) ? raw.foundation.join('\n') : '',
+      tips: Array.isArray(raw.tips)
+        ? raw.tips
+            .map((tip) => {
+              const title = String(tip?.title || '').trim();
+              const desc = String(tip?.desc || tip?.description || '').trim();
+              return title && desc ? `${title} | ${desc}` : '';
+            })
+            .filter(Boolean)
+            .join('\n')
+        : '',
+      evidence: Array.isArray(raw.evidence) ? raw.evidence.join('\n') : '',
+      status: normalizeStatus(raw.status || (raw.published ? 'published' : 'draft')),
+      featured: false,
+      updatedAt: raw.updatedAt,
+    };
+  }
+
   if (contentType === 'ngo') {
     return {
       type: 'ngo',
@@ -950,7 +1001,7 @@ function toEditorFormData(raw) {
       website: raw.website || '',
       email: raw.contact?.email || raw.email || '',
       phone: raw.contact?.phone || raw.phone || '',
-      image: raw.cover_image || '',
+      image: getFirstNonEmptyString(raw.cover_image, raw.coverImage, raw.image_cover),
       status: mapNgoStatusToContentStatus(raw.status),
       featured: false,
       updatedAt: raw.updatedAt,
@@ -1013,6 +1064,30 @@ function toApiPayload(data) {
     };
   }
 
+  if (contentType === 'lifestyle') {
+    const tips = splitLines(data.tips)
+      .map((line) => {
+        const [left, ...rest] = line.split('|');
+        const title = String(left || '').trim();
+        const desc = rest.join('|').trim();
+        if (!title || !desc) return null;
+        return { title, desc };
+      })
+      .filter(Boolean);
+
+    return {
+      title: data.title,
+      category: data.category,
+      subtitle: data.subtitle,
+      summary: data.summary,
+      foundation: splitLines(data.foundation),
+      tips,
+      evidence: splitLines(data.evidence),
+      status: normalizeStatus(data.status),
+      published: normalizeStatus(data.status) === 'published',
+    };
+  }
+
   if (contentType === 'ngo') {
     return {
       name: data.title,
@@ -1023,6 +1098,8 @@ function toApiPayload(data) {
       email: data.email,
       phone: data.phone,
       cover_image: data.image,
+      coverImage: data.image,
+      image_cover: data.image,
       status: mapContentStatusToNgoStatus(normalizeStatus(data.status)),
     };
   }
@@ -1100,7 +1177,7 @@ async function saveEntry() {
     } else {
       res = await api.post(cfg.apiBase, payload);
       // Redirect to edit URL after creation
-      const newId = res?.data?.resource?.id || res?.data?.ngo?.id || res?.data?.clinic?.id || res?.data?.id;
+      const newId = res?.data?.resource?.id || res?.data?.lifestyle?.id || res?.data?.ngo?.id || res?.data?.clinic?.id || res?.data?.id;
       if (newId) {
         isDirty = false;
         window.location.replace(`/admin/content-manager/editor?type=${contentType}&id=${newId}`);
@@ -1108,7 +1185,7 @@ async function saveEntry() {
       }
     }
     isDirty = false;
-    const savedRaw = res?.data?.resource || res?.data?.ngo || res?.data?.clinic || null;
+    const savedRaw = res?.data?.resource || res?.data?.lifestyle || res?.data?.ngo || res?.data?.clinic || null;
     if (savedRaw) {
       formData = { ...formData, ...toEditorFormData(savedRaw) };
     } else {
@@ -1195,6 +1272,7 @@ function buildPreviewHtml(data) {
 function getDestColor() {
   const colorMap = {
     resource:     'var(--color-brand-400)',
+    lifestyle:    '#7c3aed',
     ngo:          '#0369a1',
     clinic:       '#15803d',
   };

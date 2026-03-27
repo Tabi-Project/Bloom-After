@@ -49,25 +49,31 @@ const parseAdminLimit = (value) => {
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-const normalizeNgo = (ngo) => ({
-  id: String(ngo._id),
-  name: getString(ngo.name),
-  cover_image: getString(ngo.cover_image),
-  mission: getString(ngo.mission),
-  focus_areas: Array.isArray(ngo.focus_areas) ? ngo.focus_areas.join(', ') : '',
-  focus_tags: Array.isArray(ngo.focus_areas) ? ngo.focus_areas : [],
-  services: Array.isArray(ngo.services) ? ngo.services : [],
-  geographic_coverage: getString(ngo.geographic_coverage),
-  coverage_type: getString(ngo.coverage_type),
-  contact: {
-    phone: getString(ngo.contact?.phone),
-    email: getString(ngo.contact?.email),
-  },
-  website: getString(ngo.website),
-  status: getString(ngo.status, 'pending'),
-  createdAt: ngo.createdAt || null,
-  updatedAt: ngo.updatedAt || null,
-});
+const normalizeNgo = (ngo) => {
+  const coverImage = getString(ngo.cover_image, getString(ngo.coverImage, getString(ngo.image_cover)));
+
+  return {
+    id: String(ngo._id),
+    name: getString(ngo.name),
+    cover_image: coverImage,
+    coverImage,
+    image_cover: coverImage,
+    mission: getString(ngo.mission),
+    focus_areas: Array.isArray(ngo.focus_areas) ? ngo.focus_areas.join(', ') : '',
+    focus_tags: Array.isArray(ngo.focus_areas) ? ngo.focus_areas : [],
+    services: Array.isArray(ngo.services) ? ngo.services : [],
+    geographic_coverage: getString(ngo.geographic_coverage),
+    coverage_type: getString(ngo.coverage_type),
+    contact: {
+      phone: getString(ngo.contact?.phone),
+      email: getString(ngo.contact?.email),
+    },
+    website: getString(ngo.website),
+    status: getString(ngo.status, 'pending'),
+    createdAt: ngo.createdAt || null,
+    updatedAt: ngo.updatedAt || null,
+  };
+};
 
 const buildFilter = (query) => {
   const and = [{ status: 'approved' }];
@@ -174,7 +180,7 @@ export const submitNgo = async (req, res) => {
     const coverage_type = getString(req.body?.coverage_type, 'other').toLowerCase();
     const contactPhone = getString(req.body?.contact?.phone || req.body?.phone);
     const contactEmail = getString(req.body?.contact?.email || req.body?.email);
-    const cover_image = getString(req.body?.cover_image);
+    const cover_image = getString(req.body?.cover_image || req.body?.coverImage || req.body?.image_cover);
 
     if (!name) {
       return res.status(400).json({ status: 'error', error: 'Organisation name is required.' });
@@ -308,7 +314,22 @@ export const updateAdminNgo = async (req, res) => {
     }
 
     const nextStatus = getString(req.body?.status).toLowerCase();
+    const hasServicesInput = req.body?.services !== undefined;
+    const name = getString(req.body?.name, ngo.name || '');
     const mission = getString(req.body?.mission, ngo.mission || '');
+    const services = hasServicesInput
+      ? toFocusArray(req.body?.services)
+      : (Array.isArray(ngo.services) ? ngo.services : []);
+    const geographicCoverage = getString(req.body?.geographic_coverage, ngo.geographic_coverage || '');
+    const coverageTypeRaw = getString(req.body?.coverage_type, ngo.coverage_type || 'other').toLowerCase();
+    const website = getString(req.body?.website, ngo.website || '');
+    const focusAreas = req.body?.focus_areas !== undefined
+      ? toFocusArray(req.body?.focus_areas)
+      : (Array.isArray(ngo.focus_areas) ? ngo.focus_areas : []);
+    const coverImage = getString(
+      req.body?.cover_image || req.body?.coverImage || req.body?.image_cover,
+      ngo.cover_image || ''
+    );
     const contactPhone = getString(req.body?.contact?.phone || req.body?.phone, ngo.contact?.phone || '');
     const contactEmail = getString(req.body?.contact?.email || req.body?.email, ngo.contact?.email || '').toLowerCase();
     const moderatorNote = getString(req.body?.moderatorNote, ngo.moderatorNote || '');
@@ -341,7 +362,16 @@ export const updateAdminNgo = async (req, res) => {
       return res.status(400).json({ status: 'error', error: 'Provide a valid email address.' });
     }
 
+    ngo.name = name;
     ngo.mission = mission;
+    ngo.services = services;
+    ngo.focus_areas = focusAreas;
+    ngo.geographic_coverage = geographicCoverage;
+    ngo.coverage_type = ['local', 'regional', 'national', 'international', 'other'].includes(coverageTypeRaw)
+      ? coverageTypeRaw
+      : (ngo.coverage_type || 'other');
+    ngo.website = website;
+    ngo.cover_image = coverImage;
     ngo.contact = {
       ...(ngo.contact?.toObject ? ngo.contact.toObject() : ngo.contact || {}),
       phone: contactPhone,

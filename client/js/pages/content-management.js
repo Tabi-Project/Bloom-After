@@ -24,6 +24,16 @@ const DESTINATIONS = [
     bgColor:  'var(--color-brand-50)',
   },
   {
+    id:       'lifestyle',
+    label:    'Lifestyle Hub',
+    desc:     'Lifestyle and medical interventions for postpartum support.',
+    icon:     `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+    newUrl:   '/admin/content-manager/editor?type=lifestyle',
+    listUrl:  '/admin/content-manager?filter=lifestyle',
+    color:    '#7c3aed',
+    bgColor:  '#f5f3ff',
+  },
+  {
     id:       'ngo',
     label:    'NGO Directory',
     desc:     'NGOs and support organisations providing maternal health services.',
@@ -93,8 +103,9 @@ async function init() {
 
 // Data
 async function fetchContent() {
-  const [resourcesRes, ngosRes, clinicsRes] = await Promise.all([
+  const [resourcesRes, lifestyleRes, ngosRes, clinicsRes] = await Promise.all([
     api.get('/api/v1/admin/resources'),
+    api.get('/api/v1/admin/lifestyle'),
     api.get('/api/v1/admin/ngos'),
     api.get('/api/v1/admin/clinics'),
   ]);
@@ -103,6 +114,14 @@ async function fetchContent() {
     id: item.id,
     title: item.title,
     type: 'resource',
+    status: normalizeStatus(item.status),
+    updatedAt: item.updatedAt || null,
+  }));
+
+  const lifestyle = (lifestyleRes?.data?.lifestyle || []).map((item) => ({
+    id: item.id,
+    title: item.title,
+    type: 'lifestyle',
     status: normalizeStatus(item.status),
     updatedAt: item.updatedAt || null,
   }));
@@ -123,7 +142,7 @@ async function fetchContent() {
     updatedAt: item.updatedAt || null,
   }));
 
-  return [...resources, ...ngos, ...clinics];
+  return [...resources, ...lifestyle, ...ngos, ...clinics];
 }
 
 // Destination cards 
@@ -419,6 +438,11 @@ async function patchItemStatus(item, nextStatus) {
 
   if (item.type === 'resource') {
     await api.patch(`/api/v1/admin/resources/${id}`, { status: nextStatus });
+    return;
+  }
+
+  if (item.type === 'lifestyle') {
+    await api.patch(`/api/v1/admin/lifestyle/${id}`, { status: nextStatus });
     return;
   }
 

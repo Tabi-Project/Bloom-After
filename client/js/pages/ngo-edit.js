@@ -66,6 +66,7 @@ async function fetchNgo(id) {
 function renderNgoEdit(ngo) {
   const root = document.getElementById('ngo-edit-root');
   const status = String(ngo.status || 'pending').toLowerCase();
+  const coverImage = ngo.cover_image || ngo.coverImage || ngo.image_cover || '';
   const submittedDate = ngo.createdAt
     ? new Date(ngo.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
     : '';
@@ -84,9 +85,9 @@ function renderNgoEdit(ngo) {
           <span class="mod-status-badge mod-status-${escHtml(status)}" id="ngo-status-badge">${escHtml(status)}</span>
         </div>
 
-        ${ngo.cover_image ? `
+        ${coverImage ? `
           <figure class="story-edit-image-wrap">
-            <img src="${escHtml(ngo.cover_image)}" alt="NGO image" class="story-edit-image" />
+            <img src="${escHtml(coverImage)}" alt="NGO image" class="story-edit-image" />
           </figure>
         ` : ''}
 

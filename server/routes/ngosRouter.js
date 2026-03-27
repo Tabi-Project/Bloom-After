@@ -1,4 +1,4 @@
-import express from 'express';
+import express from "express";
 import { getAllNgos, getNgoById, submitNgo } from '../controllers/ngosController.js';
 
 const router = express.Router();

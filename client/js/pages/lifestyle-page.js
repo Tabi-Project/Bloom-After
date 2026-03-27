@@ -1,4 +1,4 @@
-import { interventions } from '../data/lifestyle.js';
+import { fetchLifestyle } from '../data/lifestyle-api.js';
 import { renderNavbar, initNavbar } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 
@@ -6,6 +6,8 @@ const ITEMS_PER_PAGE = 6;
 let currentPage = 1;
 let activeFilter = 'all';
 let searchQuery = '';
+let totalPages = 0;
+let requestSequence = 0;
 
 const grid = document.getElementById('lm-grid');
 const emptyState = document.getElementById('lm-empty');
@@ -17,9 +19,11 @@ document.getElementById('navbar-root').innerHTML = renderNavbar('lifestyle');
 initNavbar();
 document.getElementById('footer-root').innerHTML = renderFooter();
 
-// --- Loading Simulation ---
-function loadData(scrollToTop = false) {
-  // Show skeletons
+async function loadData({ resetPage = false, scrollToTop = false } = {}) {
+  if (resetPage) currentPage = 1;
+
+  const requestId = ++requestSequence;
+
   grid.innerHTML = Array(6).fill().map(() => `
     <div class="skeleton-card">
       <div class="skeleton-line skeleton-line-short"></div>
@@ -28,38 +32,43 @@ function loadData(scrollToTop = false) {
       <div class="skeleton-line skeleton-line-medium"></div>
     </div>
   `).join('');
-  
+
   emptyState.hidden = true;
   paginationWrap.innerHTML = '';
 
-  // Simulate network latency for a smooth app feel
-  setTimeout(() => {
-    processAndRender(scrollToTop);
-  }, 400);
+  try {
+    const { data, pagination } = await fetchLifestyle({
+      page: currentPage,
+      limit: ITEMS_PER_PAGE,
+      category: activeFilter === 'all' ? '' : activeFilter,
+      q: searchQuery,
+      published: true,
+    });
+
+    if (requestId !== requestSequence) return;
+
+    currentPage = pagination?.currentPage || currentPage;
+    totalPages = pagination?.totalPages || 0;
+    processAndRender(data, scrollToTop);
+  } catch (error) {
+    if (requestId !== requestSequence) return;
+    grid.innerHTML = '';
+    emptyState.hidden = false;
+    emptyState.innerHTML = `<strong>Unable to load interventions.</strong><br />${error?.message || 'Please try again shortly.'}`;
+  }
 }
 
 // --- Data Processing ---
-function processAndRender(scrollToTop) {
-  // Filter
-  const filtered = interventions.filter(item => {
-    const matchesCategory = activeFilter === 'all' || item.category === activeFilter;
-    const matchesSearch = item.title.toLowerCase().includes(searchQuery) || item.summary.toLowerCase().includes(searchQuery);
-    return matchesCategory && matchesSearch;
-  });
-
-  // Check Empty
-  if (filtered.length === 0) {
+function processAndRender(items, scrollToTop) {
+  if (!items.length) {
     grid.innerHTML = '';
     emptyState.hidden = false;
     return;
   }
 
-  // Paginate
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
-  const paginatedItems = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  emptyState.hidden = true;
 
-  // Render Grid (Icons removed!)
-  grid.innerHTML = paginatedItems.map(item => `
+  grid.innerHTML = items.map(item => `
     <a href="/lifestyle/detail?id=${item.id}" class="lm-card">
       <header class="lm-card-header">
         <span class="lm-badge">${item.category}</span>
@@ -111,8 +120,7 @@ filterBtns.forEach(btn => {
     filterBtns.forEach(b => b.classList.remove('active'));
     e.target.classList.add('active');
     activeFilter = e.target.dataset.filter;
-    currentPage = 1;
-    loadData();
+    loadData({ resetPage: true });
   });
 });
 
@@ -121,16 +129,17 @@ searchInput?.addEventListener('input', (e) => {
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => {
     searchQuery = e.target.value.toLowerCase();
-    currentPage = 1;
-    loadData();
+      loadData({ resetPage: true });
   }, 350);
 });
 
 paginationWrap.addEventListener('click', (e) => {
   const btn = e.target.closest('[data-page]');
   if (!btn || btn.disabled) return;
-  currentPage = Number(btn.dataset.page);
-  loadData(true);
+  const nextPage = Number(btn.dataset.page);
+  if (!nextPage || nextPage < 1 || nextPage > totalPages) return;
+  currentPage = nextPage;
+  loadData({ scrollToTop: true });
 });
 
 // Initial Load
