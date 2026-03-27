@@ -227,6 +227,7 @@
             />
           </div>
         </div>
+
         <div class="form-row">
           <label for="email">
             Notification email
@@ -248,7 +249,8 @@
             />
           </div>
         </div>
-        <div class="privacy-row">
+
+        <!-- <div class="privacy-row">
           <div class="privacy-header">
             <div>
               <h4>Privacy Settings</h4>
@@ -286,6 +288,46 @@
           <label class="consent">
             <input type="checkbox" name="consent" id="consent" required/>
             I consent to my story being moderated by the Bloom After team.
+          </label>
+        </div> -->
+
+        <div class="form-row privacy-card">
+          <div class="privacy-header">
+            <div class="privacy-text">
+              <h4>Display Name</h4>
+              <p class="privacy-desc">Choose how you appear in the library.</p>
+            </div>
+            <div class="privacy-switch" role="tablist" aria-label="Name display">
+              <button
+                type="button"
+                class="privacy-btn privacy-named active"
+                data-value="named"
+                aria-pressed="true"
+              >
+                Named
+              </button>
+              <button
+                type="button"
+                class="privacy-btn privacy-anonymous"
+                data-value="anonymous"
+                aria-pressed="false"
+              >
+                Anonymous
+              </button>
+            </div>
+          </div>
+          <input type="hidden" id="privacy-value" name="privacy" value="named" />
+        </div>
+
+        <div class="form-row consent-card">
+          <label class="consent-wrapper" for="consent">
+            <div class="consent-checkbox">
+              <input type="checkbox" name="consent" id="consent" required />
+            </div>
+            <div class="consent-text">
+              <h4>Moderation Agreement</h4>
+              <p>I consent to my story being reviewed by the Bloom After team. It will not be published if it violates community safety guidelines.</p>
+            </div>
           </label>
         </div>
 

@@ -1,5 +1,4 @@
 /* FAB wrap  */
-
 .suggest-fab-wrap {
   position: fixed;
   bottom:  var(--neg-space-1);
@@ -134,7 +133,7 @@
   inset: 0;
   background: rgba(0, 38, 38, 0.5);
   backdrop-filter: blur(2px);
-  z-index: 950;
+  z-index: 9998;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -153,10 +152,10 @@
   right: 0;
   width: 100%;
   max-width: 480px;
-  max-height: 90vh;
+  max-height: calc(100dvh - var(--space-10));
   background: var(--color-surface);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  z-index: 960;
+  z-index: 9999;
   overflow-y: auto;
   overscroll-behavior: contain;
 
