@@ -4,7 +4,7 @@ import api from '../api.js';
 const SUGGESTION_TYPES = [
   { id: 'clinic',     label: 'Clinic recommendation' },
   { id: 'specialist', label: 'Specialist onboarding' },
-  { id: 'media',      label: 'Media suggestion'      },
+  { id: 'media',      label: 'Resource suggestion'      },
   { id: 'request',    label: 'Other request'         },
 ];
 
@@ -14,7 +14,6 @@ const escHtml = (v = '') =>
   );
 
 // Template
-
 function buildDrawerHTML() {
   const typePills = SUGGESTION_TYPES.map((t) => `
     <button

@@ -1,7 +1,4 @@
-/* Page-specific styles for submit story */
-
-/* Layout container (match code.md max-width & padding) */
-.submit-layout, .submit-grid {
+ .submit-layout, .submit-grid {
   max-width: 1200px;
   margin-inline: auto;
   width: 100%;
@@ -21,6 +18,14 @@
   .submit-aside { display: none; }
   .submit-aside-image { display: none; }
   .upload-row { grid-template-columns: 1fr; }
+
+  .upload-change {
+    right: auto; 
+    left: 50%;
+    transform: translateX(-50%); 
+    bottom: var(--space-4); 
+    white-space: nowrap;
+  }
 }
 
 .submit-aside-image {
@@ -461,24 +466,110 @@
 .aside-visual-text { position:absolute; left:var(--space-4); bottom:var(--space-4); color:var(--color-white); font-weight:700; }
 
 /* Privacy */
-.privacy-row{
-background-color: var(--color-bg-muted);
-align-self: center;
-width: 100%;
-flex: 2;
-padding: var(--space-8);
-border-radius: 20px;
+.privacy-card, .consent-card {
+  background-color: var(--color-bg-muted);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-sizing: border-box;
 }
 
-.privacy-header { display:flex; justify-content: space-between; align-items:center; gap: var(--space-4); }
-.privacy-header h4  { font-size: var(--font-size-lg); font-weight: 800 !important; color: var(--color-brand-900); }
-.privacy-switch { display:flex; gap: var(--space-2); background: var(--color-surface); padding: 4px; border-radius: 999px; border:1px solid var(--color-border); }
-.privacy-switch .privacy-btn { padding: 6px 12px; border-radius: 8px; font-weight: 700; }
-.privacy-switch .privacy-btn.active { background: var(--color-primary); color: var(--color-white); }
-.privacy-header .consent{
-  margin-top: var(--space-6);
-  font-size: var(--font-size-sm);
+.privacy-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap; 
 }
+
+.privacy-text h4, .consent-text h4 {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-brand-900);
+  margin-bottom: var(--space-1);
+}
+
+.privacy-desc, .consent-text p {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.privacy-switch {
+  display: flex;
+  gap: var(--space-2);
+  background: var(--color-surface);
+  padding: var(--space-1);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+}
+
+.privacy-switch .privacy-btn {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  transition: all 0.2s;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.privacy-switch .privacy-btn.active {
+  background: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.consent-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+
+.consent-checkbox input[type="checkbox"] {
+  width: var(--space-4);
+  height: var(--space-4);
+  margin-top: var(--space-1);
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.submit-layout {
+  box-sizing: border-box; 
+  overflow-x: hidden; 
+}
+
+@media (max-width: 520px) {
+  .privacy-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .privacy-switch {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .privacy-switch .privacy-btn {
+    flex: 1; 
+    text-align: center;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 .other-tag-input { border: 1px dashed var(--color-border); padding: var(--space-2); border-radius: var(--radius-md); width:100%; margin-top: var(--space-3); }
 
 .anonymous-toggle { display:flex; align-items:center; gap:var(--space-3); cursor:pointer; }
