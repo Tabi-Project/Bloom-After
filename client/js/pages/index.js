@@ -7,7 +7,7 @@ import {
 import { renderFooter } from "../components/footer.js";
 import { initSuggestDrawer } from "../components/suggest-drawer.js";
 import { renderFAQs } from "../components/faqs.js";
-import { fetchResources } from "../data/resources.js";
+import { fetchResources } from "../data/resources-api.js";
 import { createResourceCard } from "../components/resourceCard.js";
 document.getElementById("navbar-root").innerHTML = renderNavbar("home");
 initNavbar();
@@ -24,10 +24,13 @@ async function renderVoicesFromResources() {
   if (!listRoot) return;
 
   try {
-    const { data } = await fetchResources({ page: 1, limit: 100 });
-    const published = data.filter((r) => r.published);
-    published.sort((a, b) => new Date(b.date) - new Date(a.date));
-    const latest = published.slice(0, 3);
+    const { data } = await fetchResources({
+      page: 1,
+      limit: 3,
+      content_type: "media",
+      published: true,
+    });
+    const latest = data.slice(0, 3);
 
     if (!latest.length) return;
 
