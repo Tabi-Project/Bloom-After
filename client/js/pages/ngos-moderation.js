@@ -110,6 +110,7 @@ function renderList() {
 
 function renderNgoCard(item) {
   const id = item.id || item._id;
+  const coverImage = item.cover_image || item.coverImage || item.image_cover || '';
   const date = item.createdAt
     ? new Date(item.createdAt).toLocaleDateString('en-GB', {
         day: 'numeric',
@@ -120,7 +121,7 @@ function renderNgoCard(item) {
 
   return `
     <article class="mod-submission-card" data-id="${escHtml(id)}">
-      ${item.cover_image ? `<img src="${escHtml(item.cover_image)}" alt="" class="mod-sub-thumb" loading="lazy" />` : '<div class="mod-sub-thumb mod-sub-thumb-placeholder" aria-hidden="true"></div>'}
+      ${coverImage ? `<img src="${escHtml(coverImage)}" alt="" class="mod-sub-thumb" loading="lazy" />` : '<div class="mod-sub-thumb mod-sub-thumb-placeholder" aria-hidden="true"></div>'}
       <div class="mod-sub-body">
         <div class="mod-sub-top">
           <div class="mod-sub-meta">

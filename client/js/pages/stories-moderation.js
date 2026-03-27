@@ -180,10 +180,10 @@ function renderStoryRow(story) {
           Review
         </a>
         ${story.status === "pending" ? `
-          <button class="mod-action-btn mod-action-approve" data-action="approve" data-id="${escHtml(id)}" aria-label="Quick approve story by ${escHtml(name)}">
+          <button class="mod-action-btn mod-action-approve mod-action-quick" data-action="approve" data-id="${escHtml(id)}" aria-label="Quick approve story by ${escHtml(name)}">
             Approve
           </button>
-          <button class="mod-action-btn mod-action-reject" data-action="reject" data-id="${escHtml(id)}" aria-label="Quick reject story by ${escHtml(name)}">
+          <button class="mod-action-btn mod-action-reject mod-action-quick" data-action="reject" data-id="${escHtml(id)}" aria-label="Quick reject story by ${escHtml(name)}">
             Reject
           </button>
         ` : ""}

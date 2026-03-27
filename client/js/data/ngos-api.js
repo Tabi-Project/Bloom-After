@@ -3,7 +3,9 @@ import api from '../api.js';
 const normalizeNgo = (ngo) => ({
   id: ngo?.id || ngo?._id || '',
   name: ngo?.name || '',
-  cover_image: ngo?.cover_image || ngo?.coverImage || '',
+  cover_image: ngo?.cover_image || ngo?.coverImage || ngo?.image_cover || '',
+  coverImage: ngo?.coverImage || ngo?.cover_image || ngo?.image_cover || '',
+  image_cover: ngo?.image_cover || ngo?.cover_image || ngo?.coverImage || '',
   mission: ngo?.mission || '',
   focus_areas: ngo?.focus_areas || '',
   focus_tags: Array.isArray(ngo?.focus_tags)

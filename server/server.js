@@ -18,6 +18,8 @@ import adminSettingsRouter from './routes/adminSettingsRouter.js';
 import adminResourcesRouter from './routes/adminResourcesRouter.js';
 import adminClinicsRouter from './routes/adminClinicsRouter.js';
 import adminUploadRouter from './routes/adminUploadRouter.js';
+import lifestyleRouter from './routes/lifestyleRouter.js';
+import adminLifestyleRouter from './routes/adminLifestyleRouter.js';
 
 dotenv.config();
 
@@ -65,11 +67,13 @@ app.use('/api/v1/admin/ngos', adminNgosRouter);
 app.use('/api/v1/admin/settings', adminSettingsRouter);
 app.use('/api/v1/admin/resources', adminResourcesRouter);
 app.use('/api/v1/admin/clinics', adminClinicsRouter);
+app.use('/api/v1/admin/lifestyle', adminLifestyleRouter);
 app.use('/api/v1/admin/upload', adminUploadRouter);
 app.use('/api/v1/clinics', clinicsRouter);
 app.use('/api/v1/stories', storiesRouter);
 app.use('/api/v1/ngos', ngosRouter);
 app.use('/api/v1/suggestions', suggestionsRouter);
+app.use('/api/v1/lifestyle', lifestyleRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World');
