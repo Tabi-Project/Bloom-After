@@ -11,7 +11,8 @@
     "seed:resources": "node scripts/seedResources.js",
     "seed:admin": "node scripts/seedAdmin.js",
     "seed:clinics": "node scripts/seedClinics.js",
-    "seed:ngos": "node scripts/seedNgos.js"
+    "seed:ngos": "node scripts/seedNgos.js",
+    "seed:lifestyle": "node scripts/seedLifestyle.js"
   },
   "repository": {
     "type": "git",

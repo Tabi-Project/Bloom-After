@@ -115,7 +115,7 @@ function createNGOCard(ngo) {
   const phone = ngo.contact?.phone || '';
   const email = ngo.contact?.email || '';
   const website = ngo.website || '#';
-  const image = ngo.cover_image || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&q=80';
+  const image = ngo.cover_image || ngo.coverImage || ngo.image_cover || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&q=80';
   
   return `
     <article class="ngo-card">

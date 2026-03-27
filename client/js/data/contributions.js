@@ -58,6 +58,16 @@ const teamMembers = [
       "Implemented and refined frontend components, improved UI responsiveness, and enhanced overall user experience.",
     github: "https://github.com/De-jola",
     linkedin: "https://www.linkedin.com/in/esther-adejola",
+  },
+  {
+    id: 7,
+    name: "Mariam Omiteru",
+    role: "UI/UX DESIGNER",
+    img: resolveTeamImage("Mariam-Omiteru.jpeg"),
+    contribution:
+      "Worked on the design of the resource experience, including core pages and category-specific flows. Also created a mini design system and contributed to the landing page as well.",
+    github: "",
+    linkedin: "http://www.linkedin.com/in/mariamomiteru",
   }
 ];
 
