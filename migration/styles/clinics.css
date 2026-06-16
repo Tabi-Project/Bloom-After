@@ -364,12 +364,15 @@
 
 .card-header {
   grid-area: header;
+  grid-column: 2 / -1;
 }
 
 .card-header-flex {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
   margin-bottom: var(--space-2);
 }
 
@@ -414,33 +417,49 @@
   flex-wrap: wrap;
 }
 
-.tag-pill {
-  font-size: 0.6rem;
-  padding: 4px 8px;
-  background: var(--color-gray-100);
-  color: var(--color-text-muted);
-  border-radius: var(--radius-pill);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.2px;
-  display: inline-block;
-  line-height: 1.2;
-  white-space: nowrap;
+.card-header-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  margin-bottom: var(--space-2);
 }
 
-.status-accepting {
-  background-color: var(--color-brand-100);
-  color: var(--color-brand-900);
+.status-badge,
+.tag-pill,
+.tag-pill--highlight {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px !important;
+  font-weight: 500;
+  white-space: nowrap;
+  line-height: 1.4;
+  background: var(--color-brand-400) !important;
+  color: var(--color-white) !important;
+  border: none !important;
+  border-radius: var(--radius-lg) !important;
+  font-size: 11px !important;
+}
+
+.status-badge {
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .status-full {
-  background-color: var(--color-gray-200);
+  background: var(--color-gray-200);
   color: var(--color-gray-700);
+  border-color: var(--color-gray-300);
 }
 
-.tag-pill.highlight {
-  background: var(--color-brand-50);
-  color: var(--color-primary);
+.card-tags {
+  grid-area: tags;
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .card-fee {
@@ -745,15 +764,19 @@
   display: none;
 }
 
-.leaflet-top,
+/* .leaflet-top,
 .leaflet-bottom {
   z-index: 90 !important;
-}
+} */
 
 @media (max-width: 1024px) {
   .directory-main {
     grid-template-columns: 220px 1fr;
     gap: var(--space-6);
+  }
+
+  .card-header {
+    grid-column: 1 / -1;
   }
 
   .clinic-card {
