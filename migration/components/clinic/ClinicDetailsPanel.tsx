@@ -26,7 +26,6 @@ export default function ClinicDetailsPanel({ clinic, onClose, onSubmitReview }: 
       await onSubmitReview(clinic.id, reviewRating, reviewText);
       setIsSuccess(true);
     } catch {
-      // Intentionally ignoring unused error variable per linter rules
       alert("Unable to submit review right now.");
     } finally {
       setIsSubmitting(false);
