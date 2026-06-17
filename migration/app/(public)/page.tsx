@@ -5,10 +5,14 @@ import Voices from "@/components/Voices";
 import Contributors from "@/components/Contributors";
 import Faqs from "@/components/Faqs";
 import SuggestDrawer from "@/components/SuggestDrawer";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
 
 export default function Home() {
   return (
     <>
+      <Navbar />
       <a href="#main-content" className="visually-hidden">
         Skip to main content
       </a>
