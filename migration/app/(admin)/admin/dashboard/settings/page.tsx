@@ -125,7 +125,7 @@ export default function AdminSettingsPage() {
                   <td className="settings-perm-capability">Invite New Members</td>
                   <td>
                     <div className="settings-perm-check">
-                      <span className="material-symbols-outlined" style={{fontSize:'16px'}}>check_circle</span>
+                      <span className="material-symbols-outlined" style={{fontSize:'14px'}}>check_circle</span>
                     </div>
                   </td>
                   <td><span className="settings-perm-dash">-</span></td>
