@@ -125,45 +125,73 @@ export default function AdminSettingsPage() {
                   <td className="settings-perm-capability">Invite New Members</td>
                   <td>
                     <div className="settings-perm-check">
-                      <span className="material-symbols-outlined" style={{fontSize:'14px'}}>check_circle</span>
+                      <span className="material-symbols-outlined" style={{fontSize:'16px'}}>check_circle</span>
                     </div>
                   </td>
                   <td><span className="settings-perm-dash">-</span></td>
                   <td><span className="settings-perm-dash">-</span></td>
                 </tr>
                 <tr>
-                  <td className="settings-perm-capability">Publish Articles</td>
+                  <td className="settings-perm-capability">Manage Permissions</td>
                   <td>
                     <div className="settings-perm-check">
-                      <span className="material-symbols-outlined" style={{fontSize:'14px'}}>check_circle</span>
+                      <span className="material-symbols-outlined" style={{fontSize:'16px'}}>check_circle</span>
+                    </div>
+                  </td>
+                  <td><span className="settings-perm-dash">-</span></td>
+                  <td><span className="settings-perm-dash">-</span></td>
+                </tr>
+                <tr>
+                  <td className="settings-perm-capability">Publish New Content</td>
+                  <td>
+                    <div className="settings-perm-check">
+                      <span className="material-symbols-outlined" style={{fontSize:'16px'}}>check_circle</span>
                     </div>
                   </td>
                   <td>
                     <div className="settings-perm-check">
-                      <span className="material-symbols-outlined" style={{fontSize:'14px'}}>check_circle</span>
+                      <span className="material-symbols-outlined" style={{fontSize:'16px'}}>check_circle</span>
                     </div>
                   </td>
                   <td><span className="settings-perm-dash">-</span></td>
                 </tr>
                 <tr>
-                  <td className="settings-perm-capability">Moderate Comments</td>
+                  <td className="settings-perm-capability">Edit Existing Assets</td>
                   <td>
                     <div className="settings-perm-check">
-                      <span className="material-symbols-outlined" style={{fontSize:'14px'}}>check_circle</span>
+                      <span className="material-symbols-outlined" style={{fontSize:'16px'}}>check_circle</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="settings-perm-check">
+                      <span className="material-symbols-outlined" style={{fontSize:'16px'}}>check_circle</span>
                     </div>
                   </td>
                   <td><span className="settings-perm-dash">-</span></td>
+                </tr>
+                <tr>
+                  <td className="settings-perm-capability">Review Submissions</td>
                   <td>
                     <div className="settings-perm-check">
-                      <span className="material-symbols-outlined" style={{fontSize:'14px'}}>check_circle</span>
+                      <span className="material-symbols-outlined" style={{fontSize:'16px'}}>check_circle</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="settings-perm-check">
+                      <span className="material-symbols-outlined" style={{fontSize:'16px'}}>check_circle</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="settings-perm-check">
+                      <span className="material-symbols-outlined" style={{fontSize:'16px'}}>check_circle</span>
                     </div>
                   </td>
                 </tr>
                 <tr>
-                  <td className="settings-perm-capability">Manage System Settings</td>
+                  <td className="settings-perm-capability">Audit System Logs</td>
                   <td>
                     <div className="settings-perm-check">
-                      <span className="material-symbols-outlined" style={{fontSize:'14px'}}>check_circle</span>
+                      <span className="material-symbols-outlined" style={{fontSize:'16px'}}>check_circle</span>
                     </div>
                   </td>
                   <td><span className="settings-perm-dash">-</span></td>
@@ -171,6 +199,91 @@ export default function AdminSettingsPage() {
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+
+        {/* Section 3: General Settings */}
+        <div className="settings-block">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <h2 className="settings-block-title">General Settings</h2>
+            <p className="settings-block-subtitle">Configure your environment's global preferences and core identity.</p>
+          </div>
+
+          <div className="settings-general-grid">
+            {/* App Identity Card */}
+            <div className="settings-card">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <span className="material-symbols-outlined" style={{ color: 'var(--color-primary)' }}>badge</span>
+                <h3 className="settings-card-title" style={{ fontSize: '1.125rem' }}>App Identity</h3>
+              </div>
+              
+              <div className="settings-inline-fields">
+                <div className="settings-field-wrap">
+                  <label className="settings-field-label">Application Name</label>
+                  <input type="text" className="settings-input" defaultValue="PPD Targets Admin" />
+                </div>
+                <div className="settings-field-wrap">
+                  <label className="settings-field-label">System Email</label>
+                  <input type="email" className="settings-input" defaultValue="system@botanical-le" />
+                </div>
+              </div>
+              
+              <div className="settings-inline-fields">
+                <div className="settings-field-wrap">
+                  <label className="settings-field-label">Timezone</label>
+                  <select className="settings-select" defaultValue="UTC-05:00 Eastern">
+                    <option value="UTC-05:00 Eastern">UTC-05:00 Eastern</option>
+                  </select>
+                </div>
+                <div className="settings-field-wrap">
+                  <label className="settings-field-label">Date Format</label>
+                  <select className="settings-select" defaultValue="DD/MM/YYYY">
+                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Security Protocol Card */}
+            <div className="settings-card">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <span className="material-symbols-outlined" style={{ color: 'var(--color-primary)' }}>security</span>
+                <h3 className="settings-card-title" style={{ fontSize: '1.125rem' }}>Security Protocol</h3>
+              </div>
+              
+              <div className="settings-switch-row">
+                <div className="settings-switch-copy">
+                  <span className="settings-switch-label">Two-Factor Authentication</span>
+                  <span className="settings-switch-hint">Require 2FA for all Super Admin roles.</span>
+                </div>
+                <label className="settings-switch-control">
+                  <input type="checkbox" defaultChecked />
+                  <div className="settings-switch-slider"></div>
+                </label>
+              </div>
+
+              <div className="settings-switch-row" style={{ marginTop: '24px' }}>
+                <div className="settings-switch-copy">
+                  <span className="settings-switch-label">Auto-logout Inactivity</span>
+                  <span className="settings-switch-hint">Logout users after 30 minutes of inactivity.</span>
+                </div>
+                <label className="settings-switch-control">
+                  <input type="checkbox" defaultChecked />
+                  <div className="settings-switch-slider"></div>
+                </label>
+              </div>
+
+              <div className="settings-switch-row" style={{ marginTop: '24px' }}>
+                <div className="settings-switch-copy">
+                  <span className="settings-switch-label">Enforce Password Reset</span>
+                  <span className="settings-switch-hint">Force all users to change passwords every 90 days.</span>
+                </div>
+                <label className="settings-switch-control">
+                  <input type="checkbox" />
+                  <div className="settings-switch-slider"></div>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
 
