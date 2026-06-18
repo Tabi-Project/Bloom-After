@@ -1,4 +1,4 @@
-import { Story } from "@/types/stories";
+import { Story } from "@/types/story";
 import Image from "next/image";
 const StoryCard = ({ story }: { story: Story }) => {
   const {
@@ -11,6 +11,12 @@ const StoryCard = ({ story }: { story: Story }) => {
     privacy,
     story: storyText,
   } = story;
+
+  const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80';
+  const plainText = story.story_text || (story.story ?? '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  const excerpt = plainText && plainText.length > 130 ? plainText.slice(0, 130).trim() + '…' : plainText;
+  const img     = image_url || FALLBACK_IMAGE;
+  const tags    = what_helped.slice(0, 3);
   return (
     <article className="resource-card story-card" data-id={_id}>
       <a
@@ -19,37 +25,42 @@ const StoryCard = ({ story }: { story: Story }) => {
         tabIndex={-1}
         aria-hidden="true"
       >
-        <figure className="resource-card-image">
-          <Image
-            src={image_url}
-            alt=""
-            width={400}
-            height={240}
-            loading="lazy"
-            priority={false}
-          />
-        </figure>
+        {img && (
+          <figure className="resource-card-image">
+            <Image
+              src={img}
+              alt=""
+              width={400}
+              height={240}
+              loading="lazy"
+              quality={60}
+              priority={false}
+            />
+          </figure>
+        )}
       </a>
 
       <div className="resource-card-body">
         <div className="resource-card-meta">
-          <time dateTime={createdAt}>
-            {new Date(createdAt).toLocaleDateString("en-US", {
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-            })}
-          </time>
+          {createdAt && (
+            <time dateTime={createdAt}>
+              {new Date(createdAt).toLocaleDateString("en-US", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}
+            </time>
+          )}
           <span className="story-location">{location}</span>
         </div>
 
         <p className="story-author">
           By {privacy === "anonymous" ? "Anonymous" : name}
         </p>
-        <p className="resource-card-summary">{storyText}</p>
+        <p className="resource-card-summary">{excerpt}</p>
 
         <div className="story-card-tags" aria-label="What helped">
-          {what_helped.map((tag) => (
+          {tags.map((tag) => (
             <span key={tag} className="review-tag">
               {tag}
             </span>
@@ -57,7 +68,7 @@ const StoryCard = ({ story }: { story: Story }) => {
         </div>
 
         <a
-          href={`/stories/detail?id=${_id}`}
+          href={`/stories/${_id}`}
           className="resource-card-cta"
           aria-label={`Read story by ${name}`}
         >
@@ -68,7 +79,7 @@ const StoryCard = ({ story }: { story: Story }) => {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
+            strokeWidth="2"
             aria-hidden="true"
           >
             <line x1="5" y1="12" x2="19" y2="12"></line>
