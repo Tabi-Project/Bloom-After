@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchResources } from "@/lib/api/resources";
+import { fetchResources, fetchResourceById } from "@/lib/api/resources";
 import type { Resource } from "@/lib/api/resources";
 import {
   renderArticle,
@@ -10,6 +10,7 @@ import {
   renderMythBusting,
 } from "@/components/resources/Renderers";
 import RelatedResources from "@/components/resources/RelatedResources";
+import Link from "next/link";
 
 const TYPE_LABELS: Record<string, string> = {
   article: "Article",
@@ -38,30 +39,24 @@ interface ResourceDetailPageProps {
 
 export default function ResourceDetailPage({ id }: ResourceDetailPageProps) {
   const [resource, setResource] = useState<Resource | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(!!id); // false from the start if no id
+  const [error, setError] = useState<string | null>(
+    !id ? "No resource ID provided." : null
+  );
 
   useEffect(() => {
-    if (!id) {
-      setError("No resource ID provided.");
-      setLoading(false);
-      return;
-    }
+    if (!id) return; // guard without setState
 
     async function load() {
       setLoading(true);
       setError(null);
       try {
-        const results = await fetchResources({ q: id, limit: 1 });
-        const found = results.find((r) => r.id === id) ?? results[0] ?? null;
-
-        if (!found) {
-          setError(
-            "Resource not found. It may have been removed or the link may be incorrect."
-          );
+        const data = await fetchResourceById(id);
+        if (!data) {
+          setError("Resource not found. It may have been removed or the link may be incorrect.");
           return;
         }
-        setResource(found);
+        setResource(data);
       } catch (err: unknown) {
         setError(
           err instanceof Error
@@ -147,9 +142,9 @@ export default function ResourceDetailPage({ id }: ResourceDetailPageProps) {
         >
           <h2>Something went wrong</h2>
           <p className="error-message">{error}</p>
-          <a href="/resources" className="btn btn-primary">
+          <Link href="/resources" className="btn btn-primary">
             Back to Resources
-          </a>
+          </Link>
         </div>
       ) : resource ? (
         <>

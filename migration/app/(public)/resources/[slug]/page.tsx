@@ -1,9 +1,10 @@
 import ResourceDetailPage from "@/components/resources/ResourceDetailPage";
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ slug: string }>;
 }
 
-export default function ResourceDetailPage({ params }: PageProps) {
-  return <ResourceDetailPage id={params.id} />;
+export default async function ResourceDetailedPage({ params }: PageProps) {
+  const { slug } = await params;
+  return <ResourceDetailPage id={slug} />;
 }

@@ -79,3 +79,8 @@ export async function fetchResources({
     ? response.data.map(normalizeResource)
     : [];
 }
+
+export async function fetchResourceById(id: string): Promise<Resource | null> {
+  const result = await api.get<{ data: Resource }>(`/api/v1/resources/${id}`);
+  return result?.data ?? null;
+}

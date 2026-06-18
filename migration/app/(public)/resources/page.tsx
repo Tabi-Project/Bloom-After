@@ -17,6 +17,14 @@ const FILTER_TABS: { label: string; value: FilterType }[] = [
   { label: "Myth-busting guides", value: "myth-busting" },
 ];
 
+type State = {
+  resources: Resource[];
+  currentPage: number;
+  totalPages: number;
+  loading: boolean;
+  error: string | null;
+};
+
 function buildPageNumbers(current: number, total: number): (number | "...")[] {
   if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
   const pages: (number | "...")[] = [1];
@@ -37,6 +45,13 @@ export default function ResourcesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [state, setState] = useState<State>({
+    resources: [],
+    currentPage: 1,
+    totalPages: 0,
+    loading: true,
+    error: null,
+  });
 
   const gridRef = useRef<HTMLDivElement>(null);
   const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -95,8 +110,29 @@ export default function ResourcesPage() {
   );
 
   useEffect(() => {
-    loadResources(1, "", "");
-  }, [loadResources]);
+    const requestId = ++requestSeqRef.current;
+
+    fetchResources({ published: true, limit: 200 })
+      .then((all) => {
+        if (requestId !== requestSeqRef.current) return;
+        const total = Math.ceil(all.length / ITEMS_PER_PAGE);
+        setState({
+          resources: all.slice(0, ITEMS_PER_PAGE),
+          currentPage: 1,
+          totalPages: total,
+          loading: false,
+          error: null,
+        });
+      })
+      .catch((err: unknown) => {
+        if (requestId !== requestSeqRef.current) return;
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error: err instanceof Error ? err.message : "We could not load resources right now.",
+        }));
+      });
+  }, []); 
 
   const handleFilterChange = (filter: FilterType) => {
     setActiveFilter(filter);
