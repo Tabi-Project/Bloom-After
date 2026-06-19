@@ -29,6 +29,7 @@ const defaultAllowedOrigins = [
   'http://localhost:5500',
   'http://127.0.0.1:5500',
   'http://localhost:5173',
+  'https://bloom-after-59wn.vercel.app',
   'http://127.0.0.1:5173',
   'http://localhost:3000',
   'http://127.0.0.1:3000',
@@ -82,8 +83,8 @@ app.get('/', (req, res) => {
 const startServer = async () => {
   try {
     await connectDB(process.env.MONGO_URI);
-    app.listen(3000, () => {
-      console.log('Server is running on port 3000');
+    app.listen(5000, () => {
+      console.log('Server is running on port 5000');
     });
   } catch (err) {
     console.error('Error starting server:', err);
