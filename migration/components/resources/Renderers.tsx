@@ -1,4 +1,10 @@
-import type { Resource } from "@/lib/api/resources";
+import type {
+  Resource,
+  ArticleBlock,
+  InfographicContent,
+  MythBustingContent,
+  MediaContent,
+} from "@/types/resource";
 
 // Shared helpers
 
@@ -18,20 +24,7 @@ export function renderBulletItem(text: string): string {
 
 // Article renderer
 
-type BlockType =
-  | { type: "paragraph"; text: string }
-  | {
-      type: "section-text-image" | "section-image-text";
-      heading: string;
-      body: string;
-      items: string[];
-      imageUrl?: string;
-      image_url?: string;
-    }
-  | { type: "bullet-list"; items: string[] }
-  | { type: "callout"; text: string };
-
-export function renderBlock(block: BlockType): string {
+export function renderBlock(block: ArticleBlock): string {
   const blockImageUrl =
     "imageUrl" in block ? block.imageUrl || block.image_url || "" : "";
 
@@ -91,7 +84,7 @@ export function renderBlock(block: BlockType): string {
 }
 
 export function renderArticle(resource: Resource): string {
-  const blocks: BlockType[] = resource.structured_content || [];
+  const blocks = (resource.structured_content as ArticleBlock[]) || [];
   return `
     <div class="article-body">
       ${blocks.map(renderBlock).join("")}
@@ -110,17 +103,6 @@ const INFOGRAPHIC_ICONS: Record<string, string> = {
   joy: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>`,
   default: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/></svg>`,
 };
-
-interface InfographicItem {
-  icon: string;
-  label: string;
-}
-
-interface InfographicContent {
-  title: string;
-  items: InfographicItem[];
-  tagline: string;
-}
 
 export function renderInfographic(resource: Resource): string {
   if (!resource?.structured_content) return `<p>Content unavailable.</p>`;
@@ -152,16 +134,6 @@ export function renderInfographic(resource: Resource): string {
 }
 
 // Myth-busting renderer
-
-interface MythFactItem {
-  label: string;
-  description: string;
-}
-
-interface MythBustingContent {
-  myths: MythFactItem[];
-  facts: MythFactItem[];
-}
 
 export function renderMythBusting(resource: Resource): string {
   if (!resource?.structured_content) return `<p>Content unavailable.</p>`;
@@ -205,10 +177,6 @@ export function renderMythBusting(resource: Resource): string {
 }
 
 // Media renderer
-
-interface MediaContent {
-  summary_paragraphs: string[];
-}
 
 export function renderMedia(resource: Resource): string {
   if (!resource?.structured_content) {

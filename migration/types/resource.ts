@@ -68,7 +68,7 @@ export type ContentType = "article" | "infographic" | "media" | "myth-busting";
 export type MediaFormat = "audio" | "podcast" | "video";
 
 export interface Resource {
-  id: string | number;
+  id: string;
   title: string;
   summary: string;
   theme: string;
