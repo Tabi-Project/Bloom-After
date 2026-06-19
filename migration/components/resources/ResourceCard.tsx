@@ -1,0 +1,134 @@
+import type { Resource } from "@/lib/api/resources";
+
+const CONTENT_TYPE_ICONS: Record<string, string> = {
+  article: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14 2 14 8 20 8"/>
+    <line x1="16" y1="13" x2="8" y2="13"/>
+    <line x1="16" y1="17" x2="8" y2="17"/>
+  </svg>`,
+
+  infographic: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <rect x="3" y="3" width="18" height="18" rx="2"/>
+    <path d="M3 9h18"/>
+    <path d="M9 21V9"/>
+  </svg>`,
+
+  media: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>`,
+
+  "myth-busting": `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+};
+
+const CONTENT_TYPE_LABELS: Record<string, string> = {
+  article: "Article",
+  infographic: "Infographic",
+  media: "Media",
+  "myth-busting": "Myth-busting guide",
+};
+
+interface ResourceCardProps {
+  resource: Resource;
+}
+
+export default function ResourceCard({ resource }: ResourceCardProps) {
+  const {
+    id,
+    title = "",
+    summary = "",
+    theme = "General",
+    content_type = "article",
+    imageUrl = "",
+    image_url = "",
+    date = "",
+    read_time = "",
+    cta_label = "Read more",
+  } = resource;
+
+  const resourceImageUrl = imageUrl || image_url;
+  const icon = CONTENT_TYPE_ICONS[content_type] || CONTENT_TYPE_ICONS["article"];
+  const typeLabel = CONTENT_TYPE_LABELS[content_type] || content_type;
+  const href = `/resources/${encodeURIComponent(id)}`;
+  const themeClass = `badge-theme-${theme.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+
+  return (
+    <article className="resource-card" data-id={id}>
+      <a href={href} className="resource-card-image-link" tabIndex={-1} aria-hidden="true">
+        <figure className="resource-card-image">
+          <img
+            src={resourceImageUrl}
+            alt=""
+            loading="lazy"
+            width={400}
+            height={240}
+          />
+          <figcaption className="resource-card-badges">
+            <span className={`badge badge-theme ${themeClass}`}>{theme}</span>
+            <span
+              className="badge badge-type"
+              aria-label={`Content type: ${typeLabel}`}
+              dangerouslySetInnerHTML={{ __html: icon }}
+            />
+          </figcaption>
+        </figure>
+      </a>
+
+      <div className="resource-card-body">
+        <div className="resource-card-meta">
+          <time dateTime={date}>{date}</time>
+          <span className="resource-read-time">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            {read_time}
+          </span>
+        </div>
+
+        <h3 className="resource-card-title">
+          <a href={href}>{title}</a>
+        </h3>
+
+        <p className="resource-card-summary">{summary}</p>
+
+        <a href={href} className="resource-card-cta" aria-label={`${cta_label}: ${title}`}>
+          {cta_label}
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden="true"
+          >
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </a>
+      </div>
+    </article>
+  );
+}
+
+export function ResourceCardSkeleton() {
+  return (
+    <article className="resource-card resource-card-skeleton" aria-hidden="true">
+      <div className="resource-card-image skeleton-block" />
+      <div className="resource-card-body">
+        <div className="skeleton-line skeleton-line-short" />
+        <div className="skeleton-line skeleton-line-full" />
+        <div className="skeleton-line skeleton-line-full" />
+        <div className="skeleton-line skeleton-line-medium" />
+        <div className="skeleton-line skeleton-line-short" />
+      </div>
+    </article>
+  );
+}
