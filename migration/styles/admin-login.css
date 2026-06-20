@@ -1,8 +1,16 @@
 .admin-login-page {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top right, var(--color-brand-100), transparent 40%),
-    radial-gradient(circle at bottom left, var(--color-brand-50), transparent 35%),
+    radial-gradient(
+      circle at top right,
+      var(--color-brand-100),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      var(--color-brand-50),
+      transparent 35%
+    ),
     var(--color-bg);
 }
 
@@ -111,7 +119,9 @@
   color: var(--color-text);
   font-size: var(--font-size-base);
   padding: var(--space-3) var(--space-4);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .field-group input::placeholder {
@@ -257,12 +267,12 @@
     padding: var(--space-8);
   }
 
-  .form-row {
+  /* .form-row {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-4);
-  }
+  } */
 
   .assistive-note {
     text-align: right;
