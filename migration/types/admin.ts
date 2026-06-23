@@ -31,7 +31,8 @@ export interface AdminSubmissionItem {
   city?: string;
 };
 export interface AdminData {
-  clinic: AdminSubmissionItem;
+  clinic?: AdminSubmissionItem;
+  specialist?: AdminSubmissionItem;
 }
 
 export interface AdminAPiResponse {
