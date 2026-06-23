@@ -39,9 +39,11 @@ interface RendererProps {
 }
 
 export default function SubmissionEditRenderer({ item, type, isActioning, onAction, onSaveNote }: RendererProps) {
+  const contactEmail = item.contact?.email || '';
+  
   const [modNote, setModNote] = useState(item.moderatorNote || '');
   const [rejectMessage, setRejectMessage] = useState('');
-  const [notificationEmail, setNotificationEmail] = useState(item.contact.email || '');
+  const [notificationEmail, setNotificationEmail] = useState(contactEmail);
   const [publishDestination, setPublishDestination] = useState('');
   const [showRejectReason, setShowRejectReason] = useState(false);
 
@@ -53,6 +55,8 @@ export default function SubmissionEditRenderer({ item, type, isActioning, onActi
     : '';
 
   const destinations = DESTINATIONS[type] || DESTINATIONS.request;
+
+  const mediaItem = item as AdminSubmissionItem & { mediaType?: string; link?: string };
 
   const handleActionClick = (status: AdminSubmissionItem['status']) => {
     if (status === 'rejected' && !showRejectReason) {
@@ -77,7 +81,7 @@ export default function SubmissionEditRenderer({ item, type, isActioning, onActi
             <h1 className="story-edit-name">{item.name || 'Untitled'}</h1>
             <div className="story-edit-meta">
               {date && <span>{date}</span>}
-              {item.contact.email && <span>{item.contact.email}</span>}
+              {contactEmail && <span>{contactEmail}</span>}
             </div>
           </div>
           <span className={`mod-status-badge mod-status-${item.status}`} id="submission-status-badge">
@@ -103,10 +107,10 @@ export default function SubmissionEditRenderer({ item, type, isActioning, onActi
         <div className="story-edit-submitter-card">
           <h3 className="story-edit-section-label">Submission Details</h3>
           <dl className="sub-edit-details">
-            {item.contact.email && (
+            {contactEmail && (
               <div className="sub-edit-detail-row">
                 <dt>Contact email</dt>
-                <dd><a href={`mailto:${item.contact.email}`} className="mod-email-link">{item.contact.email}</a></dd>
+                <dd><a href={`mailto:${contactEmail}`} className="mod-email-link">{contactEmail}</a></dd>
               </div>
             )}
             
@@ -133,15 +137,21 @@ export default function SubmissionEditRenderer({ item, type, isActioning, onActi
             )}
             {type === 'specialist' && (
               <>
-                {item.speciality && <div className="sub-edit-detail-row"><dt>Speciality</dt><dd>{item.speciality}</dd></div>}
-                {item.location && <div className="sub-edit-detail-row"><dt>Location</dt><dd>{item.location}</dd></div>}
-                {item.consultationTypes && <div className="sub-edit-detail-row"><dt>Consultation</dt><dd>{item.consultationTypes}</dd></div>}
+                {item.focusAreas && item.focusAreas.length > 0 && (
+                  <div className="sub-edit-detail-row"><dt>Speciality</dt><dd>{item.focusAreas.join(', ')}</dd></div>
+                )}
+                {(item.city || item.state) && (
+                  <div className="sub-edit-detail-row"><dt>Location</dt><dd>{[item.city, item.state].filter(Boolean).join(', ')}</dd></div>
+                )}
+                {item.consultationMode && (
+                  <div className="sub-edit-detail-row"><dt>Consultation</dt><dd>{item.consultationMode}</dd></div>
+                )}
               </>
             )}
             {type === 'media' && (
               <>
-                {item.mediaType && <div className="sub-edit-detail-row"><dt>Media type</dt><dd>{item.mediaType}</dd></div>}
-                {item.link && <div className="sub-edit-detail-row"><dt>Link</dt><dd><a href={item.link} target="_blank" rel="noopener noreferrer" className="mod-email-link">{item.link}</a></dd></div>}
+                {mediaItem.mediaType && <div className="sub-edit-detail-row"><dt>Media type</dt><dd>{mediaItem.mediaType}</dd></div>}
+                {mediaItem.link && <div className="sub-edit-detail-row"><dt>Link</dt><dd><a href={mediaItem.link} target="_blank" rel="noopener noreferrer" className="mod-email-link">{mediaItem.link}</a></dd></div>}
               </>
             )}
             
@@ -172,7 +182,7 @@ export default function SubmissionEditRenderer({ item, type, isActioning, onActi
           />
         </div>
 
-        {!item.contact.email && (
+        {!contactEmail && (
           <div className="story-edit-field">
             <label htmlFor="notif-email" className="story-edit-label">
               Notification email

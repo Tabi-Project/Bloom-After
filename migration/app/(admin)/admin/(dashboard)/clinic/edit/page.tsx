@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
 import api from '@/lib/api';
-import { AdminSubmissionItem, AdminAPiResponse, AdminData} from '@/types/admin';
+import { AdminSubmissionItem, AdminAPiResponse} from '@/types/admin';
 import SubmissionEditRenderer from '@/components/admin/SubmissionEditRenderer';
 
 interface ActionPayload {
@@ -43,47 +43,45 @@ function ClinicEditContent() {
         const rawResponse = res.data;
 
         console.log("RAW RESPONSE DATA:", rawResponse);
-        if (!rawResponse) throw new Error("Not found");
+        if (!rawResponse || !rawResponse.clinic) throw new Error("Not found");
         
         const itemData = rawResponse.clinic as AdminSubmissionItem & { cl_id?: string };
         console.log("PROCESSED ITEM DATA:", itemData);
         
-        setItem({ ...itemData, id: itemData.id });
+        setItem({ ...itemData, id: itemData.id || id });
       } catch (err) {
         console.error("API FETCH ERROR:", err);
-        const mockData = {
-          accepting_new_patients: true,
-          city: "Idi-Araba",
-          consultation_mode: "both",
+        
+        const mockData: AdminSubmissionItem = {
+          id: id || "69b4b28a4c08ba738961b30a",
+          name: "LUTH Mental Health Unit",
+          description: "The LUTH Mental Health Unit provides comprehensive mental health services, including therapy, counselling, and medication management. Our team of experienced professionals is dedicated to supporting patients through their mental health journey.",
           contact: {
             phone: '0800 111 2222',
             email: 'psych@luth.gov.ng',
             address: 'Ishaga Road, Idi-Araba, Lagos'
           },
           coordinates: [6.5204, 3.349],
-          cost_type: "subsidised",
-          cover_image: "",
-          credentials: "MBBS, FMCPsych",
-          description: "The LUTH Mental Health Unit provides comprehensive mental health services, including therapy, counselling, and medication management. Our team of experienced professionals is dedicated to supporting patients through their mental health journey.",
-          fee_range: "₦5,000 - ₦15,000",
-          focus_areas: ['perinatal_anxiety', 'psychiatric_medication'],
-          id: "69b4b28a4c08ba738961b30a",
-          is_open_247: true,
+          providerType: "clinic",
           consultationMode: "both",
           costType: "subsidised",
-          providerType: "clinic",
-          isOpen247: true,
+          focusAreas: ['perinatal_anxiety', 'psychiatric_medication'],
+          status: "published",
+          services: ['Therapy / Counselling', 'Medication Management'],
           languages: ["English", "Yoruba"],
-          name: "LUTH Mental Health Unit",
-          opening_hours: "Open 24/7",
-          provider_type: "clinic",
+          acceptingNewPatients: true,
+          openingHours: "Open 24/7",
+          isOpen247: true,
+          website: "https://www.luth.org.ng/mental-health-unit",
+          coverImage: "",
+          credentials: "MBBS, FMCPsych",
+          feeRange: "₦5,000 - ₦15,000",
           rating: 4.8,
           reviewCount: 124,
-          services: ['Therapy / Counselling', 'Medication Management'],
           state: "Lagos",
-          status: "published",
-          website: "https://www.luth.org.ng/mental-health-unit"
-        } as AdminSubmissionItem;
+          city: "Idi-Araba"
+        };
+        
         setItem(mockData);
         setError(null);
       } finally {
