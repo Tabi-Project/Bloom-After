@@ -342,6 +342,7 @@
 /* Topbar */
 .admin-topbar {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);

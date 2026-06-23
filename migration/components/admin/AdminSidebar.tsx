@@ -9,11 +9,13 @@ import { getAdminUser, logoutAdmin } from "@/lib/admin-session";
 interface AdminSidebarProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  totalPending?: number;
 }
 
 interface NavChild {
   label: string;
   href: string;
+  badge?: boolean;
 }
 
 interface NavItem {
@@ -21,6 +23,7 @@ interface NavItem {
   icon: string;
   label: string;
   href?: string;
+  badge?: boolean;
   children?: NavChild[];
 }
 
@@ -39,8 +42,9 @@ const navGroups: NavGroup[] = [
         id: "moderation",
         icon: "gavel",
         label: "Moderation",
+        badge: true,
         children: [
-          { label: "Stories", href: "/admin/moderation/stories" },
+          { label: "Stories", href: "/admin/moderation/stories", badge: true },
           { label: "Clinics", href: "/admin/moderation?type=clinic" },
           { label: "Specialists Onboarding", href: "/admin/moderation?type=specialist" },
           { label: "Media Suggestions", href: "/admin/moderation?type=media" },
@@ -53,12 +57,12 @@ const navGroups: NavGroup[] = [
   {
     label: "SYSTEM",
     items: [
-      { id: "settings", icon: "settings", label: "General Settings", href: "/admin/dashboard/settings" },
+      { id: "settings", icon: "settings", label: "General Settings", href: "/admin/settings" },
     ],
   },
 ];
 
-export default function AdminSidebar({ isOpen, setIsOpen }: AdminSidebarProps) {
+export default function AdminSidebar({ isOpen, setIsOpen, totalPending = 0 }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [role, setRole] = useState("Admin");
@@ -127,6 +131,11 @@ export default function AdminSidebar({ isOpen, setIsOpen }: AdminSidebarProps) {
                       >
                         <span className="sidebar-nav-icon material-symbols-outlined">{item.icon}</span>
                         <span>{item.label}</span>
+                        {item.badge && totalPending > 0 && (
+                          <span className="sidebar-badge" aria-label={`${totalPending} pending`}>
+                            {totalPending}
+                          </span>
+                        )}
                         <span className="sidebar-nav-chevron material-symbols-outlined" aria-hidden="true">
                           expand_more
                         </span>
@@ -148,6 +157,11 @@ export default function AdminSidebar({ isOpen, setIsOpen }: AdminSidebarProps) {
                               >
                                 <span className="sidebar-subnav-dot" aria-hidden="true"></span>
                                 <span>{child.label}</span>
+                                {child.badge && totalPending > 0 && (
+                                  <span className="sidebar-badge" aria-label={`${totalPending} pending`}>
+                                    {totalPending}
+                                  </span>
+                                )}
                               </Link>
                             </li>
                           );
