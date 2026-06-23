@@ -39,9 +39,10 @@ function ClinicEditContent() {
         const res = (await api.get(`/api/v1/admin/clinics/${id}`)) as { 
           data: AdminSubmissionItem | { item: AdminSubmissionItem } 
         };
+
+        console.log("RAW API RESPONSE:", res);
         
         const rawResponse = res.data;
-        
         const data = ('item' in rawResponse) ? rawResponse.item : rawResponse;
         
         if (!data) throw new Error("Not found");
@@ -49,7 +50,8 @@ function ClinicEditContent() {
         const itemData = data as AdminSubmissionItem & { _id?: string };
         
         setItem({ ...itemData, id: itemData._id || itemData.id });
-      } catch {
+      } catch (err) {
+        console.error("API FETCH ERROR:", err);
         setError('Submission not found or has been removed.');
       } finally {
         setIsLoading(false);
