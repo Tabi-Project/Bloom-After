@@ -41,15 +41,15 @@ interface RendererProps {
 export default function SubmissionEditRenderer({ item, type, isActioning, onAction, onSaveNote }: RendererProps) {
   const [modNote, setModNote] = useState(item.moderatorNote || '');
   const [rejectMessage, setRejectMessage] = useState('');
-  const [notificationEmail, setNotificationEmail] = useState(item.email || '');
+  const [notificationEmail, setNotificationEmail] = useState(item.contact.email || '');
   const [publishDestination, setPublishDestination] = useState('');
   const [showRejectReason, setShowRejectReason] = useState(false);
 
   const isAccepted = item.status === 'approved';
   const isRejected = item.status === 'rejected';
   
-  const date = item.submittedAt 
-    ? new Date(item.submittedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  const date = item.updatedAt 
+    ? new Date(item.updatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
     : '';
 
   const destinations = DESTINATIONS[type] || DESTINATIONS.request;
@@ -74,10 +74,10 @@ export default function SubmissionEditRenderer({ item, type, isActioning, onActi
       <div className="story-edit-preview">
         <div className="story-edit-preview-header">
           <div>
-            <h1 className="story-edit-name">{item.title || 'Untitled'}</h1>
+            <h1 className="story-edit-name">{item.name || 'Untitled'}</h1>
             <div className="story-edit-meta">
               {date && <span>{date}</span>}
-              {item.email && <span>{item.email}</span>}
+              {item.contact.email && <span>{item.contact.email}</span>}
             </div>
           </div>
           <span className={`mod-status-badge mod-status-${item.status}`} id="submission-status-badge">
@@ -85,11 +85,11 @@ export default function SubmissionEditRenderer({ item, type, isActioning, onActi
           </span>
         </div>
 
-        {item.image_url && (
+        {item.coverImage && (
           <figure className="sub-edit-image-wrap">
             <Image 
-              src={item.image_url} 
-              alt={item.title || 'Submission image'} 
+              src={item.coverImage} 
+              alt={item.name || 'Submission image'} 
               width={400} 
               height={300} 
               className="sub-edit-image"
@@ -103,18 +103,32 @@ export default function SubmissionEditRenderer({ item, type, isActioning, onActi
         <div className="story-edit-submitter-card">
           <h3 className="story-edit-section-label">Submission Details</h3>
           <dl className="sub-edit-details">
-            {item.email && (
+            {item.contact.email && (
               <div className="sub-edit-detail-row">
                 <dt>Contact email</dt>
-                <dd><a href={`mailto:${item.email}`} className="mod-email-link">{item.email}</a></dd>
+                <dd><a href={`mailto:${item.contact.email}`} className="mod-email-link">{item.contact.email}</a></dd>
               </div>
             )}
             
             {/* Conditional Type Fields */}
             {type === 'clinic' && (
               <>
-                {item.location && <div className="sub-edit-detail-row"><dt>Location</dt><dd>{item.location}</dd></div>}
-                {item.link && <div className="sub-edit-detail-row"><dt>Website</dt><dd><a href={item.link} target="_blank" rel="noopener noreferrer" className="mod-email-link">{item.link}</a></dd></div>}
+                {item.city && item.state && (
+                  <div className="sub-edit-detail-row">
+                    <dt>Location</dt>
+                    <dd>{item.city}, {item.state}</dd>
+                  </div>
+                )}
+                {item.website && (
+                  <div className="sub-edit-detail-row">
+                    <dt>Website</dt>
+                    <dd>
+                      <a href={item.website} target="_blank" rel="noopener noreferrer" className="mod-email-link">
+                        {item.website}
+                      </a>
+                    </dd>
+                  </div>
+                )}
               </>
             )}
             {type === 'specialist' && (
@@ -158,7 +172,7 @@ export default function SubmissionEditRenderer({ item, type, isActioning, onActi
           />
         </div>
 
-        {!item.email && (
+        {!item.contact.email && (
           <div className="story-edit-field">
             <label htmlFor="notif-email" className="story-edit-label">
               Notification email

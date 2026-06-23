@@ -60,6 +60,8 @@ const normalizeClinic = (clinic, options = {}) => {
     accepting_new_patients: typeof clinic.accepting_new_patients === 'boolean' ? clinic.accepting_new_patients : undefined,
     credentials: clinic.credentials || '',
     languages: clinic.languages || [],
+    updatedAt: clinic.updatedAt ? clinic.updatedAt.toISOString() : null,
+    createdAt: clinic.createdAt ? clinic.createdAt.toISOString() : null,
     focus_areas: clinic.focus_areas || [],
     contact: clinic.contact || {},
     services: clinic.services || [],

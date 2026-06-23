@@ -1,22 +1,40 @@
 export interface AdminSubmissionItem {
-  clinic: DataClinic;
-}
-export interface DataClinic {
   id: string;
-  title: string;
+  name: string;
   description?: string;
-  email?: string;
-  location?: string;
-  link?: string;
-  image_url?: string;
-  status: 'pending' | 'approved' | 'rejected' | 'removed' | 'deleted';
+  contact: {
+    phone?: string;
+    email?: string;
+    address?: string;
+  };
+  coordinates?: [number, number];
+  providerType: string;
+  consultationMode: string;
+  costType: string;
+  focusAreas?: string[];
+  status: string;
+  services?: string[];
+  languages?: string[];
+  acceptingNewPatients?: boolean;
   moderatorNote?: string;
-  submittedAt: string;
-  
-  // Specialist 
-  speciality?: string;
-  consultationTypes?: string;
-  
-  // Media 
-  mediaType?: string;
+  openingHours?: string;
+  updatedAt?: string;
+  createdAt?: string;
+  isOpen247: boolean;
+  website?: string;
+  coverImage?: string;
+  credentials?: string;
+  feeRange?: string;
+  rating?: number;
+  reviewCount?: number;
+  state?: string;
+  city?: string;
+};
+export interface AdminData {
+  clinic: AdminSubmissionItem;
+}
+
+export interface AdminAPiResponse {
+  data: AdminData;
+  status: string;
 }

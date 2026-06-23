@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
 import api from '@/lib/api';
-import { AdminSubmissionItem } from '@/types/admin';
+import { AdminSubmissionItem, AdminAPiResponse, AdminData} from '@/types/admin';
 import SubmissionEditRenderer from '@/components/admin/SubmissionEditRenderer';
 
 interface ActionPayload {
@@ -36,34 +36,54 @@ function ClinicEditContent() {
 
     const fetchItem = async () => {
       try {
-        const res = (await api.get(`/api/v1/admin/clinics/${id}`)) as { 
-          data: AdminSubmissionItem | { item: AdminSubmissionItem } 
-        };
+        const res = (await api.get(`/api/v1/admin/clinics/${id}`)) as AdminAPiResponse;
 
         console.log("RAW API RESPONSE:", res);
         
         const rawResponse = res.data;
-        const data = ('item' in rawResponse) ? rawResponse.item : rawResponse;
+
+        console.log("RAW RESPONSE DATA:", rawResponse);
+        if (!rawResponse) throw new Error("Not found");
         
-        if (!data) throw new Error("Not found");
-        
-        const itemData = data.clinic as AdminSubmissionItem & { cl_id?: string };
+        const itemData = rawResponse.clinic as AdminSubmissionItem & { cl_id?: string };
         console.log("PROCESSED ITEM DATA:", itemData);
         
-        setItem({ ...itemData, id: itemData._id || itemData.id });
+        setItem({ ...itemData, id: itemData.id });
       } catch (err) {
         console.error("API FETCH ERROR:", err);
         const mockData = {
-          id: id || 'c1',
-          title: 'Grace Medical Centre',
-          status: 'pending',
-          submittedAt: '2026-06-23T10:00:00Z',
-          submitterEmail: 'grace@example.com',
-          image_url: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80', 
-          description: 'Excellent postpartum care in Lagos Island.',
-          contactEmail: 'grace@example.com'
+          accepting_new_patients: true,
+          city: "Idi-Araba",
+          consultation_mode: "both",
+          contact: {
+            phone: '0800 111 2222',
+            email: 'psych@luth.gov.ng',
+            address: 'Ishaga Road, Idi-Araba, Lagos'
+          },
+          coordinates: [6.5204, 3.349],
+          cost_type: "subsidised",
+          cover_image: "",
+          credentials: "MBBS, FMCPsych",
+          description: "The LUTH Mental Health Unit provides comprehensive mental health services, including therapy, counselling, and medication management. Our team of experienced professionals is dedicated to supporting patients through their mental health journey.",
+          fee_range: "₦5,000 - ₦15,000",
+          focus_areas: ['perinatal_anxiety', 'psychiatric_medication'],
+          id: "69b4b28a4c08ba738961b30a",
+          is_open_247: true,
+          consultationMode: "both",
+          costType: "subsidised",
+          providerType: "clinic",
+          isOpen247: true,
+          languages: ["English", "Yoruba"],
+          name: "LUTH Mental Health Unit",
+          opening_hours: "Open 24/7",
+          provider_type: "clinic",
+          rating: 4.8,
+          reviewCount: 124,
+          services: ['Therapy / Counselling', 'Medication Management'],
+          state: "Lagos",
+          status: "published",
+          website: "https://www.luth.org.ng/mental-health-unit"
         } as AdminSubmissionItem;
-        
         setItem(mockData);
         setError(null);
       } finally {
