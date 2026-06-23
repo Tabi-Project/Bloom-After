@@ -47,7 +47,8 @@ function ClinicEditContent() {
         
         if (!data) throw new Error("Not found");
         
-        const itemData = data as AdminSubmissionItem & { _id?: string };
+        const itemData = data.clinic as AdminSubmissionItem & { cl_id?: string };
+        console.log("PROCESSED ITEM DATA:", itemData);
         
         setItem({ ...itemData, id: itemData._id || itemData.id });
       } catch (err) {

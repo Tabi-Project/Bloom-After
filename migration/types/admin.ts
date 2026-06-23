@@ -1,4 +1,7 @@
 export interface AdminSubmissionItem {
+  clinic: DataClinic;
+}
+export interface DataClinic {
   id: string;
   title: string;
   description?: string;
