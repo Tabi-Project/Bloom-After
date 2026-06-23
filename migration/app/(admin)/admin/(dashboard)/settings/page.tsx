@@ -10,7 +10,7 @@ export default function AdminSettingsPage() {
         <div className="settings-block">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <h2 className="settings-block-title">Team & Admins</h2>
-            <p className="settings-block-subtitle">Manage your organization's members, invite new contributors, and control access levels across the botanical ledger.</p>
+            <p className="settings-block-subtitle">Manage your organization&apos;s members, invite new contributors, and control access levels across the botanical ledger.</p>
           </div>
 
           <div className="settings-notice">
@@ -206,7 +206,7 @@ export default function AdminSettingsPage() {
         <div className="settings-block">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <h2 className="settings-block-title">General Settings</h2>
-            <p className="settings-block-subtitle">Configure your environment's global preferences and core identity.</p>
+            <p className="settings-block-subtitle">Configure your environment&apos;s global preferences and core identity.</p>
           </div>
 
           <div className="settings-general-grid">
