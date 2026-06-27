@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Contribution Guidelines
+    url: https://github.com/Tabi-Project/Bloom-After/blob/main/CONTRIBUTING.md
+    about: Read the contribution workflow, coding standards, and ethical requirements before opening an issue.

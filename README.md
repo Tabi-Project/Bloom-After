@@ -39,7 +39,7 @@ The platform is designed to be mobile-first and accessible on low-end Android de
 
 ## Important Links
 
-- **Live Site:** [Bloom After](https://the-bloom-after.netlify.app/)
+- **Live Site:** [Bloom After](https://bloom-after-59wn.vercel.app/)
 - **Contribution Guidelines:** [View Document](https://docs.google.com/document/d/1R9hX7qCAkG74NZYodpto4FgRB0dEhsgsqK5hv-kHwKg/edit?usp=drive_link)
 - **Team Members' Articles:** [View Document](https://docs.google.com/document/d/14iJZ-iyf5wIm2u7zc0hasp7aiVDBjOdZ/edit?usp=drive_link&ouid=110794638747214718388&rtpof=true&sd=true)
 - **Design Documentation:** [View Document](https://docs.google.com/document/d/1deaFgJFJI_zZz3UXreUOLGGY7J-mTIt7/edit?usp=drive_link&ouid=110794638747214718388&rtpof=true&sd=true)
@@ -53,11 +53,10 @@ Bloom After follows a layered architecture.
 
 | Layer | Responsibility |
 |------|---------------|
-| Frontend | HTML, CSS, and modular JavaScript UI |
+| Frontend | Next.js (App Router) + React + TypeScript UI |
 | Backend API | Node.js + Express API handling business logic |
-| Database | PostgreSQL via Supabase |
-| CMS | Strapi for editorial content management |
-| File Storage | Cloudinary or Supabase Storage |
+| Database | MongoDB via Mongoose |
+| File Storage | Cloudinary |
 
 **Flow**
 
@@ -68,6 +67,33 @@ The frontend is hosted on **Netlify**, while the backend API runs on **Render or
 ---
 
 ## Changelog
+
+### Frontend Migration to Next.js — ongoing, started 2026
+
+**Changed by:** The Bloom After team
+
+**What Changed:**
+The frontend is being rebuilt page by page in `/migration` using Next.js
+(App Router), React, and TypeScript, replacing the original HTML/CSS/vanilla
+JavaScript frontend in `/client`. The admin dashboard and content management
+screens (content list + content editor) have been ported so far, alongside
+several public-facing pages. `/client` remains in the repo as a working
+reference until the migration is complete.
+
+**Why It Changed:**
+The vanilla JS frontend had grown hard to maintain as a single shared
+component/data layer across many hand-wired pages. Next.js gives the project
+typed components, a shared layout system, and a clearer separation between
+API clients (`lib/api/`), framework-agnostic helpers (`lib/`), and types
+(`types/`).
+
+**Impact on Other Components:**
+Root-level `npm run dev` / `npm run build` now point at `/migration` by
+default; the legacy equivalents are available as `npm run dev:legacy` /
+`npm run build:legacy`. No backend changes were required — the new frontend
+talks to the same Express API in `/server`.
+
+---
 
 ### PRD Update — 10th March, 2026
 
@@ -91,22 +117,26 @@ The Resource Hub now has a dedicated media section to make up for removing the m
 ## Technology Stack
 
 ### Frontend
-- HTML
+- [Next.js](https://nextjs.org) (App Router)
+- React + TypeScript
 - CSS (mobile-first responsive design)
-- Vanilla JavaScript
+
+> The original frontend (`/client`) was plain HTML, CSS, and vanilla JavaScript.
+> It's kept for reference during the migration but is no longer where new
+> frontend work happens — see [Repository Structure](#repository-structure).
 
 ### Backend
 - Node.js
 - Express.js
 
 ### Database
-- Supabase (PostgreSQL)
+- MongoDB (via Mongoose)
 
 ### Additional Services
-- Strapi CMS
 - Cloudinary (media storage)
 - Leaflet.js + OpenStreetMap (maps)
 - Browser Geolocation API
+- Resend (transactional email — admin invites, moderation notifications)
 
 ---
 
@@ -114,7 +144,8 @@ The Resource Hub now has a dedicated media section to make up for removing the m
 
 ```
 /bloom-after
-  /client          # frontend
+  /migration       # frontend (Next.js, active development)
+  /client          # legacy frontend (HTML/CSS/vanilla JS, kept for reference)
   /server          # backend API
   /scripts         # seed scripts and helpers
   README.md
@@ -122,6 +153,17 @@ The Resource Hub now has a dedicated media section to make up for removing the m
 ```
 
 ### Frontend Structure
+
+```
+/migration
+  /app             # routes (App Router) — public + (admin) route groups
+  /components      # shared and feature React components
+  /lib             # API clients and framework-agnostic helpers
+  /types           # shared TypeScript types
+  /styles          # CSS, ported 1:1 from /client where applicable
+```
+
+The legacy `/client` frontend follows its own structure:
 
 ```
 /client
@@ -178,36 +220,52 @@ Navigate into the project:
 cd bloom-after
 ```
 
-Install backend dependencies:
+Install dependencies for the frontend and backend:
 
 ```bash
-cd server
-npm install
+cd migration && npm install && cd ..
+cd server && npm install && cd ..
 ```
 
-Run the development server:
+Run the backend API:
+
+```bash
+npm run dev:server
+```
+
+Run the frontend (Next.js, from the repo root):
 
 ```bash
 npm run dev
 ```
 
+This opens the app at [http://localhost:3000](http://localhost:3000).
+
+The legacy frontend under `/client` is still runnable via `npm run dev:legacy`
+/ `npm run build:legacy` while the migration to Next.js is completed page by page.
+
 ### Environment Variables
 
-Create a .env file using .env.example as a template.
-
-Required variables include:
+Create a `.env` file inside `/server` with the variables it actually reads:
 
 ```
-SUPABASE_URL=
-SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_KEY=
+MONGO_URI=
 JWT_SECRET=
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
-STRAPI_URL=
-PORT=
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=
+APP_BASE_URL=
+CORS_ALLOWED_ORIGINS=
+SUPPORT_EMAIL=
 ```
+
+`MONGO_URI`, `JWT_SECRET`, and the `CLOUDINARY_*` keys are required for the
+API and uploads to work; the rest have sane defaults and are only needed to
+override behavior (allowed CORS origins, the base URL used in moderation
+emails, etc.) — see `server/server.js` and `server/utils/` for exactly how
+each one is used.
 
 ## Contributing
 
