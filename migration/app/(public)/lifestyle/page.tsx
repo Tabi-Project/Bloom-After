@@ -5,6 +5,7 @@ import { Search } from 'lucide-react';
 import { fetchLifestyle } from '@/lib/api/lifestyle-api';
 import { Lifestyle, FetchLifestyleParams } from '@/types/lifestyle';
 import LifestyleCard from '@/components/lifestyle/LifestyleCard';
+import { lifestyle as mockLifestyle } from '@/data/lifestyle';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -28,7 +29,6 @@ export default function LifestylePage() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Fetching utilizing your exact FetchLifestyleParams keys
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
@@ -44,14 +44,20 @@ export default function LifestylePage() {
         };
 
         const response = await fetchLifestyle(queryParams);
-        
-        // Safely casting to matching verified Lifestyle layouts
+
         const fetchedData = (response?.data || []) as unknown as Lifestyle[];
         setItems(fetchedData);
         setTotalPages(response?.pagination?.totalPages || 0);
         setIsLoading(false);
       } catch (err) {
-        setError('Please try again shortly.');
+        const fallback = (mockLifestyle as unknown as Lifestyle[]).filter(item => {
+          const matchesF = !activeFilter || item.category === activeFilter;
+          const matchesS = !debouncedQuery || 
+            item.title.toLowerCase().includes(debouncedQuery.toLowerCase());
+          return matchesF && matchesS;
+        });
+        setItems(fallback.slice(0, ITEMS_PER_PAGE));
+        setTotalPages(Math.ceil(fallback.length / ITEMS_PER_PAGE));
         setIsLoading(false);
       }
     };
@@ -67,35 +73,65 @@ export default function LifestylePage() {
   return (
     <div className="lifestyle-directory-page">
       <main id="main-content">
-        <section 
-          className="ngo-hero" 
-          style={{ backgroundImage: `linear-gradient(rgba(0, 38, 38, 0.75), rgba(0, 38, 38, 0.75)), url('https://unsplash.com')` }} 
+        <section
+          className="ngo-hero"
+          style={{ 
+            backgroundImage: `linear-gradient(rgba(0, 38, 38, 0.75), 
+            rgba(0, 38, 38, 0.75)), 
+            url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&q=80')`, 
+          }}
         >
           <div className="ngo-hero-content container">
             <h1 className="ngo-hero-title">Lifestyle & Medical Interventions</h1>
-            <p className="ngo-hero-subtitle">A holistic approach combining supportive lifestyle adjustments with evidence-based care.</p>
+            <p className="ngo-hero-subtitle">
+              A holistic approach combining supportive lifestyle adjustments with evidence-based care.
+            </p>
           </div>
         </section>
 
         <section className="page-controls" aria-label="Search and filter">
           <div className="container page-controls-inner">
             <div className="search-wrap" style={{ position: 'relative' }}>
-              <span className="search-icon" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }}>
+              <span 
+                className="search-icon" 
+                style={{ 
+                  position: 'absolute', 
+                  left: '12px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)', 
+                  color: 'var(--color-text-muted)' 
+                }}
+              >
                 <Search size={16} />
               </span>
-              <input 
-                type="search" 
-                className="search-input" 
-                placeholder="Search strategies..." 
+              <input
+                type="search"
+                className="search-input"
+                placeholder="Search strategies..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{ paddingLeft: '36px' }}
               />
             </div>
             <nav className="filter-tabs" aria-label="Category filters">
-              <button className={`filter-btn ${activeFilter === '' ? 'active' : ''}`} onClick={() => handleFilterClick('')}>All</button>
-              <button className={`filter-btn ${activeFilter === 'lifestyle' ? 'active' : ''}`} onClick={() => handleFilterClick('lifestyle')}>Lifestyle</button>
-              <button className={`filter-btn ${activeFilter === 'medical' ? 'active' : ''}`} onClick={() => handleFilterClick('medical')}>Medical</button>
+              <button 
+                className={`filter-btn ${activeFilter === '' ? 'active' : ''}`} 
+                onClick={() => handleFilterClick('')}
+              >
+                All
+              </button>
+              <button 
+                className={`filter-btn ${activeFilter === 'lifestyle' ? 'active' : ''}`} 
+                onClick={() => handleFilterClick('lifestyle')}
+              >
+                Lifestyle
+              </button>
+              <button 
+                className={`filter-btn ${activeFilter === 'medical' ? 'active' : ''}`} 
+                onClick={() => handleFilterClick('medical')}
+              >
+                Medical
+              </button>
             </nav>
           </div>
         </section>
@@ -126,13 +162,31 @@ export default function LifestylePage() {
               {totalPages > 1 && (
                 <div className="pagination-wrap">
                   <nav className="pagination">
-                    <button className="pagination-btn" onClick={() => setCurrentPage(p => p - 1)} disabled={currentPage === 1}>Previous</button>
+                    <button 
+                      className="pagination-btn" 
+                      onClick={() => setCurrentPage(p => p - 1)} 
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </button>
                     <div className="pagination-pages">
                       {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                        <button key={p} className={`pagination-page ${p === currentPage ? 'pagination-page-active' : ''}`} onClick={() => setCurrentPage(p)}>{p}</button>
+                        <button 
+                          key={p} 
+                          className={`pagination-page ${p === currentPage ? 'pagination-page-active' : ''}`} 
+                          onClick={() => setCurrentPage(p)}
+                        >
+                          {p}
+                        </button>
                       ))}
                     </div>
-                    <button className="pagination-btn" onClick={() => setCurrentPage(p => p + 1)} disabled={currentPage === totalPages}>Next</button>
+                    <button 
+                      className="pagination-btn" 
+                      onClick={() => setCurrentPage(p => p + 1)} 
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </button>
                   </nav>
                 </div>
               )}

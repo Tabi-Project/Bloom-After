@@ -6,6 +6,7 @@ export interface Tip {
 
 export interface Lifestyle {
     id: string;
+    cover_image: string;
     title: string;
     category: string;
     subtitle: string;

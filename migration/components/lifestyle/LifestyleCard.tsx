@@ -10,8 +10,7 @@ interface CardProps {
 }
 
 export default function LifestyleCard({ item }: CardProps) {
-  // Safe default fallback image matching the aesthetic configuration of your pages
-  const image = 'https://unsplash.com';
+  const image = item.cover_image || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&q=80';
 
   return (
     <Link href={`/lifestyle/detail?id=${item.id}`} className="lm-card">
