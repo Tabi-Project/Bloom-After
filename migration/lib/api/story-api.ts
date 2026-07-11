@@ -52,3 +52,19 @@ export async function fetchStoryById(id: string): Promise<Story | null> {
   const result = await api.get<{ data: Story }>(`/api/v1/stories/${id}`);
   return result?.data ?? null;
 }
+
+export interface CreateStoryPayload {
+  name: string;
+  email: string;
+  privacy: "named" | "anonymous";
+  story: string;
+  location: string;
+  consent: boolean;
+  what_helped: string[];
+  image: string;
+}
+
+export async function createStory(payload: CreateStoryPayload): Promise<Story> {
+  const result = await api.post<{ data: Record<string, unknown> }>("/api/v1/stories", payload);
+  return normalizeStory(result?.data || {});
+}

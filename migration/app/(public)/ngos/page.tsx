@@ -6,7 +6,6 @@ import { fetchNgos, submitNgo } from '@/lib/ngos-api';
 import { Ngo } from '@/types/ngo';
 import NgoCard from '@/components/ngo/NgoCard';
 import SuggestDrawer from '@/components/SuggestDrawer';
-import { ngos as mockNgos } from '@/data/ngos'; 
 
 const ITEMS_PER_PAGE = 6;
 
@@ -50,21 +49,16 @@ export default function NgosPage() {
       setError(null);
       
       try {
-        /*
         const { data, pagination } = await fetchNgos({
           page: currentPage,
           limit: ITEMS_PER_PAGE,
           q: debouncedQuery,
           focus: activeFilter,
         }, { signal: abortController.signal });
-        */
-      
-        setTimeout(() => {
-          setNgos(mockNgos as unknown as Ngo[]); 
-          setTotalPages(1);
-          setIsLoading(false);
-        }, 400);
 
+        setNgos(data);
+        setTotalPages(pagination.totalPages || 0);
+        setIsLoading(false);
       } catch (err: unknown) {
         if (err instanceof Error && err.name !== 'AbortError') {
           setError('We could not load the directory right now. Please try again.');

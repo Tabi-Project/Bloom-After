@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
 import api from '@/lib/api';
 import { AdminSubmissionItem, AdminAPiResponse} from '@/types/admin';
+import { normalizeAdminClinic } from '@/lib/admin-clinic';
 import SubmissionEditRenderer from '@/components/admin/SubmissionEditRenderer';
 
 interface ActionPayload {
@@ -37,18 +38,10 @@ function ClinicEditContent() {
     const fetchItem = async () => {
       try {
         const res = (await api.get(`/api/v1/admin/clinics/${id}`)) as AdminAPiResponse;
-
-        console.log("RAW API RESPONSE:", res);
-        
         const rawResponse = res.data;
-
-        console.log("RAW RESPONSE DATA:", rawResponse);
         if (!rawResponse || !rawResponse.clinic) throw new Error("Not found");
-        
-        const itemData = rawResponse.clinic as AdminSubmissionItem & { cl_id?: string };
-        console.log("PROCESSED ITEM DATA:", itemData);
-        
-        setItem({ ...itemData, id: itemData.id || id });
+
+        setItem(normalizeAdminClinic(rawResponse.clinic as unknown as Record<string, unknown>, id));
       } catch (err) {
         console.error("API FETCH ERROR:", err);
         

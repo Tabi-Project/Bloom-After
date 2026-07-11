@@ -16,4 +16,7 @@ export interface Ngo {
   contact: NgoContact;
   website: string;
   status: string;
+  moderatorNote?: string;
+  createdAt?: string | null;
+  updatedAt?: string | null;
 }
