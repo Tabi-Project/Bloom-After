@@ -14,7 +14,7 @@ export default function LifestyleCard({ item }: CardProps) {
   const image = 'https://unsplash.com';
 
   return (
-    <Link href={`/lifestyle/detail?id=${item.id}`} className="lm-card">
+    <Link href={`/lifestyle/${item.id}`} className="lm-card">
       
       {/* Container must have relative positioning to prevent Next.js Image fill crashes */}
       <div className="ngo-card-image-wrapper" style={{ position: 'relative', height: '220px', width: '100%' }}>

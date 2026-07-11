@@ -70,6 +70,7 @@ const normalizeNgo = (ngo) => {
     },
     website: getString(ngo.website),
     status: getString(ngo.status, 'pending'),
+    moderatorNote: getString(ngo.moderatorNote),
     createdAt: ngo.createdAt || null,
     updatedAt: ngo.updatedAt || null,
   };

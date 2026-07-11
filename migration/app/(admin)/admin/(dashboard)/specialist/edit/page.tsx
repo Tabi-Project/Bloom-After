@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
 import api from '@/lib/api';
 import { AdminAPiResponse, AdminSubmissionItem } from '@/types/admin';
+import { normalizeAdminClinic } from '@/lib/admin-clinic';
 import SubmissionEditRenderer from '@/components/admin/SubmissionEditRenderer';
 
 interface ActionPayload {
@@ -36,22 +37,16 @@ function SpecialistEditContent() {
 
     const fetchItem = async () => {
       try {
-        const res = (await api.get(`/api/v1/admin/specialists/${id}`)) as AdminAPiResponse;
-        
-        console.log("RAW API RESPONSE:", res);
-        
+        // Specialists are Clinic documents with provider_type therapist/psychiatrist —
+        // there is no separate specialists collection or endpoint.
+        const res = (await api.get(`/api/v1/admin/clinics/${id}`)) as AdminAPiResponse;
         const rawResponse = res.data;
-        console.log("RAW RESPONSE DATA:", rawResponse);
-        
-        const data = rawResponse?.specialist;
-        if (!data) throw new Error("Not found");
-        
-        const itemData = data as AdminSubmissionItem & { _id?: string };
-        
-        setItem({ ...itemData, id: itemData._id || itemData.id || id });
+        if (!rawResponse || !rawResponse.clinic) throw new Error("Not found");
+
+        setItem(normalizeAdminClinic(rawResponse.clinic as unknown as Record<string, unknown>, id));
       } catch (err) {
         console.error("API FETCH ERROR:", err);
-        
+
         const mockData: AdminSubmissionItem = {
           id: id || 's1',
           name: 'Dr. Funmi Adeyemi',
@@ -88,7 +83,7 @@ function SpecialistEditContent() {
     setFeedback(null);
 
     try {
-      await api.patch(`/api/v1/admin/specialists/${item.id}`, { status, ...payload });
+      await api.patch(`/api/v1/admin/clinics/${item.id}`, { status, ...payload });
       setItem(prev => prev ? { ...prev, status } : null);
       
       const msgs: Record<string, string> = {
